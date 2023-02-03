@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
@@ -16,7 +15,9 @@
   },
   "homepage": "https://github.com/Ritesh-056/decentralize-voting-system-final#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "feather-icons": "^4.29.0",
+    "web3": "^1.8.2"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
@@ -30,7 +31,6 @@
     "@typechain/hardhat": "^6.1.5",
     "chai": "^4.3.7",
     "ethers": "^5.7.2",
-    "hardhat": "^2.12.6",
     "hardhat-gas-reporter": "^1.0.9",
     "nodemon": "^2.0.20",
     "solidity-coverage": "^0.8.2",
