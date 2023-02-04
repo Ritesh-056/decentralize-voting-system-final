@@ -48,6 +48,7 @@ export default class Home extends Component {
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
       const deployedNetwork = Election.networks[networkId];
+      Election.options.address = "0x00aF8350b89d933d12Fd1F6da03577a47cc9d240";
       const instance = new web3.eth.Contract(
         Election.abi,
         deployedNetwork && deployedNetwork.address

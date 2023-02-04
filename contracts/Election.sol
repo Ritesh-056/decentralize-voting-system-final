@@ -2,58 +2,34 @@
 pragma solidity >=0.4.21 <0.9.0;
 
 contract Election {
-    address public admin;
-    uint256 candidateCount;
+    bool started;
+    bool ended;
     uint256 voterCount;
-    bool start;
-    bool end;
+    uint256 candidateCount;
+    address public admin;
+    address[] public voters; // array to store address of voters
+    
+    mapping(address => Voter) public voterDetails;
+    mapping(uint256 => Candidate) public candidateDetails;
 
-    constructor()  {
+    constructor() {
         // Initilizing default values
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
-        start = false;
-        end = false;
+        started = false;
+        ended = false;
     }
 
-    function getAdmin() public view returns (address) {
-        // Returns account address used to deploy contract (i.e. admin)
-        return admin;
-    }
-
-    modifier onlyAdmin() {
-        // Modifier for only admin access
-        require(msg.sender == admin);
-        _;
-    }
-    // Modeling a candidate
+    // Candidate attrb
     struct Candidate {
         uint256 candidateId;
         string header;
         string slogan;
         uint256 voteCount;
     }
-    mapping(uint256 => Candidate) public candidateDetails;
 
-    // Adding new candidates
-    function addCandidate(string memory _header, string memory _slogan)
-        public
-        // Only admin can add
-        onlyAdmin
-    {
-        Candidate memory newCandidate =
-            Candidate({
-                candidateId: candidateCount,
-                header: _header,
-                slogan: _slogan,
-                voteCount: 0
-            });
-        candidateDetails[candidateCount] = newCandidate;
-        candidateCount += 1;
-    }
-
-    // Modeling a Election Details
+    // Election attrb
     struct ElectionDetails {
         string adminName;
         string adminEmail;
@@ -62,6 +38,50 @@ contract Election {
         string organizationTitle;
     }
     ElectionDetails electionDetails;
+
+
+    // Voter attrb 
+        struct Voter {
+            address voterAddress;
+            string name;
+            string phone;
+            bool isVerified;
+            bool hasVoted;
+            bool isRegistered;
+        }
+     
+
+    modifier onlyAdmin() {
+        // Modifier for only admin access
+        require(msg.sender == admin);
+        _;
+    }
+
+    function getAdmin() public view returns (address) {
+        // Returns account address used to deploy contract (i.e. admin)
+        return admin;
+    }
+
+    // Adding new candidates
+    function addCandidate(
+        string memory _header,
+        string memory _slogan
+    )
+        public
+        // Only admin can add
+        onlyAdmin
+    {
+        Candidate memory newCandidate = Candidate({
+            candidateId: candidateCount,
+            header: _header,
+            slogan: _slogan,
+            voteCount: 0
+        });
+        candidateDetails[candidateCount] = newCandidate;
+        candidateCount += 1;
+    }
+
+
 
     function setElectionDetails(
         string memory _adminName,
@@ -81,8 +101,8 @@ contract Election {
             _electionTitle,
             _organizationTitle
         );
-        start = true;
-        end = false;
+        started = true;
+        ended = false;
     }
 
     // Get Elections details
@@ -118,36 +138,28 @@ contract Election {
         return voterCount;
     }
 
-    // Modeling a voter
-    struct Voter {
-        address voterAddress;
-        string name;
-        string phone;
-        bool isVerified;
-        bool hasVoted;
-        bool isRegistered;
-    }
-    address[] public voters; // Array of address to store address of voters
-    mapping(address => Voter) public voterDetails;
+   
 
     // Request to be added as voter
     function registerAsVoter(string memory _name, string memory _phone) public {
-        Voter memory newVoter =
-            Voter({
-                voterAddress: msg.sender,
-                name: _name,
-                phone: _phone,
-                hasVoted: false,
-                isVerified: false,
-                isRegistered: true
-            });
+        Voter memory newVoter = Voter({
+            voterAddress: msg.sender,
+            name: _name,
+            phone: _phone,
+            hasVoted: false,
+            isVerified: false,
+            isRegistered: true
+        });
         voterDetails[msg.sender] = newVoter;
         voters.push(msg.sender);
         voterCount += 1;
     }
 
     // Verify voter
-    function verifyVoter(bool _verifedStatus, address voterAddress)
+    function verifyVoter(
+        bool _verifedStatus,
+        address voterAddress
+    )
         public
         // Only admin can verify
         onlyAdmin
@@ -155,28 +167,30 @@ contract Election {
         voterDetails[voterAddress].isVerified = _verifedStatus;
     }
 
+    
+
     // Vote
     function vote(uint256 candidateId) public {
         require(voterDetails[msg.sender].hasVoted == false);
         require(voterDetails[msg.sender].isVerified == true);
-        require(start == true);
-        require(end == false);
+        require(started == true);
+        require(ended == false);
         candidateDetails[candidateId].voteCount += 1;
         voterDetails[msg.sender].hasVoted = true;
     }
 
     // End election
     function endElection() public onlyAdmin {
-        end = true;
-        start = false;
+        ended = true;
+        started = false;
     }
 
     // Get election start and end values
     function getStart() public view returns (bool) {
-        return start;
+        return started;
     }
 
     function getEnd() public view returns (bool) {
-        return end;
+        return ended;
     }
 }
