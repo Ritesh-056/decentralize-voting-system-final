@@ -8,6 +8,10 @@ h1 {
   text-align: center;
 }
 
+body{
+  background-color: #302C42;
+}
+
 code {
   font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
   background-color: #f1f1f1;

@@ -12,7 +12,7 @@ contract Election {
     mapping(address => Voter) public voterDetails;
     mapping(uint256 => Candidate) public candidateDetails;
 
-    constructor() {
+    constructor()  {
         // Initilizing default values
         admin = msg.sender;
         candidateCount = 0;

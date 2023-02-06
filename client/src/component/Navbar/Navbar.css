@@ -6,16 +6,19 @@ li {
 }
 a {
   text-decoration: none;
-  color: white;
+  color: #f2f2f2;
+
 }
 nav {
   display: flex;
-  height: 11vh;
-  background: blue;
+  height: 8vh;
+  background:   #302C42;
   justify-content: space-around;
   position: sticky;
   top: 0;
   align-items: center;
+  border-bottom: 1px solid #e7e7e7;
+
 }
 nav .header {
   font-size: 24px;
@@ -24,6 +27,7 @@ nav .header {
 }
 nav .header:hover {
   cursor: pointer;
+  font-size: 30px;
 }
 nav .navbar-links {
   display: flex;
@@ -35,11 +39,14 @@ nav .navbar-links a {
   font-size: 17px;
   font-weight: normal;
   cursor: pointer;
+  font-family: "Montserrat";
   text-transform: capitalize;
 }
+
 nav .navbar-links a:hover {
   cursor: pointer;
   color: black;
+  text-transform: capitalize;
 }
 nav .burger-menu {
   font-size: 24px;
@@ -48,7 +55,16 @@ nav .burger-menu {
   display: none;
 }
 .nav-active {
-  color: black;
+  color: #f2f2f2;
+  text-transform: capitalize;
+
+}
+
+.menu {
+  width: 25px;
+  height: 3px;
+  background-color: #f2f2f2;
+  margin: 6px 0;
 }
 
 @media all and (max-width: 777px) {
