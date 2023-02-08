@@ -1,0 +1,10 @@
+{
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "<contract_address>",
+      "transactionHash": "<transaction_hash>"
+    }
+  }
+}

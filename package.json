@@ -15,6 +15,7 @@
   },
   "homepage": "https://github.com/Ritesh-056/decentralize-voting-system-final#readme",
   "dependencies": {
+    "ethers": "5.7.2",
     "express": "^4.18.2",
     "feather-icons": "^4.29.0",
     "hardhat-migration": "^1.0.2",
@@ -32,7 +33,6 @@
     "@typechain/ethers-v5": "^10.2.0",
     "@typechain/hardhat": "^6.1.5",
     "chai": "^4.3.7",
-    "ethers": "^6.0.2",
     "hardhat": "^2.12.6",
     "hardhat-gas-reporter": "^1.0.9",
     "nodemon": "^2.0.20",
