@@ -2,34 +2,26 @@ require("@nomicfoundation/hardhat-toolbox");
 /** @type import('hardhat/config').HardhatUserConfig */
 
 module.exports = {
-  solidity: {
-    version: "0.8.17",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200
-      }
-    }
-  },
+  solidity: "0.8.1",
+  // networks: {
+  //   hardhat: {
+  //     chainId: 1337,
+  //   },
+  //   ganache: {
+  //     url: "http://127.0.0.1:8545",
+  //     accounts: [
+  //       `d7b29d2317b6362af1290f397c8705d1c775036a615071d28e126e48f6d65c50`,
+  //     ],
+  //   }
   networks: {
     hardhat: {
-      chainId: 1337,
+      chainId: 1337
     },
-    ganache: {
-      url: "http://127.0.0.1:7545/",
-      accounts: [
-        '9ece6b8ff2bbba5be98cd949c5d8663cd25920ca935cb6c5a64ae6b31968a07a'
-      ],
-    }
   },
-
   paths: {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
-    artifacts: "./src/artifacts",
+    artifacts: "./client/src/artifacts",
   },
-  mocha: {
-    timeout: 70000
-  },
-}
+};

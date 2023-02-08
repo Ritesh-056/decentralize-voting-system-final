@@ -25,7 +25,7 @@ contract Election {
     struct Candidate {
         uint256 candidateId;
         string header;
-        string slogan;
+        string symbol;
         uint256 voteCount;
     }
 
@@ -74,7 +74,7 @@ contract Election {
         Candidate memory newCandidate = Candidate({
             candidateId: candidateCount,
             header: _header,
-            slogan: _slogan,
+            symbol: _slogan,
             voteCount: 0
         });
         candidateDetails[candidateCount] = newCandidate;
