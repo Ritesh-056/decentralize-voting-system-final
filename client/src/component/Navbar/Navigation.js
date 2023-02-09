@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-
+import Logo from "../../images/Logo.png";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -8,51 +8,30 @@ export default function Navbar() {
   return (
     <nav>
       <NavLink to="/" className="header">
-        {/* <i className="fab fa-hive"></i> Home  */}
-        <div className="menu"></div>
-        <div className="menu"></div>
-        <div className="menu"></div>
-
+        <img src={Logo} alt="Logo" style={{ height: 100, width: 100 }} />
       </NavLink>
+
       <ul
         className="navbar-links"
         style={{ width: "35%", transform: open ? "translateX(0px)" : "" }}
       >
         <li>
           <NavLink to="/Results" activeClassName="nav-active">
-            <i className="fas fa-poll-h" /> Results
+            Results
           </NavLink>
         </li>
 
         <li>
           <NavLink to="/Registration" activeClassName="nav-active">
-            <i className="far fa-registered" /> Registration
+            Registration
           </NavLink>
         </li>
-   
 
-        <li>
-          <NavLink to="/Results" activeClassName="nav-active">
-            <i className="fas fa-poll-h" /> GuideLines
-          </NavLink>
-        </li>
-        
         <li>
           <NavLink to="/Voting" activeClassName="nav-active">
-            <i className="fas fa-vote-yea" /> Voting
+            Voting
           </NavLink>
         </li>
-
-     
-        <li>
-          <NavLink to="/Results" activeClassName="nav-active">
-            <i className="fas fa-poll-h" /> About
-   
-          </NavLink>
-        </li>
-
-      
-        
       </ul>
       <i onClick={() => setOpen(!open)} className="fas fa-bars burger-menu"></i>
     </nav>

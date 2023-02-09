@@ -6,8 +6,8 @@ const NotInit = () => {
   return (
     <div className="container-item info">
       <center>
-        <h3>The election has not been initialize.</h3>
-        <p>Please Wait..</p>
+        <h3>Election not intialized </h3>
+        <p>Have patience..</p>
       </center>
     </div>
   );

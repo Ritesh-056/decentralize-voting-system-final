@@ -7,15 +7,6 @@ module.exports = {
     ganache: {
       url: "http://127.0.0.1:7545",
     },
-    // ganache: {
-    //   url: "http://127.0.0.1:8545",
-    //   accounts: [
-    //     `d7b29d2317b6362af1290f397c8705d1c775036a615071d28e126e48f6d65c50`,
-    //   ],
-    // },
-    hardhat: {
-      chainId: 1337,
-    },
   },
   paths: {
     sources: "./contracts",

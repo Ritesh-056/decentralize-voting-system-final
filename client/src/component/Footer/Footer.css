@@ -1,34 +1,29 @@
 .footer,
 .footer-block {
-  padding: 11px;
-  height: 40px;
+  height: 80px;
   width: 100%;
   overflow: auto;
 }
 
 .footer {
-  background-color: #302C42;
   border-top: 1px solid #e7e7e7;
   text-align: center;
   position: fixed;
   left: 0;
   bottom: 0;
   overflow: auto;
+  background: radial-gradient(
+      50% 2900.76% at 50% 53.89%,
+      rgba(58, 52, 86, 0.95) 0%,
+      #211e2e 100%
+    );
+  box-shadow: 0px 4px 4px rgba(192, 183, 232, 0.01);
 }
 .footer-block {
   display: block;
 }
 
-a.profile {
-  color: #000;
-  text-decoration: underline;
-}
-a.profile:hover {
-  color: tomato;
-  text-decoration: underline;
-}
 .footer-container {
-  /* padding: 7px; */
   width: 97%;
   margin-left: auto;
   margin-right: auto;
@@ -36,8 +31,4 @@ a.profile:hover {
   align-items: center;
   justify-content: space-evenly;
   display: flex;
-}
-
-h6{
-  color: #f2f2f2;
 }

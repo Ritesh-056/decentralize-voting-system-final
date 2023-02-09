@@ -20,6 +20,27 @@ code {
   border-radius: 6px;
   border: 1px solid;
 }
+h2 {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 29px;
+  color: #ffffff;
+}
+small {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 15px;
+
+  color: #ffffff;
+}
+h5{
+  margin-top: 10%;
+  color:#ffffff;
+}
 
 .container-main {
   background-color: none;
@@ -33,7 +54,6 @@ code {
 
 .container-item {
   transition: ease all 0.5s;
-  background-color: #f2f2f2;
   border-radius: 7px;
   width: 977px;
   padding: 17px;
@@ -42,6 +62,20 @@ code {
   justify-content: center;
   display: flex;
   overflow: auto;
+  background: radial-gradient(50% 50% at 50% 50%, #433D60 0%, #211E2E 0%);
+  border-radius: 15px;
+  color: #ffffff;
+}
+
+ .info{
+  align-items: center;
+  box-sizing: border-box;
+  position: inherit;
+  background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%);
+  border: 1px solid #000000;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 12.5px;
+  color: #343045;
 }
 
 .title {
@@ -98,16 +132,15 @@ code {
 .attention,
 .alert,
 .success {
-  border: 1px solid black;
   margin-top: 11px;
   margin-bottom: 11px px;
 }
 .info {
-  background-color: #ddffff;
+  background-color: #18A558;
 }
 .attention {
   background-color: #fffbdd;
 }
 .success {
-  background-color: #ddffdd;
+  background-color:#18A558;
 }

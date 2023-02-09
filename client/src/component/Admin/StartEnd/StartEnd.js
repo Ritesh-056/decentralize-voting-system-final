@@ -6,7 +6,7 @@ import NavbarAdmin from "../../Navbar/NavigationAdmin";
 import AdminOnly from "../../AdminOnly";
 
 import getWeb3 from "../../../getWeb3";
-import Election from "../../../contracts/Election.json";
+import Election from "../../../artifacts/contracts/Election.sol/Election.json";
 
 import "./StartEnd.css";
 
@@ -90,7 +90,12 @@ export default class StartEnd extends Component {
       return (
         <>
           {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-          <center>Loading Web3, accounts, and contract...</center>
+          <center>
+            <div className="loader">
+              <div className="spinner"></div>
+              <div className="spin-text"> Loading Web3, accounts, and contract !</div>
+            </div>
+          </center>
         </>
       );
     }

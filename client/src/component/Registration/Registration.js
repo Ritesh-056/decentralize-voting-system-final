@@ -11,7 +11,8 @@ import "./Registration.css";
 
 // Contract
 import getWeb3 from "../../getWeb3";
-import Election from "../../contracts/Election.json";
+import Election from "../../artifacts/contracts/Election.sol/Election.json";
+
 
 export default class Registration extends Component {
   constructor(props) {

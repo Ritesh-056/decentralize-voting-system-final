@@ -9,6 +9,7 @@ import Registration from "./component/Registration/Registration";
 
 import AddCandidate from "./component/Admin/AddCandidate/AddCandidate";
 import Verification from "./component/Admin/Verification/Verification";
+import About from "./component/About/About";
 import test from "./component/test";
 // import StartEnd from "./component/Admin/StartEnd/StartEnd";
 
@@ -28,6 +29,7 @@ export default class App extends Component {
             <Route exact path="/Results" component={Results} />
             <Route exact path="/Registration" component={Registration} />
             <Route exact path="/Verification" component={Verification} />
+           {/* <Route exact path="/About" component={About}/> */}
             <Route exact path="/test" component={test} />
             <Route exact path="*" component={NotFound} />
           </Switch>

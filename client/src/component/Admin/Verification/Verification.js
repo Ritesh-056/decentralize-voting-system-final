@@ -6,7 +6,7 @@ import NavbarAdmin from "../../Navbar/NavigationAdmin";
 import AdminOnly from "../../AdminOnly";
 
 import getWeb3 from "../../../getWeb3";
-import Election from "../../../contracts/Election.json";
+import Election from "../../../artifacts/contracts/Election.sol/Election.json";
 
 import "./Verification.css";
 
@@ -164,7 +164,12 @@ export default class Registration extends Component {
       return (
         <>
           {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-          <center>Loading Web3, accounts, and contract...</center>
+          <center>
+            <div className="loader">
+              <div className="spinner"></div>
+              <div className="spin-text"> Loading Web3, accounts, and contract !</div>
+            </div>
+          </center>
         </>
       );
     }
@@ -180,14 +185,14 @@ export default class Registration extends Component {
       <>
         <NavbarAdmin />
         <div className="container-main">
-          <h3>Verification</h3>
+          <h2>Verification</h2>
           <small>Total Voters: {this.state.voters.length}</small>
           {this.state.voters.length < 1 ? (
-            <div className="container-item info">None has registered yet.</div>
+            <div className="container-item info">No any account registered</div>
           ) : (
             <>
               <div className="container-item info">
-                <center>List of registered voters</center>
+                <center>Registered voters</center>
               </div>
               {this.state.voters.map(this.renderUnverifiedVoters)}
             </>

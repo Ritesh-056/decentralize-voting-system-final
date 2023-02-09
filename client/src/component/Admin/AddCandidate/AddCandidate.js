@@ -4,7 +4,7 @@ import Navbar from "../../Navbar/Navigation";
 import NavbarAdmin from "../../Navbar/NavigationAdmin";
 
 import getWeb3 from "../../../getWeb3";
-import Election from "../../../contracts/Election.json";
+import Election from "../../../artifacts/contracts/Election.sol/Election.json";
 import AdminOnly from "../../AdminOnly";
 
 import "./AddCandidate.css";
@@ -104,7 +104,12 @@ export default class AddCandidate extends Component {
       return (
         <>
           {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-          <center>Loading Web3, accounts, and contract...</center>
+          <center>
+            <div className="loader">
+              <div className="spinner"></div>
+              <div className="spin-text"> Loading Web3, accounts, and contract !</div>
+            </div>
+          </center>
         </>
       );
     }
@@ -120,7 +125,7 @@ export default class AddCandidate extends Component {
       <>
         <NavbarAdmin />
         <div className="container-main">
-          <h2>Add a new candidate</h2>
+          <h2>Add candidate</h2>
           <small>Total candidates: {this.state.candidateCount}</small>
           <div className="container-item">
             <form className="form">
@@ -129,7 +134,7 @@ export default class AddCandidate extends Component {
                 <input
                   className={"input-ac"}
                   type="text"
-                  placeholder="eg. Marcus"
+                  placeholder="Header"
                   value={this.state.header}
                   onChange={this.updateHeader}
                 />
@@ -139,7 +144,7 @@ export default class AddCandidate extends Component {
                 <input
                   className={"input-ac"}
                   type="text"
-                  placeholder="eg. It is what it is"
+                  placeholder="Slogan"
                   value={this.state.slogan}
                   onChange={this.updateSlogan}
                 />
@@ -182,11 +187,11 @@ export function loadAdded(candidates) {
   return (
     <div className="container-main" style={{ borderTop: "1px solid" }}>
       <div className="container-item info">
-        <center>Candidates List</center>
+        <center>Candidates </center>
       </div>
       {candidates.length < 1 ? (
         <div className="container-item alert">
-          <center>No candidates added.</center>
+          <center>No candidates </center>
         </div>
       ) : (
         <div
