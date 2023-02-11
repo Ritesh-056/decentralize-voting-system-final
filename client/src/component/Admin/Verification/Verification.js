@@ -113,6 +113,7 @@ export default class Registration extends Component {
                 <td>{voter.phone}</td>
                 <td>{voter.hasVoted ? "True" : "False"}</td>
               </tr>
+              
             </table>
           </div>
         ) : null}
@@ -133,6 +134,7 @@ export default class Registration extends Component {
               <th>Phone</th>
               <td>{voter.phone}</td>
             </tr>
+          
             <tr>
               <th>Voted</th>
               <td>{voter.hasVoted ? "True" : "False"}</td>
@@ -147,13 +149,16 @@ export default class Registration extends Component {
             </tr>
           </table>
           <div style={{}}>
-            <button
-              className="btn-verification approve"
-              disabled={voter.isVerified}
-              onClick={() => verifyVoter(true, voter.address)}
-            >
-              Approve
-            </button>
+            <center>
+              <button
+                // className="btn-verification approve"
+                className="btn-election"
+                disabled={voter.isVerified}
+                onClick={() => verifyVoter(true, voter.address)}
+              >
+                Approve
+              </button>
+            </center>
           </div>
         </div>
       </>
@@ -167,7 +172,10 @@ export default class Registration extends Component {
           <center>
             <div className="loader">
               <div className="spinner"></div>
-              <div className="spin-text"> Loading Web3, accounts, and contract !</div>
+              <div className="spin-text">
+                {" "}
+                Loading Web3, accounts, and contract !
+              </div>
             </div>
           </center>
         </>

@@ -11,7 +11,7 @@
   margin: 0.5em 0em 0em 0em;
   padding: 1em;
   display: block;
-  width: 100%;
+  width: 330px;
   background-color: transparent;
   border: 1px solid #ffffff;
   border-radius: 40px;
@@ -30,14 +30,26 @@
   font-weight: 300;
   font-size: 22px;
   line-height: 44px;
-  /* identical to box height */
   color: #ffffff;
 }
 
 .btn-add {
+  margin-top: 10%;
   box-sizing: border-box;
   position: inherit;
-  width: 90%;
+  width: 250px;
+  align-items: center;
+  background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%);
+  border: 1px solid #000000;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 40px;
+  color: #343045;
+}
+
+.btn-election {
+  position: inherit;
+  width: 250px;
+  padding: 16px;
   align-items: center;
   background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%);
   border: 1px solid #000000;
@@ -82,6 +94,17 @@
     width: 100%;
   }
   .btn-add {
+    float: inline-start;
+  }
+
+}
+
+@media all and (max-width: 400px) {
+  .input-ac,
+  .btn-election {
+    width: 100%;
+  }
+  .btn-election {
     float: inline-start;
   }
 }

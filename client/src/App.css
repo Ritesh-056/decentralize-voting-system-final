@@ -8,8 +8,20 @@ h1 {
   text-align: center;
 }
 
-body{
-  background-color: #302C42;
+h4 {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 20px;
+  color: #ffffff;
+  text-align: center;
+  padding-bottom: 16px;
+}
+
+body {
+  /* color: #ffffff; */
+  background-color: #302c42;
 }
 
 code {
@@ -37,9 +49,9 @@ small {
 
   color: #ffffff;
 }
-h5{
+h5 {
   margin-top: 10%;
-  color:#ffffff;
+  color: #ffffff;
 }
 
 .container-main {
@@ -62,12 +74,12 @@ h5{
   justify-content: center;
   display: flex;
   overflow: auto;
-  background: radial-gradient(50% 50% at 50% 50%, #433D60 0%, #211E2E 0%);
+  background: radial-gradient(50% 50% at 50% 50%, #433d60 0%, #211e2e 0%);
   border-radius: 15px;
   color: #ffffff;
 }
 
- .info{
+.info {
   align-items: center;
   box-sizing: border-box;
   position: inherit;
@@ -136,11 +148,15 @@ h5{
   margin-bottom: 11px px;
 }
 .info {
-  background-color: #18A558;
+  background-color: #18a558;
 }
 .attention {
-  background-color: #fffbdd;
+  background: radial-gradient(50% 50% at 50% 50%, #433d60 0%, #211e2e 0%);
+  border-radius: 15px;
+  /* color: #ffffff; */
 }
 .success {
-  background-color:#18A558;
+  /* background-color: #18a558; */
+  background: radial-gradient(50% 50% at 50% 50%, #433d60 0%, #211e2e 0%);
+  border-radius: 15px;
 }

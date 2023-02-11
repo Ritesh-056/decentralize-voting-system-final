@@ -214,7 +214,7 @@ export default class Home extends Component {
               <div className="container-main">
                 {/* about-admin */}
                 <div className="about-admin">
-                  <h3>About Admin</h3>
+                  <h2>About Admin</h2>
                   <div className="container-item center-items">
                     <div>
                       <label className="label-home">
@@ -223,7 +223,7 @@ export default class Home extends Component {
                         <input
                           className="input-home"
                           type="text"
-                          placeholder="First Name"
+                          placeholder="John"
                           {...register("adminFName", {
                             required: true,
                           })}
@@ -231,7 +231,7 @@ export default class Home extends Component {
                         <input
                           className="input-home"
                           type="text"
-                          placeholder="Last Name"
+                          placeholder="Doe"
                           {...register("adminLName")}
                         />
                       </label>
@@ -243,7 +243,7 @@ export default class Home extends Component {
                         )}
                         <input
                           className="input-home"
-                          placeholder="eg. you@example.com"
+                          placeholder="email@gmail.com"
                           name="adminEmail"
                           {...register("adminEmail", {
                             required: "*Required",
@@ -261,7 +261,7 @@ export default class Home extends Component {
                         <input
                           className="input-home"
                           type="text"
-                          placeholder="eg. HR Head "
+                          placeholder=" HR HEAD "
                           {...register("adminTitle", {
                             required: true,
                           })}
@@ -272,7 +272,7 @@ export default class Home extends Component {
                 </div>
                 {/* about-election */}
                 <div className="about-election">
-                  <h3>About Election</h3>
+                  <center><h2>About Election</h2></center>
                   <div className="container-item center-items">
                     <div>
                       <label className="label-home">
@@ -281,7 +281,7 @@ export default class Home extends Component {
                         <input
                           className="input-home"
                           type="text"
-                          placeholder="eg. School Election"
+                          placeholder="Choosing Chairman"
                           {...register("electionTitle", {
                             required: true,
                           })}
@@ -293,7 +293,7 @@ export default class Home extends Component {
                         <input
                           className="input-home"
                           type="text"
-                          placeholder="eg. Lifeline Academy"
+                          placeholder="Kathford Int'l College"
                           {...register("organizationTitle", {
                             required: true,
                           })}

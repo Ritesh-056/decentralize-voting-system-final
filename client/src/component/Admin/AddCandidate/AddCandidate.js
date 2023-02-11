@@ -107,7 +107,10 @@ export default class AddCandidate extends Component {
           <center>
             <div className="loader">
               <div className="spinner"></div>
-              <div className="spin-text"> Loading Web3, accounts, and contract !</div>
+              <div className="spin-text">
+                {" "}
+                Loading Web3, accounts, and contract !
+              </div>
             </div>
           </center>
         </>
@@ -130,34 +133,37 @@ export default class AddCandidate extends Component {
           <div className="container-item">
             <form className="form">
               <label className={"label-ac"}>
-                Header
+                Candidate Header
                 <input
                   className={"input-ac"}
                   type="text"
-                  placeholder="Header"
+                  placeholder="Candidate 1"
                   value={this.state.header}
                   onChange={this.updateHeader}
                 />
               </label>
               <label className={"label-ac"}>
-                Slogan
+                Candidate Symbol
                 <input
                   className={"input-ac"}
                   type="text"
-                  placeholder="Slogan"
+                  placeholder="Candidate 1 Symbol"
                   value={this.state.slogan}
                   onChange={this.updateSlogan}
                 />
               </label>
-              <button
-                className="btn-add"
-                disabled={
-                  this.state.header.length < 3 || this.state.header.length > 21
-                }
-                onClick={this.addCandidate}
-              >
-                Add
-              </button>
+              <center>
+                <button
+                  className="btn-add"
+                  disabled={
+                    this.state.header.length < 3 ||
+                    this.state.header.length > 21
+                  }
+                  onClick={this.addCandidate}
+                >
+                  Add
+                </button>
+              </center>
             </form>
           </div>
         </div>

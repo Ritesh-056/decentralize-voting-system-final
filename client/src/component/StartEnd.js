@@ -25,9 +25,11 @@ const StartEnd = (props) => {
                 className="container-item attention"
                 style={{ display: "block" }}
               >
-                <h2>Do not forget to add candidates.</h2>
-                <p>
-                  Go to{" "}
+                <h4>
+                  Ensure that you have candidates to start election. If yes
+                  start the election otherwise start adding candidate.
+                </h4>
+                <center>
                   <Link
                     title="Add a new "
                     to="/addCandidate"
@@ -36,13 +38,14 @@ const StartEnd = (props) => {
                       textDecoration: "underline",
                     }}
                   >
-                    add candidates
-                  </Link>{" "}
-                  page.
-                </p>
+                    <button type="submit" className="btn-election">
+                      Add Candidate From Here
+                    </button>
+                  </Link>
+                </center>
               </div>
               <div className="container-item">
-                <button type="submit" style={btn}>
+                <button type="submit" className="btn-election">
                   Start Election {props.elEnded ? "Again" : null}
                 </button>
               </div>

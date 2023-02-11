@@ -1,15 +1,33 @@
-.label-home {
+
+
+.label-home{
+  display: block;
+  margin: 0.1em;
   padding: 0.5em;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 44px;
+  color: #ffffff;
 }
-.input-home {
+
+.input-home{
   margin-top: 1em;
-  margin-left: 7px;
-  margin-right: 7px;
-  padding: 1em;
   min-width: 300px;
+  padding: 1em;
+  background-color: transparent;
+  border: 1px solid #ffffff;
+  border-radius: 40px;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ffffff;
 }
+
 .input-home,
 .label-home {
   display: block;
-  margin-bottom: 11px;
+  margin-bottom: 8px;
 }
