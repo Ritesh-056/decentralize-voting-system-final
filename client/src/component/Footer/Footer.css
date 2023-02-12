@@ -2,7 +2,6 @@
 .footer-block {
   height: 80px;
   width: 100%;
-  overflow: auto;
 }
 
 .footer {
@@ -11,7 +10,6 @@
   position: fixed;
   left: 0;
   bottom: 0;
-  overflow: auto;
   background: radial-gradient(
       50% 2900.76% at 50% 53.89%,
       rgba(58, 52, 86, 0.95) 0%,

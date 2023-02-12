@@ -229,10 +229,9 @@ export function loadAdded(candidates) {
           <div
             style={{
               maxHeight: "21px",
-              overflow: "auto",
             }}
           >
-            {candidate.candidateAddress}. <strong>{candidate.header}</strong>:{" "}
+            {"["}{candidate.candidateId}{"] "}<strong>{candidate.header}</strong>:{"  "}
             {candidate.slogan}
           </div>
         </div>

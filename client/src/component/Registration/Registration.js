@@ -167,7 +167,7 @@ export default class Registration extends Component {
               <p>Total registered voters: {this.state.voters.length}</p>
             </div>
             <div className="container-main">
-              <h3>Registration</h3>
+              <h2>Registration</h2>
               <small>Register to vote.</small>
               <div className="container-item">
                 <form>
@@ -188,7 +188,7 @@ export default class Registration extends Component {
                       <input
                         className={"input-r"}
                         type="text"
-                        placeholder="eg. Ava"
+                        placeholder="Name"
                         value={this.state.voterName}
                         onChange={this.updateVoterName}
                       />{" "}
@@ -200,18 +200,15 @@ export default class Registration extends Component {
                       <input
                         className={"input-r"}
                         type="number"
-                        placeholder="eg. 9841234567"
+                        placeholder="Phone No"
                         value={this.state.voterPhone}
                         onChange={this.updateVoterPhone}
                       />
                     </label>
                   </div>
                   <p className="note">
-                    <span style={{ color: "red" }}> Note: </span>
-                    <br /> Make sure your account address and Phone number are
-                    correct. <br /> Admin might not approve your account if the
-                    provided Phone number nub does not matches the account
-                    address registered in admins catalogue.
+                    <span style={{ color: "red",paddingTop:"10px"}}> Note: </span>
+                    <br /> * Please verify before submitting.<br/>* Address and phone number should be valid otherwise admin will not verify you as a voter. 
                   </p>
 
                   <center>

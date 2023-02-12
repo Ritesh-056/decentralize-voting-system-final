@@ -2,16 +2,29 @@
   display: inline-grid;
 }
 .input-r {
-  margin: 0.5em;
-  margin-left: 0;
+  margin: 0.5em 0em 0em 0em;
   padding: 1em;
   display: block;
-  overflow: scroll;
+  width: 330px;
+  background-color: transparent;
+  border: 1px solid #ffffff;
+  border-radius: 40px;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ffffff;
 }
 .label-r {
+  display: block;
   margin: 0.1em;
   padding: 0.5em;
-  display: block;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 44px;
+  color: #ffffff;
 }
 .btn-add {
   width: 50%;
@@ -25,6 +38,11 @@
   padding-left: 1px;
   text-align: justify;
   max-height: 111px;
-  overflow: auto;
   line-height: 1.5em;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: #ffffff;
 }

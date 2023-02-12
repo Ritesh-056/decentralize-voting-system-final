@@ -96,14 +96,14 @@ export default class CandidateVerification extends Component {
     return (
       <>
         {candidate.isVerified ? (
-          <div className="container-list success">
+          <div className="container-list success" style={{color:"white"}}>
             <p style={{ margin: "7px 0px" }}>AC: {candidate.candidateAddress}</p>
             <table>
               <tr>
                 <th>Header</th>
                 <th>Slogan</th>
               </tr>
-              <tr>
+              <tr style={{backgroundColor:"transparent"}}>
                 <td>{candidate.header}</td>
                 <td>{candidate.slogan}</td>
               </tr>
