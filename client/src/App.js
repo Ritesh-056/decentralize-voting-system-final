@@ -7,8 +7,10 @@ import Voting from "./component/Voting/Voting";
 import Results from "./component/Results/Results";
 import Registration from "./component/Registration/Registration";
 
-import AddCandidate from "./component/Admin/AddCandidate/AddCandidate";
 import Verification from "./component/Admin/Verification/Verification";
+import CandidateVerification from "./component/Admin/CandidateVerification/CandidateVerification";
+import CandidateRegistration from "./component/Admin/CandidateRegistration/CandidateRegistration";
+
 import test from "./component/test";
 // import StartEnd from "./component/Admin/StartEnd/StartEnd";
 
@@ -23,11 +25,12 @@ export default class App extends Component {
         <Router>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/AddCandidate" component={AddCandidate} />
+            <Route exact path="/RegisterCandidate" component={CandidateRegistration} />
             <Route exact path="/Voting" component={Voting} />
             <Route exact path="/Results" component={Results} />
             <Route exact path="/Registration" component={Registration} />
             <Route exact path="/Verification" component={Verification} />
+            <Route exact path="/CandidateVerification" component={CandidateVerification} />
             <Route exact path="/test" component={test} />
             <Route exact path="*" component={NotFound} />
           </Switch>

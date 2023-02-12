@@ -49,7 +49,7 @@ nav .navbar-links a {
   text-transform: capitalize;
   border: 1px solid #ffffff;
   padding: 8px 16px 8px 16px;
-  width: 70%;
+  width: 100%;
   margin-left: 32px;
   box-sizing: border-box;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
@@ -89,7 +89,7 @@ nav .burger-menu {
   nav .navbar-links {
     background-color: #302c42;
     display: block;
-    width: 50%;
+    width: 100%;
     position: absolute;
     top: 100%;
     right: 0;

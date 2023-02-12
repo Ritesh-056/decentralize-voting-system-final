@@ -13,7 +13,7 @@ export default function Navbar() {
 
       <ul
         className="navbar-links"
-        style={{ width: "35%", transform: open ? "translateX(0px)" : "" }}
+        style={{ width: "50%", transform: open ? "translateX(0px)" : "" }}
       >
         <li>
           <NavLink to="/Results" activeClassName="nav-active">
@@ -24,6 +24,12 @@ export default function Navbar() {
         <li>
           <NavLink to="/Registration" activeClassName="nav-active">
             Registration
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/RegisterCandidate" activeClassName="nav-active">
+            Candidate Registration
           </NavLink>
         </li>
 

@@ -2,31 +2,35 @@
 pragma solidity >=0.4.21 <0.9.0;
 
 contract Election {
-    bool started;
-    bool ended;
+    bool start;
+    bool end;
     uint256 voterCount;
     uint256 candidateCount;
     address public admin;
     address[] public voters; // array to store address of voters
+    address[] public candidates; //array to store address of voters
     
     mapping(address => Voter) public voterDetails;
-    mapping(uint256 => Candidate) public candidateDetails;
+    mapping(address => Candidate) public candidateDetails;
 
     constructor()  {
         // Initilizing default values
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
-        started = false;
-        ended = false;
+        start = false;
+        end = false;
     }
 
     // Candidate attrb
     struct Candidate {
         uint256 candidateId;
+        address candidateAddress; 
         string header;
-        string symbol;
+        string slogan;
         uint256 voteCount;
+        bool isVerified;
+        bool isRegistered;
     }
 
     // Election attrb
@@ -63,23 +67,25 @@ contract Election {
     }
 
     // Adding new candidates
-    function addCandidate(
-        string memory _header,
-        string memory _slogan
-    )
-        public
-        // Only admin can add
-        onlyAdmin
-    {
-        Candidate memory newCandidate = Candidate({
-            candidateId: candidateCount,
-            header: _header,
-            symbol: _slogan,
-            voteCount: 0
-        });
-        candidateDetails[candidateCount] = newCandidate;
-        candidateCount += 1;
-    }
+    // function addCandidate(
+    //     string memory _header,
+    //     string memory _slogan
+    // )
+    //     public
+    //     // Only admin can add
+    //     onlyAdmin
+    // {
+    //     Candidate memory newCandidate = Candidate({
+    //         candidateId: candidateCount,
+    //         header: _header,
+    //         symbol: _slogan,
+    //         voteCount: 0
+
+    //     });
+    //     candidateDetails[candidateCount] = newCandidate;
+    //     candidateCount += 1;
+    // }
+
 
 
 
@@ -101,8 +107,8 @@ contract Election {
             _electionTitle,
             _organizationTitle
         );
-        started = true;
-        ended = false;
+        start = true;
+        end = false;
     }
 
     // Get Elections details
@@ -138,6 +144,31 @@ contract Election {
         return voterCount;
     }
 
+
+    //Request to be added as candidate
+    function registerAsCandidate(string memory _header,string memory _slogan) public{
+        Candidate memory newCandidate = Candidate({
+                    candidateAddress:msg.sender,
+                    candidateId: candidateCount,
+                    header: _header,
+                    slogan: _slogan,
+                    voteCount: 0,
+                    isVerified:false,
+                    isRegistered:true 
+                });
+                candidateDetails[msg.sender] = newCandidate; 
+                candidates.push(msg.sender);
+                candidateCount += 1;
+    }
+
+    //verify candidate
+    function verifyCandidate(
+        bool _verifedStatus,
+        address candidateAddress
+    )public onlyAdmin {
+        candidateDetails[candidateAddress].isVerified = _verifedStatus;
+
+    }
    
 
     // Request to be added as voter
@@ -170,27 +201,27 @@ contract Election {
     
 
     // Vote
-    function vote(uint256 candidateId) public {
+    function vote(address _candidateAddress) public {
         require(voterDetails[msg.sender].hasVoted == false);
         require(voterDetails[msg.sender].isVerified == true);
-        require(started == true);
-        require(ended == false);
-        candidateDetails[candidateId].voteCount += 1;
+        require(start == true);
+        require(end == false);
+        candidateDetails[_candidateAddress].voteCount += 1;
         voterDetails[msg.sender].hasVoted = true;
     }
 
     // End election
     function endElection() public onlyAdmin {
-        ended = true;
-        started = false;
+        end = true;
+        start = false;
     }
 
     // Get election start and end values
     function getStart() public view returns (bool) {
-        return started;
+        return start;
     }
 
     function getEnd() public view returns (bool) {
-        return ended;
+        return end;
     }
 }

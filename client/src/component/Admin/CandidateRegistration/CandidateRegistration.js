@@ -5,11 +5,10 @@ import NavbarAdmin from "../../Navbar/NavigationAdmin";
 
 import getWeb3 from "../../../getWeb3";
 import Election from "../../../artifacts/contracts/Election.sol/Election.json";
-import AdminOnly from "../../AdminOnly";
+import NotInit from "../../NotInit";
+import "./CandidateRegistration.css";
 
-import "./AddCandidate.css";
-
-export default class AddCandidate extends Component {
+export default class CandidateRegistration extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,10 +16,21 @@ export default class AddCandidate extends Component {
       web3: null,
       account: null,
       isAdmin: false,
+      isElStarted: false,
+      isElEnded: false,
       header: "",
       slogan: "",
       candidates: [],
       candidateCount: undefined,
+      currentCandidate:{
+        candidateAddress:undefined,
+        candidateId: null,
+        header: null,
+        slogan: null,
+        voteCount:null,
+        isVerified: false,
+        isRegistered: false,
+      }
     };
   }
 
@@ -53,30 +63,61 @@ export default class AddCandidate extends Component {
         account: accounts[0],
       });
 
+      const admin = await this.state.ElectionInstance.methods.getAdmin().call();
+      if (this.state.account === admin) {
+        this.setState({ isAdmin: true });
+      }
+
+      // Get start and end values
+      const start = await this.state.ElectionInstance.methods.getStart().call();
+      this.setState({ isElStarted: start });
+      const end = await this.state.ElectionInstance.methods.getEnd().call();
+      this.setState({ isElEnded: end });
+
       // Total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
         .getTotalCandidate()
         .call();
       this.setState({ candidateCount: candidateCount });
 
-      const admin = await this.state.ElectionInstance.methods.getAdmin().call();
-      if (this.state.account === admin) {
-        this.setState({ isAdmin: true });
-      }
-
       // Loading Candidates details
       for (let i = 0; i < this.state.candidateCount; i++) {
-        const candidate = await this.state.ElectionInstance.methods
-          .candidateDetails(i)
+        const candidateAddress = await this.state.ElectionInstance.methods
+          .candidates(i)
           .call();
+        
+          const candidate = await this.state.ElectionInstance.methods
+          .candidateDetails(candidateAddress)
+          .call();
+
         this.state.candidates.push({
-          id: candidate.candidateId,
+          candidateAddress:candidate.candidateAddress,
+          candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
+          voteCount:candidate.voteCount,
+          isVerified: candidate.isVerified,
+          isRegistered: candidate.isRegistered,
         });
       }
 
       this.setState({ candidates: this.state.candidates });
+
+      // Loading current candidate
+      const candidate = await this.state.ElectionInstance.methods
+        .candidateDetails(this.state.account)
+        .call();
+      this.setState({
+        currentCandidate: {
+          candidateAddress:candidate.candidateAddress,
+          candidateId: candidate.candidateId,
+          header: candidate.header,
+          slogan: candidate.slogan,
+          voteCount:candidate.voteCount,
+          isVerified: candidate.isVerified,
+          isRegistered: candidate.isRegistered,
+        },
+      });
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -91,14 +132,14 @@ export default class AddCandidate extends Component {
   updateSlogan = (event) => {
     this.setState({ slogan: event.target.value });
   };
-
-  addCandidate = async () => {
+  
+  registerAsCandidate = async () => {
     await this.state.ElectionInstance.methods
-      .addCandidate(this.state.header, this.state.slogan)
+      .registerAsCandidate(this.state.header, this.state.slogan)
       .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
   };
-  
+
   render() {
     if (!this.state.web3) {
       return (
@@ -116,17 +157,13 @@ export default class AddCandidate extends Component {
         </>
       );
     }
-    if (!this.state.isAdmin) {
-      return (
-        <>
-          <Navbar />
-          <AdminOnly page="Add Candidate Page." />
-        </>
-      );
-    }
     return (
       <>
-        <NavbarAdmin />
+          {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
+        {!this.state.isElStarted && !this.state.isElEnded ? (
+          <NotInit />
+        ) : (
+        <>  
         <div className="container-main">
           <h2>Add candidate</h2>
           <small>Total candidates: {this.state.candidateCount}</small>
@@ -137,7 +174,7 @@ export default class AddCandidate extends Component {
                 <input
                   className={"input-ac"}
                   type="text"
-                  placeholder="Candidate 1"
+                  placeholder="Candidate "
                   value={this.state.header}
                   onChange={this.updateHeader}
                 />
@@ -147,7 +184,7 @@ export default class AddCandidate extends Component {
                 <input
                   className={"input-ac"}
                   type="text"
-                  placeholder="Candidate 1 Symbol"
+                  placeholder="Candidate Symbol"
                   value={this.state.slogan}
                   onChange={this.updateSlogan}
                 />
@@ -159,7 +196,7 @@ export default class AddCandidate extends Component {
                     this.state.header.length < 3 ||
                     this.state.header.length > 21
                   }
-                  onClick={this.addCandidate}
+                  onClick={this.registerAsCandidate}
                 >
                   Add
                 </button>
@@ -167,11 +204,23 @@ export default class AddCandidate extends Component {
             </form>
           </div>
         </div>
-        {loadAdded(this.state.candidates)}
+         {this.state.isAdmin ? (
+          <div
+            className="container-main"
+            style={{ borderTop: "1px solid" }}
+          >
+            <small>TotalCandidates: {this.state.candidates.length}</small>
+            {loadAdded(this.state.candidates)}
+          </div>
+        ) : null}
+        </>
+      )}
       </>
     );
   }
 }
+
+
 export function loadAdded(candidates) {
   const renderAdded = (candidate) => {
     return (
@@ -183,7 +232,7 @@ export function loadAdded(candidates) {
               overflow: "auto",
             }}
           >
-            {candidate.id}. <strong>{candidate.header}</strong>:{" "}
+            {candidate.candidateAddress}. <strong>{candidate.header}</strong>:{" "}
             {candidate.slogan}
           </div>
         </div>
@@ -211,5 +260,46 @@ export function loadAdded(candidates) {
         </div>
       )}
     </div>
+  );
+}
+
+export function loadAllCandidates(candidates) {
+  const renderAllCandidates = (candidate) => {
+    return (
+      <>
+        <div className="container-list success">
+          <table>
+            <tr>
+              <th>Candidate Address</th>
+              <td>{candidate.candidateAddress}</td>
+            </tr>
+            <tr>
+              <th>Candidate Header</th>
+              <td>{candidate.header}</td>
+            </tr>
+            <tr>
+              <th>Candidate Slogan</th>
+              <td>{candidate.slogan}</td>
+            </tr>
+            <tr>
+              <th>Verified</th>
+              <td>{candidate.isVerified ? "True" : "False"}</td>
+            </tr>
+            <tr>
+              <th>Registered</th>
+              <td>{candidate.isRegistered ? "True" : "False"}</td>
+            </tr>
+          </table>
+        </div>
+      </>
+    );
+  };
+  return (
+    <>
+      <div className="container-item success">
+        <center>List of Candidates</center>
+      </div>
+      {candidates.map(renderAllCandidates)}
+    </>
   );
 }

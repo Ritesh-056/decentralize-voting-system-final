@@ -144,7 +144,15 @@ export default class Registration extends Component {
       return (
         <>
           {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-          <center>Loading Web3, accounts, and contract...</center>
+          <center>
+            <div className="loader">
+              <div className="spinner"></div>
+              <div className="spin-text">
+                {" "}
+                Loading Web3, accounts, and contract !
+              </div>
+            </div>
+          </center>
         </>
       );
     }
@@ -199,12 +207,14 @@ export default class Registration extends Component {
                     </label>
                   </div>
                   <p className="note">
-                    <span style={{ color: "tomato" }}> Note: </span>
+                    <span style={{ color: "red" }}> Note: </span>
                     <br /> Make sure your account address and Phone number are
                     correct. <br /> Admin might not approve your account if the
                     provided Phone number nub does not matches the account
                     address registered in admins catalogue.
                   </p>
+
+                  <center>
                   <button
                     className="btn-add"
                     disabled={
@@ -217,6 +227,8 @@ export default class Registration extends Component {
                       ? "Update"
                       : "Register"}
                   </button>
+                  </center>
+                  
                 </form>
               </div>
             </div>
@@ -257,6 +269,7 @@ export function loadCurrentVoter(voter, isRegistered) {
         <center>Your Registered Info</center>
       </div>
       <div
+      style={{color:"white"}}
         className={"container-list " + (isRegistered ? "success" : "attention")}
       >
         <table>
@@ -264,7 +277,7 @@ export function loadCurrentVoter(voter, isRegistered) {
             <th>Account Address</th>
             <td>{voter.address}</td>
           </tr>
-          <tr>
+          <tr style={{backgroundColor:"transparent"}}>
             <th>Name</th>
             <td>{voter.name}</td>
           </tr>
@@ -272,7 +285,7 @@ export function loadCurrentVoter(voter, isRegistered) {
             <th>Phone</th>
             <td>{voter.phone}</td>
           </tr>
-          <tr>
+          <tr style={{backgroundColor:"transparent"}}>
             <th>Voted</th>
             <td>{voter.hasVoted ? "True" : "False"}</td>
           </tr>
@@ -280,7 +293,7 @@ export function loadCurrentVoter(voter, isRegistered) {
             <th>Verification</th>
             <td>{voter.isVerified ? "True" : "False"}</td>
           </tr>
-          <tr>
+          <tr style={{backgroundColor:"transparent"}}>
             <th>Registered</th>
             <td>{voter.isRegistered ? "True" : "False"}</td>
           </tr>
@@ -293,13 +306,13 @@ export function loadAllVoters(voters) {
   const renderAllVoters = (voter) => {
     return (
       <>
-        <div className="container-list success">
+        <div className="container-list success" style={{color:"white"}}>
           <table>
             <tr>
               <th>Account address</th>
               <td>{voter.address}</td>
             </tr>
-            <tr>
+            <tr style={{backgroundColor:"transparent"}}>
               <th>Name</th>
               <td>{voter.name}</td>
             </tr>
@@ -307,7 +320,7 @@ export function loadAllVoters(voters) {
               <th>Phone</th>
               <td>{voter.phone}</td>
             </tr>
-            <tr>
+            <tr style={{backgroundColor:"transparent"}}>
               <th>Voted</th>
               <td>{voter.hasVoted ? "True" : "False"}</td>
             </tr>
@@ -315,7 +328,7 @@ export function loadAllVoters(voters) {
               <th>Verified</th>
               <td>{voter.isVerified ? "True" : "False"}</td>
             </tr>
-            <tr>
+            <tr style={{backgroundColor:"transparent"}}>
               <th>Registered</th>
               <td>{voter.isRegistered ? "True" : "False"}</td>
             </tr>

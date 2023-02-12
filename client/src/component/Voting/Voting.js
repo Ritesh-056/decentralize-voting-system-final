@@ -83,6 +83,7 @@ export default class Voting extends Component {
           .candidateDetails(i - 1)
           .call();
         this.state.candidates.push({
+          address:candidate.candidateAddress,
           id: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
@@ -120,31 +121,32 @@ export default class Voting extends Component {
   };
 
   renderCandidates = (candidate) => {
-    const castVote = async (id) => {
+    const castVote = async (address) => {
       await this.state.ElectionInstance.methods
-        .vote(id)
+        .vote(address)
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
-    const confirmVote = (id, header) => {
+    const confirmVote = (address, header) => {
       var r = window.confirm(
-        "Vote for " + header + " with Id " + id + ".\nAre you sure?"
+        "Vote for " + header + " with Id " + address + ".\nAre you sure?"
       );
       if (r === true) {
-        castVote(id);
+        castVote(address);
       }
     };
     return (
       <div className="container-item">
         <div className="candidate-info">
           <h2>
-            {candidate.header} <small>#{candidate.id}</small>
+            {/* {candidate.header} <small>#{candidate.id}</small> */}
+            {`[${candidate.id}] `}{candidate.header}
           </h2>
           <p className="slogan">{candidate.slogan}</p>
         </div>
         <div className="vote-btn-container">
           <button
-            onClick={() => confirmVote(candidate.id, candidate.header)}
+            onClick={() => confirmVote(candidate.address, candidate.header)}
             className="vote-bth"
             disabled={
               !this.state.currentVoter.isRegistered ||
@@ -238,12 +240,12 @@ export default class Voting extends Component {
                 ) : (
                   <>
                     {this.state.candidates.map(this.renderCandidates)}
-                    <div
+                    {/* <div
                       className="container-item"
                       style={{ border: "1px solid black" }}
                     >
                       <center>That is all.</center>
-                    </div>
+                    </div> */}
                   </>
                 )}
               </div>

@@ -170,7 +170,7 @@ export default class Home extends Component {
           <>
             <UserHome el={this.state.elDetails} />
           </>
-        ) : !this.state.isElStarted && this.state.isElEnded ? (
+        ) : !this.state.elStarted && this.state.elEnded ? (
           <>
             <div className="container-item attention">
               <center>
@@ -192,7 +192,7 @@ export default class Home extends Component {
 
   renderAdminHome = () => {
     const EMsg = (props) => {
-      return <span style={{ color: "tomato" }}>{props.msg}</span>;
+      return <span style={{ color: "red" }}>{props.msg}</span>;
     };
 
     const AdminHome = () => {
