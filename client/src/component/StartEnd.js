@@ -21,7 +21,7 @@ const StartEnd = (props) => {
           {/* edit here to display start election Again button */}
           {!props.elEnded ? (
             <>
-              <div
+              {/* <div
                 className="container-item attention"
                 style={{ display: "block" }}
               >
@@ -43,7 +43,7 @@ const StartEnd = (props) => {
                     </button>
                   </Link>
                 </center>
-              </div>
+              </div> */}
               <div className="container-item">
                 <button type="submit" className="btn-election">
                   Start Election {props.elEnded ? "Again" : null}
@@ -69,15 +69,15 @@ const StartEnd = (props) => {
         <>
           <div className="container-item">
             <center>
-              <p>The election started.</p>
+              <p>Election has been started.</p>
             </center>
           </div>
           <div className="container-item">
             <button
               type="button"
-              // onClick={this.endElection}
               onClick={props.endElFn}
-              style={btn}
+              className="btn-election"
+              
             >
               End
             </button>

@@ -26,6 +26,7 @@ export default class Result extends Component {
       candidates: [],
       isElStarted: false,
       isElEnded: false,
+      winnerCandidate:[]
     };
   }
   componentDidMount = async () => {
@@ -66,19 +67,44 @@ export default class Result extends Component {
       this.setState({ isElEnded: end });
 
       // Loadin Candidates detials
-      for (let i = 1; i <= this.state.candidateCount; i++) {
+      for (let i = 0; i < this.state.candidateCount; i++) {
+
+        const candidateAddress = await this.state.ElectionInstance.methods
+          .candidates(i)
+          .call();
         const candidate = await this.state.ElectionInstance.methods
-          .candidateDetails(i - 1)
+          .candidateDetails(candidateAddress)
           .call();
         this.state.candidates.push({
-          id: candidate.candidateId,
+          candidateAddress: candidate.candidateAddress,
+          candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
-          voteCount: candidate.voteCount,
+          isVerified: candidate.isVerified,
+          isRegistered: candidate.isRegistered,
         });
       }
 
       this.setState({ candidates: this.state.candidates });
+
+
+
+      //winner candidate details
+      const winnerAddress = await this.state.ElectionInstance.methods.getWinner().call();
+      const winnerCandidate = await this.state.ElectionInstance.methods
+      .candidateDetails(winnerAddress)
+      .call();
+
+      this.state.winnerCandidate.push({
+        candidateAddress: winnerCandidate.candidateAddress,
+        candidateId: winnerCandidate.candidateId,
+        header: winnerCandidate.header,
+        slogan: winnerCandidate.slogan,
+        isVerified: winnerCandidate.isVerified,
+        isRegistered: winnerCandidate.isRegistered,
+        voteCount:winnerCandidate.voteCount
+      })
+   
 
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
@@ -141,20 +167,20 @@ export default class Result extends Component {
 }
 
 function displayWinner(candidates) {
-  const getWinner = (candidates) => {
-    // Returns an object having maxium vote count
-    let maxVoteRecived = 0;
-    let winnerCandidate = [];
-    for (let i = 0; i < candidates.length; i++) {
-      if (candidates[i].voteCount > maxVoteRecived) {
-        maxVoteRecived = candidates[i].voteCount;
-        winnerCandidate = [candidates[i]];
-      } else if (candidates[i].voteCount === maxVoteRecived) {
-        winnerCandidate.push(candidates[i]);
-      }
-    }
-    return winnerCandidate;
-  };
+  // const getWinner = (candidates) => {
+  //   // Returns an object having maxium vote count
+  //   let maxVoteRecived = 0;
+  //   let winnerCandidate = [];
+  //   for (let i = 0; i < candidates.length; i++) {
+  //     if (candidates[i].voteCount > maxVoteRecived) {
+  //       maxVoteRecived = candidates[i].voteCount;
+  //       winnerCandidate = [candidates[i]];
+  //     } else if (candidates[i].voteCount === maxVoteRecived) {
+  //       winnerCandidate.push(candidates[i]);
+  //     }
+  //   }
+  //   return winnerCandidate;
+  // };
   const renderWinner = (winner) => {
     return (
       <div className="container-winner">
@@ -170,15 +196,15 @@ function displayWinner(candidates) {
       </div>
     );
   };
-  const winnerCandidate = getWinner(candidates);
-  return <>{winnerCandidate.map(renderWinner)}</>;
+  // const winnerCandidate = getWinner(candidates);
+  return <>{this.state.winnerCandidate.map(renderWinner)}</>;
 }
 
 export function displayResults(candidates) {
   const renderResults = (candidate) => {
     return (
-      <tr>
-        <td>{candidate.id}</td>
+      <tr  style={{backgroundColor:"transparent"}}>
+        <td>{candidate.candidateId}</td>
         <td>{candidate.header}</td>
         <td>{candidate.voteCount}</td>
       </tr>
@@ -207,12 +233,6 @@ export function displayResults(candidates) {
                 </tr>
                 {candidates.map(renderResults)}
               </table>
-            </div>
-            <div
-              className="container-item"
-              style={{ border: "1px solid black" }}
-            >
-              <center>That is all.</center>
             </div>
           </>
         )}

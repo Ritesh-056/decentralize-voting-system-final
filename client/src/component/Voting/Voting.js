@@ -78,15 +78,20 @@ export default class Voting extends Component {
       this.setState({ isElEnded: end });
 
       // Loading Candidates details
-      for (let i = 1; i <= this.state.candidateCount; i++) {
+      for (let i = 0; i < this.state.candidateCount; i++) {
+        const candidateAddress = await this.state.ElectionInstance.methods
+          .candidates(i)
+          .call();
         const candidate = await this.state.ElectionInstance.methods
-          .candidateDetails(i - 1)
+          .candidateDetails(candidateAddress)
           .call();
         this.state.candidates.push({
-          address:candidate.candidateAddress,
-          id: candidate.candidateId,
+          candidateAddress: candidate.candidateAddress,
+          candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
+          isVerified: candidate.isVerified,
+          isRegistered: candidate.isRegistered,
         });
       }
       this.setState({ candidates: this.state.candidates });
@@ -121,15 +126,15 @@ export default class Voting extends Component {
   };
 
   renderCandidates = (candidate) => {
-    const castVote = async (address) => {
+    const castVote = async (candidateAddress) => {
       await this.state.ElectionInstance.methods
-        .vote(address)
+        .vote(candidateAddress)
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
     const confirmVote = (address, header) => {
       var r = window.confirm(
-        "Vote for " + header + " with Id " + address + ".\nAre you sure?"
+        "Vote for " + header + " with id " + candidate.candidateId + ".\nAre you sure?"
       );
       if (r === true) {
         castVote(address);
@@ -140,13 +145,15 @@ export default class Voting extends Component {
         <div className="candidate-info">
           <h2>
             {/* {candidate.header} <small>#{candidate.id}</small> */}
-            {`[${candidate.id}] `}{candidate.header}
+            {`[${candidate.candidateId}] `}{candidate.header} 
           </h2>
-          <p className="slogan">{candidate.slogan}</p>
+          {" "}<small>{candidate.slogan}</small>
         </div>
         <div className="vote-btn-container">
           <button
-            onClick={() => confirmVote(candidate.address, candidate.header)}
+            onClick={() =>
+              confirmVote(candidate.candidateAddress, candidate.header)
+            }
             className="vote-bth"
             disabled={
               !this.state.currentVoter.isRegistered ||
@@ -169,7 +176,10 @@ export default class Voting extends Component {
           <center>
             <div className="loader">
               <div className="spinner"></div>
-              <div className="spin-text"> Loading Web3, accounts, and contract !</div>
+              <div className="spin-text">
+                {" "}
+                Loading Web3, accounts, and contract !
+              </div>
             </div>
           </center>
         </>

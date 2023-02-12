@@ -104,8 +104,8 @@ export default class CandidateVerification extends Component {
                 <th>Slogan</th>
               </tr>
               <tr style={{backgroundColor:"transparent"}}>
-                <td>{candidate.header}</td>
-                <td>{candidate.slogan}</td>
+                <td className="tbl">{candidate.header}</td>
+                <td className="tbl">{candidate.slogan}</td>
               </tr>
               
             </table>
@@ -120,15 +120,15 @@ export default class CandidateVerification extends Component {
               <th>Account address</th>
               <td>{candidate.candidateAddress}</td>
             </tr>
-            <tr>
+            <tr style={{backgroundColor:"transparent"}}>
               <th>Header</th>
               <td>{candidate.header}</td>
             </tr>
             <tr>
               <th>Slogan</th>
-              <td>{candidate.phone}</td>
+              <td>{candidate.slogan}</td>
             </tr>
-            <tr>
+            <tr style={{backgroundColor:"transparent"}}>
               <th>Verified</th>
               <td>{candidate.isVerified ? "True" : "False"}</td>
             </tr>
@@ -137,7 +137,7 @@ export default class CandidateVerification extends Component {
               <td>{candidate.isRegistered ? "True" : "False"}</td>
             </tr>
           </table>
-          <div style={{}}>
+          <div style={{marginTop:"2%"}}>
             <center>
               <button
                 // className="btn-verification approve"

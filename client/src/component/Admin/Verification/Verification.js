@@ -99,14 +99,14 @@ export default class Registration extends Component {
             <p style={{ margin: "7px 0px" }}>AC: {voter.address}</p>
             <table>
               <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Voted</th>
+                <th >Name</th>
+                <th >Phone</th>
+                <th >Voted</th>
               </tr>
               <tr style={{backgroundColor:"transparent"}}>
-                <td>{voter.name}</td>
-                <td>{voter.phone}</td>
-                <td>{voter.hasVoted ? "True" : "False"}</td>
+                <td className="tbl">{voter.name}</td>
+                <td className="tbl">{voter.phone}</td>
+                <td className="tbl">{voter.hasVoted ? "True" : "False"}</td>
               </tr>
               
             </table>

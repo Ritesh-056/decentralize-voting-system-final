@@ -209,7 +209,7 @@ export default class CandidateRegistration extends Component {
             className="container-main"
             style={{ borderTop: "1px solid" }}
           >
-            <small>TotalCandidates: {this.state.candidates.length}</small>
+            <small>Total Candidates: {this.state.candidates.length}</small>
             {loadAdded(this.state.candidates)}
           </div>
         ) : null}

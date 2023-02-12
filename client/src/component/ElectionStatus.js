@@ -19,7 +19,7 @@ const ElectionStatus = (props) => {
   return (
     <div
       className="container-main"
-      style={{ borderTop: "1px solid", marginTop: "0px" }}
+      style={{ borderTop: "1px solid", marginTop: "0px" , color:"white"}}
     >
       <h3>Election Status</h3>
       <div style={electionStatus}>

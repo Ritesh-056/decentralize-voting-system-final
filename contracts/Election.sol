@@ -66,29 +66,6 @@ contract Election {
         return admin;
     }
 
-    // Adding new candidates
-    // function addCandidate(
-    //     string memory _header,
-    //     string memory _slogan
-    // )
-    //     public
-    //     // Only admin can add
-    //     onlyAdmin
-    // {
-    //     Candidate memory newCandidate = Candidate({
-    //         candidateId: candidateCount,
-    //         header: _header,
-    //         symbol: _slogan,
-    //         voteCount: 0
-
-    //     });
-    //     candidateDetails[candidateCount] = newCandidate;
-    //     candidateCount += 1;
-    // }
-
-
-
-
     function setElectionDetails(
         string memory _adminName,
         string memory _adminEmail,
@@ -208,6 +185,20 @@ contract Election {
         require(end == false);
         candidateDetails[_candidateAddress].voteCount += 1;
         voterDetails[msg.sender].hasVoted = true;
+    }
+
+    function getWinner() public view returns(address)  {
+        uint256  winnerVoteCount =0;
+        address  winnerAddress;  
+        for(uint256 i= 0; i<candidateCount; i++){
+           address candidateAddress = candidates[i];
+           uint256 miniVote = candidateDetails[candidateAddress].voteCount; 
+           if(miniVote > winnerVoteCount){
+              winnerVoteCount = miniVote;
+              winnerAddress = candidateAddress;
+           } 
+        }
+        return winnerAddress;
     }
 
     // End election

@@ -247,7 +247,7 @@ export default class Registration extends Component {
                 className="container-main"
                 style={{ borderTop: "1px solid" }}
               >
-                <small>TotalVoters: {this.state.voters.length}</small>
+                <h2>Total Voters: {this.state.voters.length}</h2>
                 {loadAllVoters(this.state.voters)}
               </div>
             ) : null}
@@ -263,7 +263,7 @@ export function loadCurrentVoter(voter, isRegistered) {
       <div
         className={"container-item " + (isRegistered ? "success" : "attention")}
       >
-        <center>Your Registered Info</center>
+        <center>Your Registered Information </center>
       </div>
       <div
       style={{color:"white"}}
