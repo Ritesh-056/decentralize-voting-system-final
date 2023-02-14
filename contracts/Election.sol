@@ -4,7 +4,6 @@ pragma solidity >=0.4.21 <0.9.0;
 contract Election {
     bool start;
     bool end;
-    uint electionId; 
     uint256 voterCount;
     uint256 candidateCount;
     address public admin;
@@ -15,16 +14,13 @@ contract Election {
     mapping(address => Candidate) public candidateDetails;
     mapping(uint => ElectionDetails) public elections; 
 
-
-
-   
+    Elections[] electionsData; 
 
 
     constructor()  {
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
-        electionId =0;
         start = false;
         end = false;
     }
@@ -40,32 +36,38 @@ contract Election {
         bool isRegistered;
     }
 
+    struct Elections {
+        uint electionId;
+        string electionTitle;
+    }
+    
+
+
     // Election attrb
     struct ElectionDetails {
-        uint electionId; 
         string adminName;
         string adminEmail;
         string adminTitle;
-        string electionTitle;
         string organizationTitle;
         uint votingStartDate;
         uint votingEndDate;
         uint registrationStartDate; 
-        uint registrationEndDate; 
+        uint registrationEndDate;         
+        Elections[] elections;
     }
 
     ElectionDetails electionDetails;
 
-
-    // Voter attrb 
-        struct Voter {
-            address voterAddress;
-            string name;
-            string phone;
-            bool isVerified;
-            bool hasVoted;
-            bool isRegistered;
-        }
+    struct Voter {
+        address voterAddress;
+        string name;
+        string phone;
+        bool isVerified;
+        bool hasVoted;
+        bool isRegistered;   
+    }
+   
+    
 
 
     modifier registrationTimeOnGoing(){
@@ -93,31 +95,37 @@ contract Election {
         string memory _adminName,
         string memory _adminEmail,
         string memory _adminTitle,
-        string memory _electionTitle,
         string memory _organizationTitle,
         uint _votingStartDate,
         uint _votingEndDate,
         uint _registrationStartDate, 
-        uint _registrationEndDate 
+        uint _registrationEndDate,
+        string[] memory _elections 
     )
         public
         // Only admin can add
         onlyAdmin
     {
+         
+        for(uint i=0 ; i<_elections.length; i++){
+          electionsData.push(Elections(i,_elections[i]));
+        }
+
         electionDetails = ElectionDetails(
-            electionId++,
             _adminName,
             _adminEmail,
             _adminTitle,
-            _electionTitle,
             _organizationTitle,
             _votingStartDate,
             _votingEndDate,
             _registrationStartDate,
-            _registrationEndDate
+            _registrationEndDate,
+            electionsData 
         );
         start = true;
         end = false;
+
+
     }
 
     // Get Elections details
@@ -131,10 +139,6 @@ contract Election {
 
     function getAdminTitle() public view returns (string memory) {
         return electionDetails.adminTitle;
-    }
-
-    function getElectionTitle() public view returns (string memory) {
-        return electionDetails.electionTitle;
     }
 
     function getOrganizationTitle() public view returns (string memory) {

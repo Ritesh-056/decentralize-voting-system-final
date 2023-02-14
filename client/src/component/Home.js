@@ -10,18 +10,15 @@ import UserHome from "./UserHome";
 import StartEnd from "./StartEnd";
 import ElectionStatus from "./ElectionStatus";
 
-
 // Contract
 import getWeb3 from "../getWeb3";
 import Election from "../artifacts/contracts/Election.sol/Election.json";
-
 
 // CSS
 import "./Home.css";
 
 // const buttonRef = React.createRef();
 export default class Home extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -130,6 +127,9 @@ export default class Home extends Component {
     window.location.reload();
   };
 
+
+ 
+
   render() {
     if (!this.state.web3) {
       return (
@@ -138,7 +138,10 @@ export default class Home extends Component {
           <center>
             <div className="loader">
               <div className="spinner"></div>
-              <div className="spin-text"> Loading Web3, accounts, and contract !</div>
+              <div className="spin-text">
+                {" "}
+                Loading Web3, accounts, and contract !
+              </div>
             </div>
           </center>
         </>
@@ -194,7 +197,7 @@ export default class Home extends Component {
 
   renderAdminHome = () => {
     const EMsg = (props) => {
-      return <span style={{ color: "red",fontSize:12}}>{props.msg}</span>;
+      return <span style={{ color: "red", fontSize: 12 }}>{props.msg}</span>;
     };
 
     const AdminHome = () => {
@@ -208,7 +211,7 @@ export default class Home extends Component {
       const onSubmit = (data) => {
         this.registerElection(data);
       };
-
+      
       return (
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -274,7 +277,9 @@ export default class Home extends Component {
                 </div>
                 {/* about-election */}
                 <div className="about-election">
-                  <center><h2>About Election</h2></center>
+                  <center>
+                    <h2>About Election</h2>
+                  </center>
                   <div className="container-item center-items">
                     <div>
                       <label className="label-home">
@@ -303,6 +308,23 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
+                        Elections Title{" "}
+                        {errors.electionTitles && <EMsg msg="*required" />}
+                        <div>
+                          <input
+                            className="input-home"
+                            type="text"
+                            placeholder="Kathford Int'l College"
+                            {...register("electionTitles", {
+                              required: true,
+                            })}
+                          />
+                          <button onClick={{}}> Add Title </button>
+                        </div>
+                        <ul className="titles"></ul>
+                      </label>
+
+                      <label className="label-home">
                         Registration Start From{" "}
                         {errors.registrationStart && <EMsg msg="*required" />}
                         <input
@@ -316,7 +338,7 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                       Registration End At {" "}
+                        Registration End At{" "}
                         {errors.registrationEnd && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -329,7 +351,7 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                      Election Start From{" "}
+                        Election Start From{" "}
                         {errors.electionStart && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -342,7 +364,7 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                      Election End At{" "}
+                        Election End At{" "}
                         {errors.electionEnd && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -353,8 +375,6 @@ export default class Home extends Component {
                           })}
                         />
                       </label>
-
-                      
                     </div>
                   </div>
                 </div>
