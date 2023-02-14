@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewTitle } from "../redux/action/index";
 
 const HomeTitleForm = () => {
   const [electionTitle, setElectionTitle] = useState("");
-  const [elections, setElections] = useState([]);
+  // const [elections, setElections] = useState([]);
+  const elections = useSelector((state) => state.electionTitlesReducer);
+  const dispatch = useDispatch();
   return (
     <>
       <label className="label-home">
@@ -26,7 +30,7 @@ const HomeTitleForm = () => {
           className=""
           onClick={(e) => {
             e.preventDefault();
-            setElections([...elections, electionTitle]);
+            dispatch(addNewTitle(electionTitle));
             setElectionTitle("");
           }}
         >

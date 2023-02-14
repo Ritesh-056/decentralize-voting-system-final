@@ -9,6 +9,8 @@ import NavbarAdmin from "./Navbar/NavigationAdmin";
 import UserHome from "./UserHome";
 import StartEnd from "./StartEnd";
 import ElectionStatus from "./ElectionStatus";
+import { connect } from "react-redux";
+import { addElectionDetail } from "../redux/action/index";
 
 // Contract
 import getWeb3 from "../getWeb3";
@@ -19,7 +21,12 @@ import "./Home.css";
 import HomeTitleForm from "./HomeTitleForm";
 
 // const buttonRef = React.createRef();
-export default class Home extends Component {
+class Home extends Component {
+  // electionDetail:
+  // this.props.electionDetail
+  // electionTitle:
+  // this.props.electionTitles
+
   constructor(props) {
     super(props);
     this.state = {
@@ -30,8 +37,6 @@ export default class Home extends Component {
       elStarted: false,
       elEnded: false,
       elDetails: {},
-      electionTitle: [],
-      newElectionTitle: "",
     };
   }
 
@@ -92,14 +97,12 @@ export default class Home extends Component {
         .getOrganizationTitle()
         .call();
 
-      this.setState({
-        elDetails: {
-          adminName: adminName,
-          adminEmail: adminEmail,
-          adminTitle: adminTitle,
-          electionTitle: electionTitle,
-          organizationTitle: organizationTitle,
-        },
+      this.props.addElectionDetail({
+        adminName: adminName,
+        adminEmail: adminEmail,
+        adminTitle: adminTitle,
+        electionTitle: electionTitle,
+        organizationTitle: organizationTitle,
       });
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -199,6 +202,10 @@ export default class Home extends Component {
     );
   }
 
+  dummyView = () => {
+    return null;
+  };
+
   renderAdminHome = () => {
     const EMsg = (props) => {
       return <span style={{ color: "red", fontSize: 12 }}>{props.msg}</span>;
@@ -218,6 +225,7 @@ export default class Home extends Component {
 
       return (
         <div>
+          <this.dummyView />
           <form onSubmit={handleSubmit(onSubmit)}>
             {!this.state.elStarted & !this.state.elEnded ? (
               <div className="container-main">
@@ -378,3 +386,16 @@ export default class Home extends Component {
     return <AdminHome />;
   };
 }
+
+const mapStateToProps = (state) => {
+  return {
+    electionDetail: state.electionDetailReducer,
+    electionTitles: state.electionTitlesReducer,
+  };
+};
+
+const mapDispatchToProps = {
+  addElectionDetail,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
