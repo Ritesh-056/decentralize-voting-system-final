@@ -1,6 +1,4 @@
-
-
-.label-home{
+.label-home {
   display: block;
   margin: 0.1em;
   padding: 0.5em;
@@ -10,9 +8,13 @@
   font-size: 16px;
   line-height: 44px;
   color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-.input-home{
+.input-home {
   margin-top: 1em;
   min-width: 300px;
   padding: 1em;
@@ -25,9 +27,31 @@
   font-size: 16px;
   color: #ffffff;
 }
+.election-title-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.label-home-title {
+  align-self: flex-start;
+}
+
+.label-home button {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: yellow;
+  align-self: flex-end;
+  cursor: pointer;
+}
 
 .input-home,
 .label-home {
-  display: block;
+  /* display: block; */
   margin-bottom: 8px;
+}
+
+.titles {
+  align-self: flex-start;
+  list-style-type: disc;
 }

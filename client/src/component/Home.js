@@ -16,6 +16,7 @@ import Election from "../artifacts/contracts/Election.sol/Election.json";
 
 // CSS
 import "./Home.css";
+import HomeTitleForm from "./HomeTitleForm";
 
 // const buttonRef = React.createRef();
 export default class Home extends Component {
@@ -29,6 +30,8 @@ export default class Home extends Component {
       elStarted: false,
       elEnded: false,
       elDetails: {},
+      electionTitle: [],
+      newElectionTitle: "",
     };
   }
 
@@ -126,9 +129,10 @@ export default class Home extends Component {
       .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
   };
-
-
- 
+  addTitle = () => {};
+  currentTitle = (e) => {
+    console.log(e.target.value);
+  };
 
   render() {
     if (!this.state.web3) {
@@ -211,7 +215,7 @@ export default class Home extends Component {
       const onSubmit = (data) => {
         this.registerElection(data);
       };
-      
+
       return (
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -221,9 +225,9 @@ export default class Home extends Component {
                 <div className="about-admin">
                   <h2>About Admin</h2>
                   <div className="container-item center-items">
-                    <div>
+                    <div className="container-item-inside">
                       <label className="label-home">
-                        Full Name{" "}
+                        <p className="label-home-title">Full Name</p>
                         {errors.adminFName && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -242,7 +246,7 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        Email{" "}
+                        <p className="label-home-title">Email</p>
                         {errors.adminEmail && (
                           <EMsg msg={errors.adminEmail.message} />
                         )}
@@ -261,7 +265,9 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        Job Title or Position{" "}
+                        <p className="label-home-title">
+                          Job Title or Position
+                        </p>
                         {errors.adminTitle && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -281,21 +287,10 @@ export default class Home extends Component {
                     <h2>About Election</h2>
                   </center>
                   <div className="container-item center-items">
-                    <div>
+                    <div className="container-item-inside">
+                      <HomeTitleForm />
                       <label className="label-home">
-                        Election Title{" "}
-                        {errors.electionTitle && <EMsg msg="*required" />}
-                        <input
-                          className="input-home"
-                          type="text"
-                          placeholder="Choosing Chairman"
-                          {...register("electionTitle", {
-                            required: true,
-                          })}
-                        />
-                      </label>
-                      <label className="label-home">
-                        Organization Name{" "}
+                        <p className="label-home-title">Organization Name</p>
                         {errors.organizationName && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -308,24 +303,9 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        Elections Title{" "}
-                        {errors.electionTitles && <EMsg msg="*required" />}
-                        <div>
-                          <input
-                            className="input-home"
-                            type="text"
-                            placeholder="Kathford Int'l College"
-                            {...register("electionTitles", {
-                              required: true,
-                            })}
-                          />
-                          <button onClick={{}}> Add Title </button>
-                        </div>
-                        <ul className="titles"></ul>
-                      </label>
-
-                      <label className="label-home">
-                        Registration Start From{" "}
+                        <p className="label-home-title">
+                          Registration Start From
+                        </p>
                         {errors.registrationStart && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -338,7 +318,7 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        Registration End At{" "}
+                        <p className="label-home-title">Registration End At</p>
                         {errors.registrationEnd && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -351,7 +331,7 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        Election Start From{" "}
+                        <p className="label-home-title">Election Start From</p>
                         {errors.electionStart && <EMsg msg="*required" />}
                         <input
                           className="input-home"
@@ -364,7 +344,7 @@ export default class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        Election End At{" "}
+                        <p className="label-home-title">Elections Title</p>
                         {errors.electionEnd && <EMsg msg="*required" />}
                         <input
                           className="input-home"

@@ -108,6 +108,13 @@ h5 {
   place-items: center;
 }
 
+.container-item-inside {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 @media all and (max-width: 1020px) {
   .container-item {
     width: 777px;

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.21 <0.9.0;
+pragma solidity >=0.6.0 <0.9.0;
 
 contract Election {
     bool start;
@@ -9,15 +9,14 @@ contract Election {
     address public admin;
     address[] public voters; // array to store address of voters
     address[] public candidates; //array to store address of voters
-    
+
     mapping(address => Voter) public voterDetails;
     mapping(address => Candidate) public candidateDetails;
-    mapping(uint => ElectionDetails) public elections; 
+    mapping(uint256 => ElectionDetails) public elections;
 
-    Elections[] electionsData; 
+    Elections[] electionsData;
 
-
-    constructor()  {
+    constructor() {
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
@@ -28,7 +27,7 @@ contract Election {
     // Candidate attrb
     struct Candidate {
         uint256 candidateId;
-        address candidateAddress; 
+        address candidateAddress;
         string header;
         string slogan;
         uint256 voteCount;
@@ -37,11 +36,9 @@ contract Election {
     }
 
     struct Elections {
-        uint electionId;
+        uint256 electionId;
         string electionTitle;
     }
-    
-
 
     // Election attrb
     struct ElectionDetails {
@@ -49,10 +46,10 @@ contract Election {
         string adminEmail;
         string adminTitle;
         string organizationTitle;
-        uint votingStartDate;
-        uint votingEndDate;
-        uint registrationStartDate; 
-        uint registrationEndDate;         
+        uint256 votingStartDate;
+        uint256 votingEndDate;
+        uint256 registrationStartDate;
+        uint256 registrationEndDate;
         Elections[] elections;
     }
 
@@ -64,18 +61,15 @@ contract Election {
         string phone;
         bool isVerified;
         bool hasVoted;
-        bool isRegistered;   
+        bool isRegistered;
     }
-   
-    
 
-
-    modifier registrationTimeOnGoing(){
+    modifier registrationTimeOnGoing() {
         require(true);
         _;
-    } 
+    }
 
-    modifier votingTimeOnGoing(){
+    modifier votingTimeOnGoing() {
         require(true);
         _;
     }
@@ -91,42 +85,47 @@ contract Election {
         return admin;
     }
 
-    function setElectionDetails(
-        string memory _adminName,
-        string memory _adminEmail,
-        string memory _adminTitle,
-        string memory _organizationTitle,
-        uint _votingStartDate,
-        uint _votingEndDate,
-        uint _registrationStartDate, 
-        uint _registrationEndDate,
-        string[] memory _elections 
-    )
-        public
-        // Only admin can add
-        onlyAdmin
-    {
-         
-        for(uint i=0 ; i<_elections.length; i++){
-          electionsData.push(Elections(i,_elections[i]));
-        }
+    // function setElectionDetails(
+    //     string memory _adminName,
+    //     string memory _adminEmail,
+    //     string memory _adminTitle,
+    //     string memory _organizationTitle,
+    //     uint256 _votingStartDate,
+    //     uint256 _votingEndDate,
+    //     uint256 _registrationStartDate,
+    //     uint256 _registrationEndDate,
+    //     string[] memory _elections
+    // )
+    //     public
+    //     // Only admin can add
+    //     onlyAdmin
+    // {
+    //     for (uint256 i = 0; i < _elections.length; i++) {
+    //         // electionsData.push();
+    //         // Elections storage new_election = electionsData[
+    //         //     electionsData.length
+    //         // ];
+    //         // new_election.electionId = i;
+    //         // new_election.electionTitle = _elections[i];
+    //         electionsData.push(Elections(i, _elections[i]));
+    //     }
 
-        electionDetails = ElectionDetails(
-            _adminName,
-            _adminEmail,
-            _adminTitle,
-            _organizationTitle,
-            _votingStartDate,
-            _votingEndDate,
-            _registrationStartDate,
-            _registrationEndDate,
-            electionsData 
-        );
-        start = true;
-        end = false;
+    //     ElectionDetails memory new_election = ElectionDetails(
+    //         _adminName,
+    //         _adminEmail,
+    //         _adminTitle,
+    //         _organizationTitle,
+    //         _votingStartDate,
+    //         _votingEndDate,
+    //         _registrationStartDate,
+    //         _registrationEndDate,
+    //         electionsData
+    //     );
 
-
-    }
+    //     electionDetails = new_election;
+    //     start = true;
+    //     end = false;
+    // }
 
     // Get Elections details
     function getAdminName() public view returns (string memory) {
@@ -157,32 +156,31 @@ contract Election {
         return voterCount;
     }
 
-
     //Request to be added as candidate
-    function registerAsCandidate(string memory _header,string memory _slogan) public{
+    function registerAsCandidate(string memory _header, string memory _slogan)
+        public
+    {
         Candidate memory newCandidate = Candidate({
-                    candidateAddress:msg.sender,
-                    candidateId: candidateCount,
-                    header: _header,
-                    slogan: _slogan,
-                    voteCount: 0,
-                    isVerified:false,
-                    isRegistered:true 
-                });
-                candidateDetails[msg.sender] = newCandidate; 
-                candidates.push(msg.sender);
-                candidateCount += 1;
+            candidateAddress: msg.sender,
+            candidateId: candidateCount,
+            header: _header,
+            slogan: _slogan,
+            voteCount: 0,
+            isVerified: false,
+            isRegistered: true
+        });
+        candidateDetails[msg.sender] = newCandidate;
+        candidates.push(msg.sender);
+        candidateCount += 1;
     }
 
     //verify candidate
-    function verifyCandidate(
-        bool _verifedStatus,
-        address candidateAddress
-    )public onlyAdmin {
+    function verifyCandidate(bool _verifedStatus, address candidateAddress)
+        public
+        onlyAdmin
+    {
         candidateDetails[candidateAddress].isVerified = _verifedStatus;
-
     }
-   
 
     // Request to be added as voter
     function registerAsVoter(string memory _name, string memory _phone) public {
@@ -200,18 +198,13 @@ contract Election {
     }
 
     // Verify voter
-    function verifyVoter(
-        bool _verifedStatus,
-        address voterAddress
-    )
+    function verifyVoter(bool _verifedStatus, address voterAddress)
         public
         // Only admin can verify
         onlyAdmin
     {
         voterDetails[voterAddress].isVerified = _verifedStatus;
     }
-
-    
 
     // Vote
     function vote(address _candidateAddress) public {
@@ -223,16 +216,16 @@ contract Election {
         voterDetails[msg.sender].hasVoted = true;
     }
 
-    function getWinner() public view returns(address)  {
-        uint256  winnerVoteCount =0;
-        address  winnerAddress;  
-        for(uint256 i= 0; i<candidateCount; i++){
-           address candidateAddress = candidates[i];
-           uint256 miniVote = candidateDetails[candidateAddress].voteCount; 
-           if(miniVote > winnerVoteCount){
-              winnerVoteCount = miniVote;
-              winnerAddress = candidateAddress;
-           } 
+    function getWinner() public view returns (address) {
+        uint256 winnerVoteCount = 0;
+        address winnerAddress;
+        for (uint256 i = 0; i < candidateCount; i++) {
+            address candidateAddress = candidates[i];
+            uint256 miniVote = candidateDetails[candidateAddress].voteCount;
+            if (miniVote > winnerVoteCount) {
+                winnerVoteCount = miniVote;
+                winnerAddress = candidateAddress;
+            }
         }
         return winnerAddress;
     }
