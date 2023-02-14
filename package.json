@@ -19,6 +19,8 @@
     "express": "^4.18.2",
     "feather-icons": "^4.29.0",
     "hardhat-migration": "^1.0.2",
+    "react-redux": "7.2.4",
+    "redux": "4.1.0",
     "web3": "^1.8.2"
   },
   "devDependencies": {
