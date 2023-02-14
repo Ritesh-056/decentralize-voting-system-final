@@ -10,6 +10,7 @@ import UserHome from "./UserHome";
 import StartEnd from "./StartEnd";
 import ElectionStatus from "./ElectionStatus";
 
+
 // Contract
 import getWeb3 from "../getWeb3";
 import Election from "../artifacts/contracts/Election.sol/Election.json";
@@ -20,6 +21,7 @@ import "./Home.css";
 
 // const buttonRef = React.createRef();
 export default class Home extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -192,7 +194,7 @@ export default class Home extends Component {
 
   renderAdminHome = () => {
     const EMsg = (props) => {
-      return <span style={{ color: "red" }}>{props.msg}</span>;
+      return <span style={{ color: "red",fontSize:12}}>{props.msg}</span>;
     };
 
     const AdminHome = () => {
@@ -246,7 +248,7 @@ export default class Home extends Component {
                           placeholder="email@gmail.com"
                           name="adminEmail"
                           {...register("adminEmail", {
-                            required: "*Required",
+                            required: "*required",
                             pattern: {
                               value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/, // email validation using RegExp
                               message: "*Invalid",
@@ -299,6 +301,60 @@ export default class Home extends Component {
                           })}
                         />
                       </label>
+
+                      <label className="label-home">
+                        Registration Start From{" "}
+                        {errors.registrationStart && <EMsg msg="*required" />}
+                        <input
+                          className="input-home"
+                          type="datetime-local"
+                          placeholder="Kathford Int'l College"
+                          {...register("registrationStart", {
+                            required: true,
+                          })}
+                        />
+                      </label>
+
+                      <label className="label-home">
+                       Registration End At {" "}
+                        {errors.registrationEnd && <EMsg msg="*required" />}
+                        <input
+                          className="input-home"
+                          type="datetime-local"
+                          placeholder="date"
+                          {...register("registrationEnd", {
+                            required: true,
+                          })}
+                        />
+                      </label>
+
+                      <label className="label-home">
+                      Election Start From{" "}
+                        {errors.electionStart && <EMsg msg="*required" />}
+                        <input
+                          className="input-home"
+                          type="datetime-local"
+                          placeholder="date"
+                          {...register("electionStart", {
+                            required: true,
+                          })}
+                        />
+                      </label>
+
+                      <label className="label-home">
+                      Election End At{" "}
+                        {errors.electionEnd && <EMsg msg="*required" />}
+                        <input
+                          className="input-home"
+                          type="datetime-local"
+                          placeholder="date"
+                          {...register("electionEnd", {
+                            required: true,
+                          })}
+                        />
+                      </label>
+
+                      
                     </div>
                   </div>
                 </div>

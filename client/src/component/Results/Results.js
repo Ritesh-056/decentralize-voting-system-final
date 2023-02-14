@@ -26,7 +26,7 @@ export default class Result extends Component {
       candidates: [],
       isElStarted: false,
       isElEnded: false,
-      winnerCandidate:[]
+      winnerCandidates:[]
     };
   }
   componentDidMount = async () => {
@@ -95,7 +95,7 @@ export default class Result extends Component {
       .candidateDetails(winnerAddress)
       .call();
 
-      this.state.winnerCandidate.push({
+      this.state.winnerCandidates.push({
         candidateAddress: winnerCandidate.candidateAddress,
         candidateId: winnerCandidate.candidateId,
         header: winnerCandidate.header,
@@ -105,6 +105,7 @@ export default class Result extends Component {
         voteCount:winnerCandidate.voteCount
       })
    
+      this.setState({ winnerCandidates: this.state.winnerCandidates });
 
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
@@ -197,7 +198,7 @@ function displayWinner(candidates) {
     );
   };
   // const winnerCandidate = getWinner(candidates);
-  return <>{this.state.winnerCandidate.map(renderWinner)}</>;
+  return <>{this.state.winnerCandidates.map(this.renderWinner)}</>;
 }
 
 export function displayResults(candidates) {

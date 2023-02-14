@@ -132,12 +132,12 @@ export default class Voting extends Component {
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
-    const confirmVote = (address, header) => {
+    const confirmVote = (candidateAddress, header) => {
       var r = window.confirm(
         "Vote for " + header + " with id " + candidate.candidateId + ".\nAre you sure?"
       );
       if (r === true) {
-        castVote(address);
+        castVote(candidateAddress);
       }
     };
     return (

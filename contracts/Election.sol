@@ -4,6 +4,7 @@ pragma solidity >=0.4.21 <0.9.0;
 contract Election {
     bool start;
     bool end;
+    uint electionId; 
     uint256 voterCount;
     uint256 candidateCount;
     address public admin;
@@ -12,12 +13,18 @@ contract Election {
     
     mapping(address => Voter) public voterDetails;
     mapping(address => Candidate) public candidateDetails;
+    mapping(uint => ElectionDetails) public elections; 
+
+
+
+   
+
 
     constructor()  {
-        // Initilizing default values
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
+        electionId =0;
         start = false;
         end = false;
     }
@@ -35,12 +42,18 @@ contract Election {
 
     // Election attrb
     struct ElectionDetails {
+        uint electionId; 
         string adminName;
         string adminEmail;
         string adminTitle;
         string electionTitle;
         string organizationTitle;
+        uint votingStartDate;
+        uint votingEndDate;
+        uint registrationStartDate; 
+        uint registrationEndDate; 
     }
+
     ElectionDetails electionDetails;
 
 
@@ -53,7 +66,17 @@ contract Election {
             bool hasVoted;
             bool isRegistered;
         }
-     
+
+
+    modifier registrationTimeOnGoing(){
+        require(true);
+        _;
+    } 
+
+    modifier votingTimeOnGoing(){
+        require(true);
+        _;
+    }
 
     modifier onlyAdmin() {
         // Modifier for only admin access
@@ -71,18 +94,27 @@ contract Election {
         string memory _adminEmail,
         string memory _adminTitle,
         string memory _electionTitle,
-        string memory _organizationTitle
+        string memory _organizationTitle,
+        uint _votingStartDate,
+        uint _votingEndDate,
+        uint _registrationStartDate, 
+        uint _registrationEndDate 
     )
         public
         // Only admin can add
         onlyAdmin
     {
         electionDetails = ElectionDetails(
+            electionId++,
             _adminName,
             _adminEmail,
             _adminTitle,
             _electionTitle,
-            _organizationTitle
+            _organizationTitle,
+            _votingStartDate,
+            _votingEndDate,
+            _registrationStartDate,
+            _registrationEndDate
         );
         start = true;
         end = false;
