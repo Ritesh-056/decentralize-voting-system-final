@@ -24,10 +24,10 @@ contract Election {
     bool isRegistrationEnded;
 
     //voting and registration start and end time
-    uint registrationStartTime;
-    uint registrationEndTime;
-    uint votingStartTime;
-    uint votingEndTime;
+    uint256 registrationStartTime;
+    uint256 registrationEndTime;
+    uint256 votingStartTime;
+    uint256 votingEndTime;
 
     constructor() {
         admin = msg.sender;
@@ -67,7 +67,8 @@ contract Election {
         uint256 votingEndDate;
         uint256 registrationStartDate;
         uint256 registrationEndDate;
-        Elections[] elections;
+        // Elections[] elections;
+        string[] elections;
     }
 
     ElectionDetails electionDetails;
@@ -82,14 +83,23 @@ contract Election {
     }
 
     modifier registrationOnGoing() {
-        require(block.timestamp >=registrationStartTime,"Registration is not started yet");
-        require(block.timestamp <=registrationEndTime,"Registration is already ended.");
+        require(
+            block.timestamp >= registrationStartTime,
+            "Registration is not started yet"
+        );
+        require(
+            block.timestamp <= registrationEndTime,
+            "Registration is already ended."
+        );
         _;
     }
 
     modifier votingTimeOnGoing() {
-        require(block.timestamp >=votingStartTime,"Voting is not started yet");
-        require(block.timestamp <=votingEndTime,"Voting is already ended");
+        require(
+            block.timestamp >= votingStartTime,
+            "Voting is not started yet"
+        );
+        require(block.timestamp <= votingEndTime, "Voting is already ended");
         _;
     }
 
@@ -114,7 +124,7 @@ contract Election {
         uint256 _votingEndTime,
         uint256 _registrationStartTime,
         uint256 _registrationEndTime,
-        bytes32[] memory _elections
+        string[] memory _elections
     )
         public
         // Only admin can add
@@ -122,7 +132,7 @@ contract Election {
     {
         string[] memory electionTitles = new string[](_elections.length);
         for (uint256 i = 0; i < _elections.length; i++) {
-            electionTitles[i] = bytes32ToString(_elections[i]);
+            electionTitles[i] = _elections[i];
         }
 
         ElectionDetails memory new_election = ElectionDetails(
@@ -134,12 +144,12 @@ contract Election {
             _votingEndTime,
             _registrationStartTime,
             _registrationEndTime,
-            electionsData
+            electionTitles
         );
 
         electionDetails = new_election;
-        
-        //set registration start,end and voting start,end 
+
+        //set registration start,end and voting start,end
         registrationStartTime = _registrationStartTime;
         registrationEndTime = _registrationEndTime;
         votingStartTime = _votingStartTime;
@@ -150,9 +160,11 @@ contract Election {
     }
 
     //conversion of byte32 string
-    function bytes32ToString(
-        bytes32 _bytes32
-    ) private pure returns (string memory) {
+    function bytes32ToString(bytes32 _bytes32)
+        private
+        pure
+        returns (string memory)
+    {
         uint8 i = 0;
         while (i < 32 && _bytes32[i] != 0) {
             i++;
@@ -184,7 +196,8 @@ contract Election {
     function getElectionTitles() public view returns (string[] memory) {
         string[] memory titles = new string[](electionDetails.elections.length);
         for (uint256 i = 0; i < electionDetails.elections.length; i++) {
-            titles[i] = electionDetails.elections[i].electionTitle;
+            // titles[i] = electionDetails.elections[i].electionTitle;
+            titles[i] = electionDetails.elections[i];
         }
         return titles;
     }
@@ -202,10 +215,10 @@ contract Election {
     }
 
     //Request to be added as candidate
-    function registerAsCandidate(
-        string memory _header,
-        string memory _slogan
-    ) registrationOnGoing public {
+    function registerAsCandidate(string memory _header, string memory _slogan)
+        public
+        registrationOnGoing
+    {
         Candidate memory newCandidate = Candidate({
             candidateAddress: msg.sender,
             candidateId: candidateCount,
@@ -221,15 +234,18 @@ contract Election {
     }
 
     //verify candidate
-    function verifyCandidate(
-        bool _verifedStatus,
-        address candidateAddress
-    ) public onlyAdmin {
+    function verifyCandidate(bool _verifedStatus, address candidateAddress)
+        public
+        onlyAdmin
+    {
         candidateDetails[candidateAddress].isVerified = _verifedStatus;
     }
 
     // Request to be added as voter
-    function registerAsVoter(string memory _name, string memory _phone) registrationOnGoing public {
+    function registerAsVoter(string memory _name, string memory _phone)
+        public
+        registrationOnGoing
+    {
         Voter memory newVoter = Voter({
             voterAddress: msg.sender,
             name: _name,
@@ -244,10 +260,7 @@ contract Election {
     }
 
     // Verify voter
-    function verifyVoter(
-        bool _verifedStatus,
-        address voterAddress
-    )
+    function verifyVoter(bool _verifedStatus, address voterAddress)
         public
         // Only admin can verify
         onlyAdmin
@@ -256,7 +269,7 @@ contract Election {
     }
 
     // Vote
-    function vote(address _candidateAddress) votingTimeOnGoing public {
+    function vote(address _candidateAddress) public votingTimeOnGoing {
         require(voterDetails[msg.sender].hasVoted == false);
         require(voterDetails[msg.sender].isVerified == true);
         candidateDetails[_candidateAddress].voteCount += 1;

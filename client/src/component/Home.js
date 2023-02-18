@@ -40,7 +40,6 @@ class Home extends Component {
     };
   }
 
-
   // refreshing once
   componentDidMount = async () => {
     if (!window.location.hash) {
@@ -92,7 +91,7 @@ class Home extends Component {
         .getAdminTitle()
         .call();
       const electionTitle = await this.state.ElectionInstance.methods
-        .getElectionTitle()
+        .getElectionTitles()
         .call();
       const organizationTitle = await this.state.ElectionInstance.methods
         .getOrganizationTitle()
@@ -121,14 +120,12 @@ class Home extends Component {
     window.location.reload();
   };
 
-
   //convert local time into unix timestamp
-   convertDateTimeToUnix = dateTime => {
+  convertDateTimeToUnix = (dateTime) => {
     const dateObj = new Date(dateTime);
     const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
     return unixTimestamp;
-  }
-  
+  };
 
   // register and start election
   registerElection = async (data) => {
@@ -137,12 +134,12 @@ class Home extends Component {
         data.adminFName.toLowerCase() + " " + data.adminLName.toLowerCase(),
         data.adminEmail.toLowerCase(),
         data.adminTitle.toLowerCase(),
-        data.organizationTitle.toLowerCase(), 
+        data.organizationTitle.toLowerCase(),
         this.convertDateTimeToUnix(data.votingStartDateTime),
         this.convertDateTimeToUnix(data.votingEndDateTime),
         this.convertDateTimeToUnix(data.registrationStartDateTime),
         this.convertDateTimeToUnix(data.registrationEndDateTime),
-        this.props.electionTiles,
+        this.props.electionTiles
       )
       .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
@@ -329,7 +326,9 @@ class Home extends Component {
                         <p className="label-home-title">
                           Registration Start From
                         </p>
-                        {errors.registrationStartDateTime && <EMsg msg="*required" />}
+                        {errors.registrationStartDateTime && (
+                          <EMsg msg="*required" />
+                        )}
                         <input
                           className="input-home"
                           type="datetime-local"
@@ -342,7 +341,9 @@ class Home extends Component {
 
                       <label className="label-home">
                         <p className="label-home-title">Registration End At</p>
-                        {errors.registrationEndDateTime && <EMsg msg="*required" />}
+                        {errors.registrationEndDateTime && (
+                          <EMsg msg="*required" />
+                        )}
                         <input
                           className="input-home"
                           type="datetime-local"

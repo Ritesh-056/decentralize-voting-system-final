@@ -4,13 +4,12 @@ const electionDetailInit = {
   adminName: "",
   adminEmail: "",
   adminTitle: "",
-  electionTitle: "",
+  electionTitle: [],
   organizationTitle: "",
 };
 
 const electionDetailReducer = (state = electionDetailInit, action) => {
   if (action.type === "ADD_ELECTION_DETAIL") {
-    console.log(action.detail);
     return action.detail;
   }
   return state;
