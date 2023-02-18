@@ -40,6 +40,7 @@ class Home extends Component {
     };
   }
 
+
   // refreshing once
   componentDidMount = async () => {
     if (!window.location.hash) {
@@ -119,6 +120,16 @@ class Home extends Component {
       .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
   };
+
+
+  //convert local time into unix timestamp
+   convertDateTimeToUnix = dateTime => {
+    const dateObj = new Date(dateTime);
+    const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
+    return unixTimestamp;
+  }
+  
+
   // register and start election
   registerElection = async (data) => {
     await this.state.ElectionInstance.methods
@@ -126,8 +137,12 @@ class Home extends Component {
         data.adminFName.toLowerCase() + " " + data.adminLName.toLowerCase(),
         data.adminEmail.toLowerCase(),
         data.adminTitle.toLowerCase(),
-        data.electionTitle.toLowerCase(),
-        data.organizationTitle.toLowerCase()
+        data.organizationTitle.toLowerCase(), 
+        this.convertDateTimeToUnix(data.votingStartDateTime),
+        this.convertDateTimeToUnix(data.votingEndDateTime),
+        this.convertDateTimeToUnix(data.registrationStartDateTime),
+        this.convertDateTimeToUnix(data.registrationEndDateTime),
+        this.props.electionTiles,
       )
       .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
@@ -314,12 +329,12 @@ class Home extends Component {
                         <p className="label-home-title">
                           Registration Start From
                         </p>
-                        {errors.registrationStart && <EMsg msg="*required" />}
+                        {errors.registrationStartDateTime && <EMsg msg="*required" />}
                         <input
                           className="input-home"
                           type="datetime-local"
-                          placeholder="Kathford Int'l College"
-                          {...register("registrationStart", {
+                          placeholder="registration start date"
+                          {...register("registrationStartDateTime", {
                             required: true,
                           })}
                         />
@@ -327,12 +342,12 @@ class Home extends Component {
 
                       <label className="label-home">
                         <p className="label-home-title">Registration End At</p>
-                        {errors.registrationEnd && <EMsg msg="*required" />}
+                        {errors.registrationEndDateTime && <EMsg msg="*required" />}
                         <input
                           className="input-home"
                           type="datetime-local"
-                          placeholder="date"
-                          {...register("registrationEnd", {
+                          placeholder="registration end date"
+                          {...register("registrationEndDateTime", {
                             required: true,
                           })}
                         />
@@ -340,25 +355,25 @@ class Home extends Component {
 
                       <label className="label-home">
                         <p className="label-home-title">Election Start From</p>
-                        {errors.electionStart && <EMsg msg="*required" />}
+                        {errors.votingStartDateTime && <EMsg msg="*required" />}
                         <input
                           className="input-home"
                           type="datetime-local"
-                          placeholder="date"
-                          {...register("electionStart", {
+                          placeholder="election start date"
+                          {...register("votingStartDateTime", {
                             required: true,
                           })}
                         />
                       </label>
 
                       <label className="label-home">
-                        <p className="label-home-title">Elections Title</p>
-                        {errors.electionEnd && <EMsg msg="*required" />}
+                        <p className="label-home-title">Elections End At</p>
+                        {errors.votingEndDateTime && <EMsg msg="*required" />}
                         <input
                           className="input-home"
                           type="datetime-local"
-                          placeholder="date"
-                          {...register("electionEnd", {
+                          placeholder="election end date"
+                          {...register("votingEndDateTime", {
                             required: true,
                           })}
                         />
