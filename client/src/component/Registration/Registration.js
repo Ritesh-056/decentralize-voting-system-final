@@ -12,7 +12,6 @@ import getWeb3 from "../../getWeb3";
 import Election from "../../artifacts/contracts/Election.sol/Election.json";
 import RegistrationInit from "../RegistrationStatus";
 
-
 export default class Registration extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +22,7 @@ export default class Registration extends Component {
       isAdmin: false,
       isElStarted: false,
       isElEnded: false,
-      registrationStatus:false,
+      registrationStatus: false,
       voterCount: undefined,
       voterName: "",
       voterPhone: "",
@@ -37,7 +36,7 @@ export default class Registration extends Component {
         isRegistered: false,
       },
     };
-  } 
+  }
 
   // refreshing once
   componentDidMount = async () => {
@@ -75,9 +74,10 @@ export default class Registration extends Component {
       }
 
       // Get start and end values
-      const registrationStatus = await this.state.ElectionInstance.methods.getRegistrationStatus().call();
+      const registrationStatus = await this.state.ElectionInstance.methods
+        .getRegistrationStatus()
+        .call();
       this.setState({ registrationStatus: registrationStatus });
-
 
       // Total number of voters
       const voterCount = await this.state.ElectionInstance.methods
@@ -136,8 +136,8 @@ export default class Registration extends Component {
     await this.state.ElectionInstance.methods
       .registerAsVoter(this.state.voterName, this.state.voterPhone)
       .send({ from: this.state.account, gas: 1000000 });
-      alert("Voter registered successful");
-      window.location.reload();
+    alert("Voter registered successful");
+    window.location.reload();
   };
   render() {
     if (!this.state.web3) {
@@ -163,9 +163,6 @@ export default class Registration extends Component {
           <RegistrationInit />
         ) : (
           <>
-            <div className="container-item info">
-              <p>Total registered voters: {this.state.voters.length}</p>
-            </div>
             <div className="container-main">
               <h2>Registration</h2>
               <small>Register to vote.</small>
@@ -207,25 +204,29 @@ export default class Registration extends Component {
                     </label>
                   </div>
                   <p className="note">
-                    <span style={{ color: "red",paddingTop:"10px"}}> Note: </span>
-                    <br /> * Please verify before submitting.<br/>* Address and phone number should be valid otherwise admin will not verify you as a voter. 
+                    <span style={{ color: "red", paddingTop: "10px" }}>
+                      {" "}
+                      Note:{" "}
+                    </span>
+                    <br /> * Please verify before submitting.
+                    <br />* Address and phone number should be valid otherwise
+                    admin will not verify you as a voter.
                   </p>
 
                   <center>
-                  <button
-                    className="btn-add"
-                    disabled={
-                      this.state.voterPhone.length !== 10 ||
-                      this.state.currentVoter.isVerified
-                    }
-                    onClick={this.registerAsVoter}
-                  >
-                    {this.state.currentVoter.isRegistered
-                      ? "Update"
-                      : "Register"}
-                  </button>
+                    <button
+                      className="btn-add"
+                      disabled={
+                        this.state.voterPhone.length !== 10 ||
+                        this.state.currentVoter.isVerified
+                      }
+                      onClick={this.registerAsVoter}
+                    >
+                      {this.state.currentVoter.isRegistered
+                        ? "Update"
+                        : "Register"}
+                    </button>
                   </center>
-                  
                 </form>
               </div>
             </div>
@@ -237,10 +238,15 @@ export default class Registration extends Component {
                   : "1px solid",
               }}
             >
-              {loadCurrentVoter(
-                this.state.currentVoter,
-                this.state.currentVoter.isRegistered
-              )}
+              {this.state.currentVoter.isVerified ? (
+                <>
+                  {" "}
+                  {loadCurrentVoter(
+                    this.state.currentVoter,
+                    this.state.currentVoter.isRegistered
+                  )}
+                </>
+              ) : null}
             </div>
             {this.state.isAdmin ? (
               <div
@@ -266,7 +272,7 @@ export function loadCurrentVoter(voter, isRegistered) {
         <center>Your Registered Information </center>
       </div>
       <div
-      style={{color:"white"}}
+        style={{ color: "white" }}
         className={"container-list " + (isRegistered ? "success" : "attention")}
       >
         <table>
@@ -274,7 +280,7 @@ export function loadCurrentVoter(voter, isRegistered) {
             <th>Account Address</th>
             <td>{voter.address}</td>
           </tr>
-          <tr style={{backgroundColor:"transparent"}}>
+          <tr style={{ backgroundColor: "transparent" }}>
             <th>Name</th>
             <td>{voter.name}</td>
           </tr>
@@ -282,7 +288,7 @@ export function loadCurrentVoter(voter, isRegistered) {
             <th>Phone</th>
             <td>{voter.phone}</td>
           </tr>
-          <tr style={{backgroundColor:"transparent"}}>
+          <tr style={{ backgroundColor: "transparent" }}>
             <th>Voted</th>
             <td>{voter.hasVoted ? "True" : "False"}</td>
           </tr>
@@ -290,7 +296,7 @@ export function loadCurrentVoter(voter, isRegistered) {
             <th>Verification</th>
             <td>{voter.isVerified ? "True" : "False"}</td>
           </tr>
-          <tr style={{backgroundColor:"transparent"}}>
+          <tr style={{ backgroundColor: "transparent" }}>
             <th>Registered</th>
             <td>{voter.isRegistered ? "True" : "False"}</td>
           </tr>
@@ -303,13 +309,13 @@ export function loadAllVoters(voters) {
   const renderAllVoters = (voter) => {
     return (
       <>
-        <div className="container-list success" style={{color:"white"}}>
+        <div className="container-list success" style={{ color: "white" }}>
           <table>
             <tr>
               <th>Account address</th>
               <td>{voter.address}</td>
             </tr>
-            <tr style={{backgroundColor:"transparent"}}>
+            <tr style={{ backgroundColor: "transparent" }}>
               <th>Name</th>
               <td>{voter.name}</td>
             </tr>
@@ -317,7 +323,7 @@ export function loadAllVoters(voters) {
               <th>Phone</th>
               <td>{voter.phone}</td>
             </tr>
-            <tr style={{backgroundColor:"transparent"}}>
+            <tr style={{ backgroundColor: "transparent" }}>
               <th>Voted</th>
               <td>{voter.hasVoted ? "True" : "False"}</td>
             </tr>
@@ -325,7 +331,7 @@ export function loadAllVoters(voters) {
               <th>Verified</th>
               <td>{voter.isVerified ? "True" : "False"}</td>
             </tr>
-            <tr style={{backgroundColor:"transparent"}}>
+            <tr style={{ backgroundColor: "transparent" }}>
               <th>Registered</th>
               <td>{voter.isRegistered ? "True" : "False"}</td>
             </tr>

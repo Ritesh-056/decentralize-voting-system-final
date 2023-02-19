@@ -5,7 +5,6 @@ import NavbarAdmin from "../Navbar/NavigationAdmin";
 
 import getWeb3 from "../../getWeb3";
 import Election from "../../artifacts/contracts/Election.sol/Election.json";
-import NotInit from "../NotInit";
 import "./CandidateRegistration.css";
 import RegistrationInit from "../RegistrationStatus";
 import NotVoter from "../NotVoter";

@@ -22,6 +22,7 @@ export default class Voting extends Component {
       account: null,
       web3: null,
       isAdmin: false,
+      electionTitles:[],
       candidateCount: undefined,
       candidates: [],
       isElStarted: false,
@@ -80,7 +81,7 @@ export default class Voting extends Component {
       // Loading Candidates details
       for (let i = 0; i < this.state.candidateCount; i++) {
         const candidateAddress = await this.state.ElectionInstance.methods
-          .candidates(i)
+          .approvedCandidates(i)
           .call();
         const candidate = await this.state.ElectionInstance.methods
           .candidateDetails(candidateAddress)
@@ -111,6 +112,9 @@ export default class Voting extends Component {
         },
       });
 
+
+     const electionTitles = await this.state.ElectionInstance.methods.getElectionTitles().call();
+      this.setState({electionTitles:electionTitles})
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
