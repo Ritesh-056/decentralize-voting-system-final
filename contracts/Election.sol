@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0 <0.9.0;
+pragma solidity >=0.8.11 <0.9.0;
 
 contract Election {
     bool start;
     bool end;
+    bool registrationStart;
+    bool registrationEnd;
     uint256 voterCount;
     uint256 candidateCount;
     address public admin;
@@ -12,16 +14,9 @@ contract Election {
 
     mapping(address => Voter) public voterDetails;
     mapping(address => Candidate) public candidateDetails;
-    mapping(uint256 => ElectionDetails) public elections;
 
-    Elections[] electionsData;
+    ElectionsCategory[] electionsData;
 
-    //registration start and end instance
-    //voting start and end instance
-    bool isVotingStarted;
-    bool isVotingEnded;
-    bool isRegistrationStarted;
-    bool isRegistrationEnded;
 
     //voting and registration start and end time
     uint registrationStartTime;
@@ -33,10 +28,8 @@ contract Election {
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
-        isVotingStarted = false;
-        isVotingEnded = false;
-        isRegistrationStarted = false;
-        isRegistrationEnded = true;
+        registrationStart = false;
+        registrationEnd = false; 
         start = false;
         end = false;
     }
@@ -52,7 +45,7 @@ contract Election {
         bool isRegistered;
     }
 
-    struct Elections {
+    struct ElectionsCategory {
         uint256 electionId;
         string electionTitle;
     }
@@ -67,7 +60,7 @@ contract Election {
         uint256 votingEndDate;
         uint256 registrationStartDate;
         uint256 registrationEndDate;
-        Elections[] elections;
+        // mapping(uint=>ElectionsCategory)  electionsCategory;
     }
 
     ElectionDetails electionDetails;
@@ -82,14 +75,23 @@ contract Election {
     }
 
     modifier registrationOnGoing() {
-        require(block.timestamp >=registrationStartTime,"Registration is not started yet");
-        require(block.timestamp <=registrationEndTime,"Registration is already ended.");
+        require(
+            block.timestamp >= registrationStartTime,
+            "Registration is not started yet"
+        );
+        require(
+            block.timestamp <= registrationEndTime,
+            "Registration is already ended."
+        );
         _;
     }
 
     modifier votingTimeOnGoing() {
-        require(block.timestamp >=votingStartTime,"Voting is not started yet");
-        require(block.timestamp <=votingEndTime,"Voting is already ended");
+        require(
+            block.timestamp >= votingStartTime,
+            "Voting is not started yet"
+        );
+        require(block.timestamp <= votingEndTime, "Voting is already ended");
         _;
     }
 
@@ -104,55 +106,66 @@ contract Election {
         return admin;
     }
 
-    //setElectionDetails
-    function setElectionDetails(
-        string memory _adminName,
-        string memory _adminEmail,
-        string memory _adminTitle,
-        string memory _organizationTitle,
-        uint256 _votingStartTime,
-        uint256 _votingEndTime,
-        uint256 _registrationStartTime,
-        uint256 _registrationEndTime,
-        bytes32[] memory _elections
-    )
-        public
-        // Only admin can add
-        onlyAdmin
-    {
-        string[] memory electionTitles = new string[](_elections.length);
-        for (uint256 i = 0; i < _elections.length; i++) {
-            electionTitles[i] = bytes32ToString(_elections[i]);
-        }
 
-        ElectionDetails memory new_election = ElectionDetails(
-            _adminName,
-            _adminEmail,
-            _adminTitle,
-            _organizationTitle,
-            _votingStartTime,
-            _votingEndTime,
-            _registrationStartTime,
-            _registrationEndTime,
-            electionsData
-        );
 
-        electionDetails = new_election;
-        
-        //set registration start,end and voting start,end 
-        registrationStartTime = _registrationStartTime;
-        registrationEndTime = _registrationEndTime;
-        votingStartTime = _votingStartTime;
-        votingEndTime = _votingEndTime;
+//setElectionDetails
+function setElectionDetails(
+    string memory _adminName,
+    string memory _adminEmail,
+    string memory _adminTitle,
+    string memory _organizationTitle,
+    uint256 _votingStartDate,
+    uint256 _votingEndDate,
+    uint256 _registrationStartDate,
+    uint256 _registrationEndDate,
+    bytes32[] memory _electionCategories
+)
+    public
+    // Only admin can add
+    onlyAdmin
+{
+    //    uint256 numCategories = _electionCategories.length;
+    // mapping(uint256 => ElectionsCategory) storage categories = electionDetails.electionsCategory;
 
-        start = true;
-        end = false;
-    }
+    // // Create a new ElectionsCategory struct in storage for each element in _electionCategories
+    // for (uint256 i = 0; i < numCategories; i++) {
+    //     categories[i] = ElectionsCategory({
+    //         electionId: i,
+    //         electionTitle: bytes32ToString(_electionCategories[i])
+    //     });
+    // }
 
-    //conversion of byte32 string
+    // Create a new ElectionDetails object with the input parameters and the new election categories array
+    ElectionDetails memory newElectionDetails = ElectionDetails({
+        adminName: _adminName,
+        adminEmail: _adminEmail,
+        adminTitle: _adminTitle,
+        organizationTitle: _organizationTitle,
+        votingStartDate: _votingStartDate,
+        votingEndDate: _votingEndDate,
+        registrationStartDate: _registrationStartDate,
+        registrationEndDate: _registrationEndDate
+        // electionCategories: categories
+    });
+    
+    // Assign the new election details to the contract state variable
+    electionDetails = newElectionDetails;
+    
+    // Set the registration start, end, voting start, and end times
+    registrationStartTime = _registrationStartDate;
+    registrationEndTime = _registrationEndDate;
+    votingStartTime = _votingStartDate;
+    votingEndTime = _votingEndDate;
+    
+}
+
+
+
+
+    // Function to convert bytes32 to string
     function bytes32ToString(
         bytes32 _bytes32
-    ) private pure returns (string memory) {
+    ) public pure returns (string memory) {
         uint8 i = 0;
         while (i < 32 && _bytes32[i] != 0) {
             i++;
@@ -181,13 +194,19 @@ contract Election {
         return electionDetails.organizationTitle;
     }
 
-    function getElectionTitles() public view returns (string[] memory) {
-        string[] memory titles = new string[](electionDetails.elections.length);
-        for (uint256 i = 0; i < electionDetails.elections.length; i++) {
-            titles[i] = electionDetails.elections[i].electionTitle;
-        }
-        return titles;
-    }
+    // function getElectionTitles() public view returns (string[] memory) {
+    //     string[] memory titles = new string[](
+    //         electionDetails.electionCategories.length
+    //     );
+    //     for (
+    //         uint256 i = 0;
+    //         i < electionDetails.electionCategories.length;
+    //         i++
+    //     ) {
+    //         titles[i] = electionDetails.electionCategories[i].electionTitle;
+    //     }
+    //     return titles;
+    // }
 
     // Get candidates count
     function getTotalCandidate() public view returns (uint256) {
@@ -205,7 +224,7 @@ contract Election {
     function registerAsCandidate(
         string memory _header,
         string memory _slogan
-    ) registrationOnGoing public {
+    ) public registrationOnGoing {
         Candidate memory newCandidate = Candidate({
             candidateAddress: msg.sender,
             candidateId: candidateCount,
@@ -229,7 +248,10 @@ contract Election {
     }
 
     // Request to be added as voter
-    function registerAsVoter(string memory _name, string memory _phone) registrationOnGoing public {
+    function registerAsVoter(
+        string memory _name,
+        string memory _phone
+    ) public registrationOnGoing {
         Voter memory newVoter = Voter({
             voterAddress: msg.sender,
             name: _name,
@@ -256,7 +278,7 @@ contract Election {
     }
 
     // Vote
-    function vote(address _candidateAddress) votingTimeOnGoing public {
+    function vote(address _candidateAddress) public votingTimeOnGoing {
         require(voterDetails[msg.sender].hasVoted == false);
         require(voterDetails[msg.sender].isVerified == true);
         candidateDetails[_candidateAddress].voteCount += 1;
@@ -275,12 +297,6 @@ contract Election {
             }
         }
         return winnerAddress;
-    }
-
-    // End election
-    function endElection() public onlyAdmin {
-        end = true;
-        start = false;
     }
 
     // Get election start and end values
