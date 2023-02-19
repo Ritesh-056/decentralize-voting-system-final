@@ -90,6 +90,7 @@ export default class Registration extends Component {
       await this.state.ElectionInstance.methods
         .verifyVoter(verifiedStatus, address)
         .send({ from: this.state.account, gas: 1000000 });
+        alert("Voter verification successful");
       window.location.reload();
     };
     return (

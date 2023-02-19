@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 
-import Navbar from "../../Navbar/Navigation";
-import NavbarAdmin from "../../Navbar/NavigationAdmin";
+import Navbar from "../Navbar/Navigation";
+import NavbarAdmin from "../Navbar/NavigationAdmin";
 
-import getWeb3 from "../../../getWeb3";
-import Election from "../../../artifacts/contracts/Election.sol/Election.json";
-import NotInit from "../../NotInit";
+import getWeb3 from "../../getWeb3";
+import Election from "../../artifacts/contracts/Election.sol/Election.json";
+import NotInit from "../NotInit";
 import "./CandidateRegistration.css";
+import RegistrationInit from "../RegistrationStatus";
+import NotVoter from "../NotVoter";
 
 export default class CandidateRegistration extends Component {
   constructor(props) {
@@ -20,17 +22,19 @@ export default class CandidateRegistration extends Component {
       isElEnded: false,
       header: "",
       slogan: "",
+      registrationStatus: false,
       candidates: [],
+      voterStatusForCandidate: false,
       candidateCount: undefined,
-      currentCandidate:{
-        candidateAddress:undefined,
+      currentCandidate: {
+        candidateAddress: undefined,
         candidateId: null,
         header: null,
         slogan: null,
-        voteCount:null,
+        voteCount: null,
         isVerified: false,
         isRegistered: false,
-      }
+      },
     };
   }
 
@@ -69,10 +73,19 @@ export default class CandidateRegistration extends Component {
       }
 
       // Get start and end values
-      const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ isElStarted: start });
-      const end = await this.state.ElectionInstance.methods.getEnd().call();
-      this.setState({ isElEnded: end });
+      const registrationStatus = await this.state.ElectionInstance.methods
+        .getRegistrationStatus()
+        .call();
+      this.setState({ registrationStatus: registrationStatus });
+
+
+      const accountAddress = this.state.account;
+      console.log(accountAddress);
+      const voterStatusForCandidate = await this.state.ElectionInstance.methods
+        .getVoterStatusForCandidate(accountAddress)
+        .call();
+      this.setState({ voterStatusForCandidate: voterStatusForCandidate });
+
 
       // Total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
@@ -85,17 +98,17 @@ export default class CandidateRegistration extends Component {
         const candidateAddress = await this.state.ElectionInstance.methods
           .candidates(i)
           .call();
-        
-          const candidate = await this.state.ElectionInstance.methods
+
+        const candidate = await this.state.ElectionInstance.methods
           .candidateDetails(candidateAddress)
           .call();
 
         this.state.candidates.push({
-          candidateAddress:candidate.candidateAddress,
+          candidateAddress: candidate.candidateAddress,
           candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
-          voteCount:candidate.voteCount,
+          voteCount: candidate.voteCount,
           isVerified: candidate.isVerified,
           isRegistered: candidate.isRegistered,
         });
@@ -109,11 +122,11 @@ export default class CandidateRegistration extends Component {
         .call();
       this.setState({
         currentCandidate: {
-          candidateAddress:candidate.candidateAddress,
+          candidateAddress: candidate.candidateAddress,
           candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
-          voteCount:candidate.voteCount,
+          voteCount: candidate.voteCount,
           isVerified: candidate.isVerified,
           isRegistered: candidate.isRegistered,
         },
@@ -132,11 +145,12 @@ export default class CandidateRegistration extends Component {
   updateSlogan = (event) => {
     this.setState({ slogan: event.target.value });
   };
-  
+
   registerAsCandidate = async () => {
     await this.state.ElectionInstance.methods
       .registerAsCandidate(this.state.header, this.state.slogan)
       .send({ from: this.state.account, gas: 1000000 });
+    alert("Candidate registration successful");
     window.location.reload();
   };
 
@@ -159,67 +173,75 @@ export default class CandidateRegistration extends Component {
     }
     return (
       <>
-          {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-        {!this.state.isElStarted && !this.state.isElEnded ? (
-          <NotInit />
+        {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
+        {!this.state.registrationStatus ? (
+          <RegistrationInit />
         ) : (
-        <>  
-        <div className="container-main">
-          <h2>Add candidate</h2>
-          <small>Total candidates: {this.state.candidateCount}</small>
-          <div className="container-item">
-            <form className="form">
-              <label className={"label-ac"}>
-                Candidate Header
-                <input
-                  className={"input-ac"}
-                  type="text"
-                  placeholder="Candidate "
-                  value={this.state.header}
-                  onChange={this.updateHeader}
-                />
-              </label>
-              <label className={"label-ac"}>
-                Candidate Symbol
-                <input
-                  className={"input-ac"}
-                  type="text"
-                  placeholder="Candidate Symbol"
-                  value={this.state.slogan}
-                  onChange={this.updateSlogan}
-                />
-              </label>
-              <center>
-                <button
-                  className="btn-add"
-                  disabled={
-                    this.state.header.length < 3 ||
-                    this.state.header.length > 21
-                  }
-                  onClick={this.registerAsCandidate}
-                >
-                  Add
-                </button>
-              </center>
-            </form>
-          </div>
-        </div>
-         {this.state.isAdmin ? (
-          <div
-            className="container-main"
-            style={{ borderTop: "1px solid" }}
-          >
-            <small>Total Candidates: {this.state.candidates.length}</small>
-            {loadAdded(this.state.candidates)}
-          </div>
-        ) : null}
-        </>
-      )}
+          <>
+            <div className="container-main">
+              <h2>Add candidate</h2>
+              <small>Total candidates: {this.state.candidateCount}</small>
+              <div className="container-item">
+                <form className="form">
+                  <label className={"label-ac"}>
+                    Candidate Header
+                    <input
+                      className={"input-ac"}
+                      type="text"
+                      placeholder="Candidate "
+                      value={this.state.header}
+                      onChange={this.updateHeader}
+                    />
+                  </label>
+                  <label className={"label-ac"}>
+                    Candidate Symbol
+                    <input
+                      className={"input-ac"}
+                      type="text"
+                      placeholder="Candidate Symbol"
+                      value={this.state.slogan}
+                      onChange={this.updateSlogan}
+                    />
+                  </label>
+                  {!this.state.voterStatusForCandidate ? (
+                    <></>
+                  ) : (
+                    <>
+                      <center>
+                        <button
+                          className="btn-add"
+                          disabled={
+                            this.state.header.length < 3 ||
+                            this.state.header.length > 21
+                          }
+                          onClick={this.registerAsCandidate}
+                        >
+                          Add
+                        </button>
+                      </center>
+                    </>
+                  )}
+                </form>
+              </div>
+            </div>
+
+            {!this.state.voterStatusForCandidate ? <NotVoter /> : null}
+
+            {this.state.isAdmin ? (
+              <div
+                className="container-main"
+                style={{ borderTop: "1px solid" }}
+              >
+                <small>Total Candidates: {this.state.candidates.length}</small>
+                {loadAdded(this.state.candidates)}
+              </div>
+            ) : null}
+          </>
+        )}
       </>
     );
   }
 }
-
 
 export function loadAdded(candidates) {
   const renderAdded = (candidate) => {
@@ -231,7 +253,10 @@ export function loadAdded(candidates) {
               maxHeight: "21px",
             }}
           >
-            {"["}{candidate.candidateId}{"] "}<strong>{candidate.header}</strong>:{"  "}
+            {"["}
+            {candidate.candidateId}
+            {"] "}
+            <strong>{candidate.header}</strong>:{"  "}
             {candidate.slogan}
           </div>
         </div>

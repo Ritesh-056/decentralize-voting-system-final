@@ -9,7 +9,7 @@ module.exports = {
     },
   },
   paths: {
-    sources: "./contracts",
+    sources: "./contracts", 
     tests: "./test",
     cache: "./cache",
     artifacts: "./client/src/artifacts",

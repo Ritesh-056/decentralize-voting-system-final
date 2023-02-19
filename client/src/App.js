@@ -9,7 +9,7 @@ import Registration from "./component/Registration/Registration";
 
 import Verification from "./component/Admin/Verification/Verification";
 import CandidateVerification from "./component/Admin/CandidateVerification/CandidateVerification";
-import CandidateRegistration from "./component/Admin/CandidateRegistration/CandidateRegistration";
+import CandidateRegistration from "./component/CandidateRegistration/CandidateRegistration";
 
 import test from "./component/test";
 // import StartEnd from "./component/Admin/StartEnd/StartEnd";

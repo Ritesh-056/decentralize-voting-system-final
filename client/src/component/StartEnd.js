@@ -2,15 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const StartEnd = (props) => {
-  const btn = {
-    display: "block",
-    padding: "21px",
-    margin: "7px",
-    minWidth: "max-content",
-    textAlign: "center",
-    width: "333px",
-    alignSelf: "center",
-  };
   return (
     <div
       className="container-main"
@@ -21,32 +12,9 @@ const StartEnd = (props) => {
           {/* edit here to display start election Again button */}
           {!props.elEnded ? (
             <>
-              {/* <div
-                className="container-item attention"
-                style={{ display: "block" }}
-              >
-                <h4>
-                  Ensure that you have candidates to start election. If yes
-                  start the election otherwise start adding candidate.
-                </h4>
-                <center>
-                  <Link
-                    title="Add a new "
-                    to="/addCandidate"
-                    style={{
-                      color: "black",
-                      textDecoration: "underline",
-                    }}
-                  >
-                    <button type="submit" className="btn-election">
-                      Add Candidate From Here
-                    </button>
-                  </Link>
-                </center>
-              </div> */}
               <div className="container-item">
                 <button type="submit" className="btn-election">
-                  Start Election {props.elEnded ? "Again" : null}
+                  Save Election {props.elEnded ? "Again" : null}
                 </button>
               </div>
             </>

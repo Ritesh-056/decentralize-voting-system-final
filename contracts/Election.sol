@@ -12,24 +12,24 @@ contract Election {
     address[] public voters; // array to store address of voters
     address[] public candidates; //array to store address of voters
 
+    address[] public approvedVoters; //array to store address of approved voters 
+    address[] public approvedCandidates; //array to store address of approved candidates
+
     mapping(address => Voter) public voterDetails;
     mapping(address => Candidate) public candidateDetails;
 
-    ElectionsCategory[] electionsData;
-
-
     //voting and registration start and end time
-    uint registrationStartTime;
-    uint registrationEndTime;
-    uint votingStartTime;
-    uint votingEndTime;
+    uint256 registrationStartTime;
+    uint256 registrationEndTime;
+    uint256 votingStartTime;
+    uint256 votingEndTime;
 
     constructor() {
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
         registrationStart = false;
-        registrationEnd = false; 
+        registrationEnd = false;
         start = false;
         end = false;
     }
@@ -60,7 +60,7 @@ contract Election {
         uint256 votingEndDate;
         uint256 registrationStartDate;
         uint256 registrationEndDate;
-        // mapping(uint=>ElectionsCategory)  electionsCategory;
+        string[] elections;
     }
 
     ElectionDetails electionDetails;
@@ -106,66 +106,52 @@ contract Election {
         return admin;
     }
 
+    //setElectionDetails
+    function setElectionDetails(
+        string memory _adminName,
+        string memory _adminEmail,
+        string memory _adminTitle,
+        string memory _organizationTitle,
+        uint256 _votingStartTime,
+        uint256 _votingEndTime,
+        uint256 _registrationStartTime,
+        uint256 _registrationEndTime,
+        string[] memory _elections
+    )
+        public
+        // Only admin can add
+        onlyAdmin
+    {
+        string[] memory electionTitles = new string[](_elections.length);
+        for (uint256 i = 0; i < _elections.length; i++) {
+            electionTitles[i] = _elections[i];
+        }
 
+        ElectionDetails memory new_election = ElectionDetails(
+            _adminName,
+            _adminEmail,
+            _adminTitle,
+            _organizationTitle,
+            _votingStartTime,
+            _votingEndTime,
+            _registrationStartTime,
+            _registrationEndTime,
+            electionTitles
+        );
 
-//setElectionDetails
-function setElectionDetails(
-    string memory _adminName,
-    string memory _adminEmail,
-    string memory _adminTitle,
-    string memory _organizationTitle,
-    uint256 _votingStartDate,
-    uint256 _votingEndDate,
-    uint256 _registrationStartDate,
-    uint256 _registrationEndDate,
-    bytes32[] memory _electionCategories
-)
-    public
-    // Only admin can add
-    onlyAdmin
-{
-    //    uint256 numCategories = _electionCategories.length;
-    // mapping(uint256 => ElectionsCategory) storage categories = electionDetails.electionsCategory;
+        electionDetails = new_election;
 
-    // // Create a new ElectionsCategory struct in storage for each element in _electionCategories
-    // for (uint256 i = 0; i < numCategories; i++) {
-    //     categories[i] = ElectionsCategory({
-    //         electionId: i,
-    //         electionTitle: bytes32ToString(_electionCategories[i])
-    //     });
-    // }
+        //set registration start,end and voting start,end
+        registrationStartTime = _registrationStartTime;
+        registrationEndTime = _registrationEndTime;
+        votingStartTime = _votingStartTime;
+        votingEndTime = _votingEndTime;
+    }
 
-    // Create a new ElectionDetails object with the input parameters and the new election categories array
-    ElectionDetails memory newElectionDetails = ElectionDetails({
-        adminName: _adminName,
-        adminEmail: _adminEmail,
-        adminTitle: _adminTitle,
-        organizationTitle: _organizationTitle,
-        votingStartDate: _votingStartDate,
-        votingEndDate: _votingEndDate,
-        registrationStartDate: _registrationStartDate,
-        registrationEndDate: _registrationEndDate
-        // electionCategories: categories
-    });
-    
-    // Assign the new election details to the contract state variable
-    electionDetails = newElectionDetails;
-    
-    // Set the registration start, end, voting start, and end times
-    registrationStartTime = _registrationStartDate;
-    registrationEndTime = _registrationEndDate;
-    votingStartTime = _votingStartDate;
-    votingEndTime = _votingEndDate;
-    
-}
-
-
-
-
-    // Function to convert bytes32 to string
+    //conversion of byte32 string
     function bytes32ToString(
         bytes32 _bytes32
-    ) public pure returns (string memory) {
+    ) private pure returns (string memory) {
         uint8 i = 0;
         while (i < 32 && _bytes32[i] != 0) {
             i++;
@@ -194,19 +180,13 @@ function setElectionDetails(
         return electionDetails.organizationTitle;
     }
 
-    // function getElectionTitles() public view returns (string[] memory) {
-    //     string[] memory titles = new string[](
-    //         electionDetails.electionCategories.length
-    //     );
-    //     for (
-    //         uint256 i = 0;
-    //         i < electionDetails.electionCategories.length;
-    //         i++
-    //     ) {
-    //         titles[i] = electionDetails.electionCategories[i].electionTitle;
-    //     }
-    //     return titles;
-    // }
+    function getElectionTitles() public view returns (string[] memory) {
+        string[] memory titles = new string[](electionDetails.elections.length);
+        for (uint256 i = 0; i < electionDetails.elections.length; i++) {
+            titles[i] = electionDetails.elections[i];
+        }
+        return titles;
+    }
 
     // Get candidates count
     function getTotalCandidate() public view returns (uint256) {
@@ -245,6 +225,7 @@ function setElectionDetails(
         address candidateAddress
     ) public onlyAdmin {
         candidateDetails[candidateAddress].isVerified = _verifedStatus;
+        approvedCandidates.push(candidateAddress);
     }
 
     // Request to be added as voter
@@ -275,6 +256,8 @@ function setElectionDetails(
         onlyAdmin
     {
         voterDetails[voterAddress].isVerified = _verifedStatus;
+        approvedVoters.push(voterAddress);
+
     }
 
     // Vote
@@ -306,5 +289,30 @@ function setElectionDetails(
 
     function getEnd() public view returns (bool) {
         return end;
+    }
+
+    function getRegistrationStatus() public view returns (bool) {
+        bool isRegistrationOnGoing;
+        if (
+            block.timestamp >= registrationStartTime &&
+            block.timestamp <= registrationEndTime
+        ) {
+            isRegistrationOnGoing = true;
+        }else{
+            isRegistrationOnGoing = false;
+        }
+        return isRegistrationOnGoing;
+    }
+
+
+    function getVoterStatusForCandidate(address _currentAddress) public view returns (bool) {
+        bool isCandidateAlreayAVoter = false;
+        for(uint i=0 ; i< approvedVoters.length ; i++){
+            if(_currentAddress == approvedVoters[i]){
+                isCandidateAlreayAVoter = true;
+                break;
+            }
+        } 
+        return isCandidateAlreayAVoter;
     }
 }

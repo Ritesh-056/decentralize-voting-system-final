@@ -4,14 +4,13 @@ import React, { Component } from "react";
 // Components
 import Navbar from "../Navbar/Navigation";
 import NavbarAdmin from "../Navbar/NavigationAdmin";
-import NotInit from "../NotInit";
-
 // CSS
 import "./Registration.css";
 
 // Contract
 import getWeb3 from "../../getWeb3";
 import Election from "../../artifacts/contracts/Election.sol/Election.json";
+import RegistrationInit from "../RegistrationStatus";
 
 
 export default class Registration extends Component {
@@ -24,6 +23,7 @@ export default class Registration extends Component {
       isAdmin: false,
       isElStarted: false,
       isElEnded: false,
+      registrationStatus:false,
       voterCount: undefined,
       voterName: "",
       voterPhone: "",
@@ -37,7 +37,7 @@ export default class Registration extends Component {
         isRegistered: false,
       },
     };
-  }
+  } 
 
   // refreshing once
   componentDidMount = async () => {
@@ -75,10 +75,9 @@ export default class Registration extends Component {
       }
 
       // Get start and end values
-      const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ isElStarted: start });
-      const end = await this.state.ElectionInstance.methods.getEnd().call();
-      this.setState({ isElEnded: end });
+      const registrationStatus = await this.state.ElectionInstance.methods.getRegistrationStatus().call();
+      this.setState({ registrationStatus: registrationStatus });
+
 
       // Total number of voters
       const voterCount = await this.state.ElectionInstance.methods
@@ -137,7 +136,8 @@ export default class Registration extends Component {
     await this.state.ElectionInstance.methods
       .registerAsVoter(this.state.voterName, this.state.voterPhone)
       .send({ from: this.state.account, gas: 1000000 });
-    window.location.reload();
+      alert("Voter registered successful");
+      window.location.reload();
   };
   render() {
     if (!this.state.web3) {
@@ -159,8 +159,8 @@ export default class Registration extends Component {
     return (
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-        {!this.state.isElStarted && !this.state.isElEnded ? (
-          <NotInit />
+        {!this.state.registrationStatus ? (
+          <RegistrationInit />
         ) : (
           <>
             <div className="container-item info">
