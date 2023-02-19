@@ -37,6 +37,16 @@
   color: #ffffff;
 }
 
+.select-election-ac:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.select-election-ac option {
+  background-color: #ffffff;
+  color: #555;
+  font-size: 16px;
+}
 
 
 .label-ac {

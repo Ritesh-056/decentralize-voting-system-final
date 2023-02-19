@@ -20,18 +20,12 @@ export default function NavbarAdmin() {
             Voter Verification
           </NavLink>
         </li>
-        {/* <li>
-          <NavLink to="/AddCandidate" activeClassName="nav-active">
-            Add Candidate
-          </NavLink>
-        </li> */}
+    
         <li>
           <NavLink to="/CandidateVerification" activeClassName="nav-active">
             Candidate Verification
           </NavLink>
         </li>
-
-
         <li>
           <NavLink to="/Registration" activeClassName="nav-active">
             Registration

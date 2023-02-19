@@ -19,10 +19,10 @@ contract Election {
     mapping(address => Candidate) public candidateDetails;
 
     //voting and registration start and end time
-    uint256 registrationStartTime;
-    uint256 registrationEndTime;
-    uint256 votingStartTime;
-    uint256 votingEndTime;
+    uint256 public registrationStartTime;
+    uint256 public registrationEndTime;
+    uint256 public votingStartTime;
+    uint256 public votingEndTime;
 
     constructor() {
         admin = msg.sender;
