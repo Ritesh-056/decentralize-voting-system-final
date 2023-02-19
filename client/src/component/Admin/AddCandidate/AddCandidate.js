@@ -75,8 +75,13 @@ export default class AddCandidate extends Component {
           slogan: candidate.slogan,
         });
       }
-
       this.setState({ candidates: this.state.candidates });
+
+
+    
+
+
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);

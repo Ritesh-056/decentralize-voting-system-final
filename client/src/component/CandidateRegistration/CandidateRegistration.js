@@ -21,6 +21,8 @@ export default class CandidateRegistration extends Component {
       isElEnded: false,
       header: "",
       slogan: "",
+      selectedElection: "",
+      electionTitles: [],
       registrationStatus: false,
       candidates: [],
       voterStatusForCandidate: false,
@@ -35,6 +37,8 @@ export default class CandidateRegistration extends Component {
         isRegistered: false,
       },
     };
+
+    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
   componentDidMount = async () => {
@@ -77,14 +81,12 @@ export default class CandidateRegistration extends Component {
         .call();
       this.setState({ registrationStatus: registrationStatus });
 
-
       const accountAddress = this.state.account;
       console.log(accountAddress);
       const voterStatusForCandidate = await this.state.ElectionInstance.methods
         .getVoterStatusForCandidate(accountAddress)
         .call();
       this.setState({ voterStatusForCandidate: voterStatusForCandidate });
-
 
       // Total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
@@ -130,6 +132,13 @@ export default class CandidateRegistration extends Component {
           isRegistered: candidate.isRegistered,
         },
       });
+
+      //get election titles
+      const electionTitles = await this.state.ElectionInstance.methods
+        .getElectionTitles()
+        .call();
+      this.setState({ electionTitles: electionTitles });
+      this.setState({ selectedElection: electionTitles[0] });
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -138,6 +147,11 @@ export default class CandidateRegistration extends Component {
       );
     }
   };
+
+  handleSelectChange(event) {
+    this.setState({ selectedElection: event.target.value });
+  }
+
   updateHeader = (event) => {
     this.setState({ header: event.target.value });
   };
@@ -202,6 +216,22 @@ export default class CandidateRegistration extends Component {
                       onChange={this.updateSlogan}
                     />
                   </label>
+
+                  <label className={"label-ac"}>
+                    Select an election title
+                    <select
+                      className={"select-election-ac"}
+                      value={this.state.selectedElection}
+                      onChange={this.handleSelectChange}
+                    >
+                      {this.state.electionTitles.map((title, index) => (
+                        <option key={index} value={title}>
+                          {title}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
                   {!this.state.voterStatusForCandidate ? (
                     <></>
                   ) : (
@@ -209,11 +239,24 @@ export default class CandidateRegistration extends Component {
                       <center>
                         <button
                           className="btn-add"
-                          disabled={
-                            this.state.header.length < 3 ||
-                            this.state.header.length > 21
-                          }
-                          onClick={this.registerAsCandidate}
+                          onClick={(e) => {
+                            console.log("Button clicked from here");
+                            e.preventDefault();
+                            if (
+                              this.state.header == "" ||
+                              this.state.slogan == "" ||
+                              this.state.selectedElection == ""
+                            ) {
+                              alert("Please check your candidates details.");
+                            } else {
+                              console.log(
+                                this.state.header,
+                                this.state.slogan,
+                                this.state.selectedElection
+                              );
+                              this.registerAsCandidate();
+                            }
+                          }}
                         >
                           Add
                         </button>

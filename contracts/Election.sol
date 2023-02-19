@@ -40,6 +40,7 @@ contract Election {
         address candidateAddress;
         string header;
         string slogan;
+        string electionTitle;
         uint256 voteCount;
         bool isVerified;
         bool isRegistered;
@@ -203,13 +204,15 @@ contract Election {
     //Request to be added as candidate
     function registerAsCandidate(
         string memory _header,
-        string memory _slogan
+        string memory _slogan,
+        string memory _electionTitle
     ) public registrationOnGoing {
         Candidate memory newCandidate = Candidate({
             candidateAddress: msg.sender,
             candidateId: candidateCount,
             header: _header,
             slogan: _slogan,
+            electionTitle:_electionTitle,
             voteCount: 0,
             isVerified: false,
             isRegistered: true
