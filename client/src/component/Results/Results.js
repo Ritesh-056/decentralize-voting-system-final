@@ -62,7 +62,7 @@ export default class Result extends Component {
 
       // Get start and end values
       const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ isElStarted: start });
+      this.setState({ isElStarted: true });
       const end = await this.state.ElectionInstance.methods.getEnd().call();
       this.setState({ isElEnded: end });
 

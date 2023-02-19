@@ -15,6 +15,12 @@ export default function NavbarAdmin() {
         className="navbar-links"
         style={{ transform: open ? "translateX(0px)" : "" }}
       >
+         <li>
+          <NavLink to="/" activeClassName="nav-active">
+            Admin Home 
+          </NavLink>
+        </li>
+
         <li>
           <NavLink to="/Verification" activeClassName="nav-active">
             Voter Verification

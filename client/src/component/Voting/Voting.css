@@ -28,17 +28,43 @@ small {
   overflow: auto;
   line-height: 1.5em;
 }
+.container-item-election-category {
+  transition: ease all 0.5s;
+  border-radius: 7px;
+  width: 977px;
+  margin: 17px auto;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  background: radial-gradient(50% 50% at 50% 50%, #433d60 0%, #211e2e 0%);
+  border-radius: 15px;
+  color: #ffffff;
+}
+
+
+.candidate-info-header h2 {
+  transition: ease all 0.5s;
+  width: 100%;
+  margin-left: 1%;
+  padding: 17px; 
+  color:white;
+  align-items: center;
+  border-radius: 11px;
+}
 
 .candidate-info {
   transition: ease all 0.5s;
-  width: 91%;
-  float: left;
+  width: 100%;
   margin-left: 1%;
-  padding: 17px;
+  padding: 17px; 
   color:white;
   border-radius: 11px;
+  align-items: center;
   justify-content: center;
 }
+
+
 .vote-btn-container {
   transition: ease all 0.5s;
   height: 100%;

@@ -172,9 +172,7 @@ class Home extends Component {
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <div className="container-main">
-          <div className="container-item center-items info">
-            Your Account: {this.state.account}
-          </div>
+        
           {/* {!this.state.elStarted & !this.state.elEnded ? (
             <div className="container-item info">
               <center>

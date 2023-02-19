@@ -74,7 +74,7 @@ export default class Voting extends Component {
 
       // Get start and end values
       const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ isElStarted: start });
+      this.setState({ isElStarted: true });
       const end = await this.state.ElectionInstance.methods.getEnd().call();
       this.setState({ isElEnded: end });
 
@@ -128,6 +128,21 @@ export default class Voting extends Component {
       console.error(error);
     }
   };
+
+
+  renderElectionCategories = (electionTitles) =>{
+    return (
+      <>
+       <div className="container-item-election-category">
+        <div className="candidate-info-header">
+          <h2>{electionTitles}</h2>
+        </div>
+        {this.state.candidates.map(this.renderCandidates)}
+      </div>
+      </>
+     
+    );
+  }
 
   renderCandidates = (candidate) => {
     const castVote = async (candidateAddress) => {
@@ -244,7 +259,7 @@ export default class Voting extends Component {
                   </div>
                 </>
               )}
-              <div className="container-main">
+              {/* <div className="container-main">
                 <h2>Candidates</h2>
                 <small>Total candidates: {this.state.candidates.length}</small>
                 {this.state.candidates.length < 1 ? (
@@ -254,12 +269,22 @@ export default class Voting extends Component {
                 ) : (
                   <>
                     {this.state.candidates.map(this.renderCandidates)}
-                    {/* <div
-                      className="container-item"
-                      style={{ border: "1px solid black" }}
-                    >
-                      <center>That is all.</center>
-                    </div> */}
+
+                  </>
+                )}
+              </div> */}
+
+              <div className="container-main">
+                <h2>Elections Categories</h2>
+                <small>Total Category: {this.state.electionTitles.length}</small>
+                {this.state.electionTitles.length < 1 ? (
+                  <div className="container-item attention">
+                    <center>No any election to vote for.</center>
+                  </div>
+                ) : (
+                  <>
+                    {this.state.electionTitles.map(this.renderElectionCategories)}
+
                   </>
                 )}
               </div>
