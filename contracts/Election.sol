@@ -294,11 +294,11 @@ contract Election {
         return end;
     }
 
-    function getRegistrationStatus() public view returns (bool) {
+    function getRegistrationStatus(uint256 _timeStamp) public view returns (bool) {
         bool isRegistrationOnGoing;
         if (
-            block.timestamp >= registrationStartTime &&
-            block.timestamp <= registrationEndTime
+            _timeStamp >= registrationStartTime &&
+            _timeStamp <= registrationEndTime
         ) {
             isRegistrationOnGoing = true;
         }else{
@@ -318,4 +318,26 @@ contract Election {
         } 
         return isCandidateAlreayAVoter;
     }
+
+
+    //get voting registration start and end times
+    function getRegistrationStartTime() public view returns(uint256){
+        return registrationStartTime;
+    } 
+
+
+    function getRegistrationEndTime() public view returns(uint256){
+        return registrationEndTime;
+    } 
+
+
+
+     // get voting start and end times
+    function getVotingStartTime() public view returns(uint256){
+        return votingStartTime;
+    } 
+
+    function getVotingEndTime() public view returns(uint256){
+        return votingEndTime;
+    } 
 }
