@@ -204,9 +204,9 @@ export default class Registration extends Component {
               <div className="container-item">
               <div className="candidate-info-header">
               <h2>
-                  Registration Finish Date 
+                  Registration End Date 
                 </h2>
-              <center><small>{this.state.registrationStartDateTimeLocal}</small></center>
+              <center><small>{this.state.registrationEndDateTimeLocal}</small></center>
               </div>
 
               </div>

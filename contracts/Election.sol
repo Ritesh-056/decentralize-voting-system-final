@@ -12,7 +12,7 @@ contract Election {
     address[] public voters; // array to store address of voters
     address[] public candidates; //array to store address of voters
 
-    address[] public approvedVoters; //array to store address of approved voters 
+    address[] public approvedVoters; //array to store address of approved voters
     address[] public approvedCandidates; //array to store address of approved candidates
 
     mapping(address => Voter) public voterDetails;
@@ -23,6 +23,10 @@ contract Election {
     uint256 public registrationEndTime;
     uint256 public votingStartTime;
     uint256 public votingEndTime;
+
+    //candidates list
+    Candidate[] candidateList;
+    Voter[] voterList;
 
     constructor() {
         admin = msg.sender;
@@ -40,7 +44,7 @@ contract Election {
         address candidateAddress;
         string header;
         string slogan;
-        string electionTitle;
+        uint256 electionTitleIndex;
         uint256 voteCount;
         bool isVerified;
         bool isRegistered;
@@ -205,14 +209,14 @@ contract Election {
     function registerAsCandidate(
         string memory _header,
         string memory _slogan,
-        string memory _electionTitle
+        uint256 _electionTitleIndex
     ) public registrationOnGoing {
         Candidate memory newCandidate = Candidate({
             candidateAddress: msg.sender,
             candidateId: candidateCount,
             header: _header,
             slogan: _slogan,
-            electionTitle:_electionTitle,
+            electionTitleIndex: _electionTitleIndex,
             voteCount: 0,
             isVerified: false,
             isRegistered: true
@@ -260,7 +264,6 @@ contract Election {
     {
         voterDetails[voterAddress].isVerified = _verifedStatus;
         approvedVoters.push(voterAddress);
-
     }
 
     // Vote
@@ -294,50 +297,98 @@ contract Election {
         return end;
     }
 
-    function getRegistrationStatus(uint256 _timeStamp) public view returns (bool) {
+    function getRegistrationStatus(
+        uint256 _timeStamp
+    ) public view returns (bool) {
         bool isRegistrationOnGoing;
         if (
             _timeStamp >= registrationStartTime &&
             _timeStamp <= registrationEndTime
         ) {
             isRegistrationOnGoing = true;
-        }else{
+        } else {
             isRegistrationOnGoing = false;
         }
         return isRegistrationOnGoing;
     }
 
-
-    function getVoterStatusForCandidate(address _currentAddress) public view returns (bool) {
+    function getVoterStatusForCandidate(
+        address _currentAddress
+    ) public view returns (bool) {
         bool isCandidateAlreayAVoter = false;
-        for(uint i=0 ; i< approvedVoters.length ; i++){
-            if(_currentAddress == approvedVoters[i]){
+        for (uint i = 0; i < approvedVoters.length; i++) {
+            if (_currentAddress == approvedVoters[i]) {
                 isCandidateAlreayAVoter = true;
                 break;
             }
-        } 
+        }
         return isCandidateAlreayAVoter;
     }
 
-
     //get voting registration start and end times
-    function getRegistrationStartTime() public view returns(uint256){
+    function getRegistrationStartTime() public view returns (uint256) {
         return registrationStartTime;
-    } 
+    }
 
-
-    function getRegistrationEndTime() public view returns(uint256){
+    function getRegistrationEndTime() public view returns (uint256) {
         return registrationEndTime;
-    } 
+    }
 
-
-
-     // get voting start and end times
-    function getVotingStartTime() public view returns(uint256){
+    // get voting start and end times
+    function getVotingStartTime() public view returns (uint256) {
         return votingStartTime;
-    } 
+    }
 
-    function getVotingEndTime() public view returns(uint256){
+    function getVotingEndTime() public view returns (uint256) {
         return votingEndTime;
-    } 
+    }
+
+    //get candidate associated with the elections
+    function getCandidatesForAssociatedElections(
+        uint256 _electionTitleIndex
+    ) public view returns (Candidate[] memory) {
+        Candidate[] memory candidatesTemp = new Candidate[](
+            approvedCandidates.length
+        );
+        uint256 numCandidates = 0;
+
+        for (uint256 i = 0; i < approvedCandidates.length; i++) {
+            if (
+                candidateDetails[approvedCandidates[i]].electionTitleIndex ==
+                _electionTitleIndex
+            ) {
+                candidatesTemp[numCandidates] = candidateDetails[
+                    approvedCandidates[i]
+                ];
+                numCandidates++;
+            }
+        }
+
+        // Create a new array with the correct length
+        Candidate[] memory candidateListNumber = new Candidate[](numCandidates);
+
+        // Copy the elements from candidatesTemp to the new array
+        for (uint i = 0; i < numCandidates; i++) {
+            candidateListNumber[i] = candidatesTemp[i];
+        }
+
+        return candidateListNumber;
+    }
+
+
+
+    function getCandidateCountForAsscociatedElection(
+        uint256 _electionTitleIndex
+    ) public view returns (uint256) {
+        uint256 candidateListCount = 0;
+        for (uint256 i = 0; i < approvedCandidates.length; i++) {
+            if (
+                candidateDetails[approvedCandidates[i]].electionTitleIndex ==
+                _electionTitleIndex
+            ) {
+                candidateListCount++;
+            }
+        }
+        return candidateListCount;
+    }
 }

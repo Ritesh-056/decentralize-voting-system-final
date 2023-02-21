@@ -22,6 +22,7 @@ export default class CandidateRegistration extends Component {
       isElEnded: false,
       header: "",
       slogan: "",
+      selectedElectionIndex:0,
       selectedElection: "",
       electionTitles: [],
       registrationStatus: false,
@@ -144,6 +145,8 @@ export default class CandidateRegistration extends Component {
         .call();
       this.setState({ electionTitles: electionTitles });
       this.setState({ selectedElection: electionTitles[0] });
+      this.setState({ selectedElectionIndex: 0 });
+
 
 
 
@@ -182,6 +185,8 @@ export default class CandidateRegistration extends Component {
 
   handleSelectChange(event) {
     this.setState({ selectedElection: event.target.value });
+    this.setState({selectedElectionIndex:event.target.selectedIndex})
+    console.log(this.state.selectedElectionIndex);
   }
 
   updateHeader = (event) => {
@@ -193,7 +198,7 @@ export default class CandidateRegistration extends Component {
 
   registerAsCandidate = async () => {
     await this.state.ElectionInstance.methods
-      .registerAsCandidate(this.state.header, this.state.slogan)
+      .registerAsCandidate(this.state.header, this.state.slogan,this.state.selectedElectionIndex)
       .send({ from: this.state.account, gas: 1000000 });
     alert("Candidate registration successful");
     window.location.reload();
@@ -226,9 +231,9 @@ export default class CandidateRegistration extends Component {
             <div className="container-main">
               <div className="container-item">
                 <div className="candidate-info-header">
-                  <h2>Registration Finish Date</h2>
+                  <h2>Registration End Date</h2>
                   <center>
-                    <small>{this.state.registrationStartDateTimeLocal}</small>
+                    <small>{this.state.registrationEndDateTimeLocal}</small>
                   </center>
                 </div>
               </div>
@@ -261,6 +266,7 @@ export default class CandidateRegistration extends Component {
                     Select an election title
                     <select
                       className={"select-election-ac"}
+                      // value={this.state.selectedElection}
                       value={this.state.selectedElection}
                       onChange={this.handleSelectChange}
                     >
@@ -285,14 +291,14 @@ export default class CandidateRegistration extends Component {
                             if (
                               this.state.header == "" ||
                               this.state.slogan == "" ||
-                              this.state.selectedElection == ""
+                              this.state.selectedElectionIndex < 0
                             ) {
                               alert("Please check your candidates details.");
                             } else {
                               console.log(
                                 this.state.header,
                                 this.state.slogan,
-                                this.state.selectedElection
+                                this.state.selectedElectionIndex
                               );
                               this.registerAsCandidate();
                             }

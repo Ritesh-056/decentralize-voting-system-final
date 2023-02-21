@@ -97,6 +97,23 @@ export default class Voting extends Component {
       }
       this.setState({ candidates: this.state.candidates });
 
+
+      //list of candidates for particular election title
+      const candidateCountForZero =await this.state.ElectionInstance.methods.getCandidateCountForAsscociatedElection(0).call();
+      const candidateCountForOne =await this.state.ElectionInstance.methods.getCandidateCountForAsscociatedElection(1).call();
+      const candidateCountForTwo =await this.state.ElectionInstance.methods.getCandidateCountForAsscociatedElection(2).call();
+
+      console.log(candidateCountForZero);
+      console.log(candidateCountForOne);
+      console.log(candidateCountForTwo);
+
+
+      //candidate details for particular election title
+      const candidateDetailsForOne =await this.state.ElectionInstance.methods.getCandidatesForAssociatedElections(1).call();
+      console.log(candidateDetailsForOne);
+
+      
+
       // Loading current voter
       const voter = await this.state.ElectionInstance.methods
         .voterDetails(this.state.account)
