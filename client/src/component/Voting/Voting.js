@@ -13,6 +13,7 @@ import Election from "../../artifacts/contracts/Election.sol/Election.json";
 
 // CSS
 import "./Voting.css";
+import NotCandidateCounted from "../NoCandidateCounted";
 
 export default class Voting extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ export default class Voting extends Component {
       account: null,
       web3: null,
       isAdmin: false,
-      electionTitles:[],
+      electionTitles: [],
       candidateCount: undefined,
       candidates: [],
       isElStarted: false,
@@ -91,28 +92,12 @@ export default class Voting extends Component {
           candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
+          electionTitleIndex: candidate.electionTitleIndex,
           isVerified: candidate.isVerified,
           isRegistered: candidate.isRegistered,
         });
       }
       this.setState({ candidates: this.state.candidates });
-
-
-      //list of candidates for particular election title
-      const candidateCountForZero =await this.state.ElectionInstance.methods.getCandidateCountForAsscociatedElection(0).call();
-      const candidateCountForOne =await this.state.ElectionInstance.methods.getCandidateCountForAsscociatedElection(1).call();
-      const candidateCountForTwo =await this.state.ElectionInstance.methods.getCandidateCountForAsscociatedElection(2).call();
-
-      console.log(candidateCountForZero);
-      console.log(candidateCountForOne);
-      console.log(candidateCountForTwo);
-
-
-      //candidate details for particular election title
-      const candidateDetailsForOne =await this.state.ElectionInstance.methods.getCandidatesForAssociatedElections(1).call();
-      console.log(candidateDetailsForOne);
-
-      
 
       // Loading current voter
       const voter = await this.state.ElectionInstance.methods
@@ -129,9 +114,10 @@ export default class Voting extends Component {
         },
       });
 
-
-     const electionTitles = await this.state.ElectionInstance.methods.getElectionTitles().call();
-      this.setState({electionTitles:electionTitles})
+      const electionTitles = await this.state.ElectionInstance.methods
+        .getElectionTitles()
+        .call();
+      this.setState({ electionTitles: electionTitles });
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
@@ -146,20 +132,28 @@ export default class Voting extends Component {
     }
   };
 
+  renderElectionCategories = (electionTitles, index) => {
+    const candidates = this.state.candidates.filter(
+      (candidate, candidateIndex) => candidateIndex === index
+    );
 
-  renderElectionCategories = (electionTitles) =>{
     return (
       <>
-       <div className="container-item-election-category">
-        <div className="candidate-info-header">
-          <h2>{electionTitles}</h2>
+        <div className="container-item-election-category">
+          <div className="candidate-info-header-title">
+            <h2>{electionTitles}</h2>
+          </div>
+          {candidates.length ? (
+            candidates.map(this.renderCandidates)
+          ) : (
+            <>
+              <NotCandidateCounted />
+            </>
+          )}
         </div>
-        {this.state.candidates.map(this.renderCandidates)}
-      </div>
       </>
-     
     );
-  }
+  };
 
   renderCandidates = (candidate) => {
     const castVote = async (candidateAddress) => {
@@ -170,7 +164,11 @@ export default class Voting extends Component {
     };
     const confirmVote = (candidateAddress, header) => {
       var r = window.confirm(
-        "Vote for " + header + " with id " + candidate.candidateId + ".\nAre you sure?"
+        "Vote for " +
+          header +
+          " with id " +
+          candidate.candidateId +
+          ".\nAre you sure?"
       );
       if (r === true) {
         castVote(candidateAddress);
@@ -181,9 +179,10 @@ export default class Voting extends Component {
         <div className="candidate-info">
           <h2>
             {/* {candidate.header} <small>#{candidate.id}</small> */}
-            {`[${candidate.candidateId}] `}{candidate.header} 
-          </h2>
-          {" "}<small>{candidate.slogan}</small>
+            {`[${candidate.candidateId}] `}
+            {candidate.header}
+          </h2>{" "}
+          <small>{candidate.slogan}</small>
         </div>
         <div className="vote-btn-container">
           <button
@@ -286,22 +285,24 @@ export default class Voting extends Component {
                 ) : (
                   <>
                     {this.state.candidates.map(this.renderCandidates)}
-
                   </>
                 )}
               </div> */}
 
               <div className="container-main">
                 <h2>Elections Categories</h2>
-                <small>Total Category: {this.state.electionTitles.length}</small>
+                <small>
+                  Total Category: {this.state.electionTitles.length}
+                </small>
                 {this.state.electionTitles.length < 1 ? (
                   <div className="container-item attention">
                     <center>No any election to vote for.</center>
                   </div>
                 ) : (
                   <>
-                    {this.state.electionTitles.map(this.renderElectionCategories)}
-
+                    {this.state.electionTitles.map((electionTitle, index) =>
+                      this.renderElectionCategories(electionTitle, index)
+                    )}
                   </>
                 )}
               </div>
