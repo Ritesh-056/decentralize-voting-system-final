@@ -2,10 +2,10 @@
 pragma solidity >=0.8.11 <0.9.0;
 
 contract Election {
-    bool start;
-    bool end;
-    bool registrationStart;
-    bool registrationEnd;
+    bool started;
+    bool ended;
+    bool isElectionInit;
+
     uint256 voterCount;
     uint256 candidateCount;
     address public admin;
@@ -24,18 +24,15 @@ contract Election {
     uint256 public votingStartTime;
     uint256 public votingEndTime;
 
-    //candidates list
-    Candidate[] candidateList;
-    Voter[] voterList;
+
 
     constructor() {
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
-        registrationStart = false;
-        registrationEnd = false;
-        start = false;
-        end = false;
+        started = false;
+        ended = false;
+        isElectionInit = false;
     }
 
     // Candidate attrb
@@ -145,7 +142,8 @@ contract Election {
         );
 
         electionDetails = new_election;
-
+        isElectionInit =true;
+        
         //set registration start,end and voting start,end
         registrationStartTime = _registrationStartTime;
         registrationEndTime = _registrationEndTime;
@@ -288,13 +286,19 @@ contract Election {
         return winnerAddress;
     }
 
+
+    function getElectionInitStatus() public view returns(bool){
+       return isElectionInit; 
+    }
+
+
     // Get election start and end values
     function getStart() public view returns (bool) {
-        return start;
+        return started;
     }
 
     function getEnd() public view returns (bool) {
-        return end;
+        return ended;
     }
 
     function getRegistrationStatus(

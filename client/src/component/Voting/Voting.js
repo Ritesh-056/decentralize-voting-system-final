@@ -97,6 +97,7 @@ export default class Voting extends Component {
           isRegistered: candidate.isRegistered,
         });
       }
+
       this.setState({ candidates: this.state.candidates });
 
       // Loading current voter
@@ -133,9 +134,7 @@ export default class Voting extends Component {
   };
 
   renderElectionCategories = (electionTitles, index) => {
-    const candidates = this.state.candidates.filter(
-      (candidate, candidateIndex) => candidateIndex === index
-    );
+    const candidates = this.state.candidates.filter(candidate => candidate.electionTitleIndex == index);
 
     return (
       <>
@@ -143,7 +142,7 @@ export default class Voting extends Component {
           <div className="candidate-info-header-title">
             <h2>{electionTitles}</h2>
           </div>
-          {candidates.length ? (
+          {candidates.length >= 1 ? (
             candidates.map(this.renderCandidates)
           ) : (
             <>

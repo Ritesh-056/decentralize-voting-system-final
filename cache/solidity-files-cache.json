@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/ritesh/decentralize-voting-system-business/contracts/Election.sol": {
-      "lastModificationDate": 1677006688420,
-      "contentHash": "3ab58a65224761865f1aa744bbaae098",
+      "lastModificationDate": 1677085144759,
+      "contentHash": "b1c65ac7d64de9fc1bcfd8e954e42caa",
       "sourceName": "contracts/Election.sol",
       "solcConfig": {
         "version": "0.8.11",

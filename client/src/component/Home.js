@@ -8,7 +8,6 @@ import Navbar from "./Navbar/Navigation";
 import NavbarAdmin from "./Navbar/NavigationAdmin";
 import UserHome from "./UserHome";
 import StartEnd from "./StartEnd";
-import ElectionStatus from "./ElectionStatus";
 import { connect } from "react-redux";
 import { addElectionDetail } from "../redux/action/index";
 
@@ -27,6 +26,8 @@ class Home extends Component {
   // electionTitle:
   // this.props.electionTitles
 
+
+
   constructor(props) {
     super(props);
     this.state = {
@@ -35,6 +36,7 @@ class Home extends Component {
       web3: null,
       isAdmin: false,
       elStarted: false,
+      electionStatus:false,
       elEnded: false,
       elDetails: {},
     };
@@ -90,18 +92,24 @@ class Home extends Component {
       const adminTitle = await this.state.ElectionInstance.methods
         .getAdminTitle()
         .call();
-      const electionTitle = await this.state.ElectionInstance.methods
+      const electionTitles = await this.state.ElectionInstance.methods
         .getElectionTitles()
         .call();
       const organizationTitle = await this.state.ElectionInstance.methods
         .getOrganizationTitle()
         .call();
 
+       
+      const electionStatus = await this.state.ElectionInstance.methods
+      .getElectionInitStatus().call();
+      this.setState({electionStatus: electionStatus})  
+
+     console.log(this.state.electionStatus)
+
       this.props.addElectionDetail({
         adminName: adminName,
         adminEmail: adminEmail,
         adminTitle: adminTitle,
-        electionTitle: electionTitle,
         organizationTitle: organizationTitle,
       });
     } catch (error) {
@@ -112,13 +120,7 @@ class Home extends Component {
       console.error(error);
     }
   };
-  // end election
-  endElection = async () => {
-    await this.state.ElectionInstance.methods
-      .endElection()
-      .send({ from: this.state.account, gas: 1000000 });
-    window.location.reload();
-  };
+
 
   //convert local time into unix timestamp
   convertDateTimeToUnix = (dateTime) => {
@@ -190,9 +192,9 @@ class Home extends Component {
           <>
             <this.renderAdminHome />
           </>
-        ) : this.state.elStarted ? (
+        ) : this.state.electionStatus ? (
           <>
-            <UserHome el={this.state.elDetails} />
+            <UserHome el={this.props.electionDetail} />
           </>
         ) : !this.state.elStarted && this.state.elEnded ? (
           <>
@@ -214,10 +216,6 @@ class Home extends Component {
     );
   }
 
-  dummyView = () => {
-    return null;
-  };
-
   renderAdminHome = () => {
     const EMsg = (props) => {
       return <span style={{ color: "red", fontSize: 12 }}>{props.msg}</span>;
@@ -237,9 +235,8 @@ class Home extends Component {
 
       return (
         <div>
-          <this.dummyView />
           <form onSubmit={handleSubmit(onSubmit)}>
-            {!this.state.elStarted & !this.state.elEnded ? (
+            {!this.state.electionStatus ? (
               <div className="container-main">
                 {/* about-admin */}
                 <div className="about-admin">
@@ -383,11 +380,16 @@ class Home extends Component {
                   </div>
                 </div>
               </div>
-            ) : this.state.elStarted ? (
+            ) : this.state.electionStatus ? (
               <UserHome el={this.state.elDetails} />
             ) : null}
-            <StartEnd
+            {/* <StartEnd
               elStarted={this.state.elStarted}
+              elEnded={this.state.elEnded}
+              endElFn={this.endElection}
+            /> */}
+            <StartEnd
+              elStarted={this.state.electionStatus}
               elEnded={this.state.elEnded}
               endElFn={this.endElection}
             />

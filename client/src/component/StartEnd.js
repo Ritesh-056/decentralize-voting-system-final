@@ -7,7 +7,7 @@ const StartEnd = (props) => {
       className="container-main"
       style={{ borderTop: "1px solid", marginTop: "0px" }}
     >
-      {!props.elStarted ? (
+      {!props.electionStatus ? (
         <>
           {/* edit here to display start election Again button */}
           {!props.elEnded ? (

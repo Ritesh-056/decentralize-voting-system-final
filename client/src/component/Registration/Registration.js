@@ -87,7 +87,7 @@ export default class Registration extends Component {
         .getRegistrationStatus(currentTimeStamp)
         .call();
       this.setState({ registrationStatus: registrationStatus });
-
+      console.log(registrationStatus);
 
       // Total number of voters
       const voterCount = await this.state.ElectionInstance.methods
@@ -129,32 +129,39 @@ export default class Registration extends Component {
         },
       });
 
-      //get registration start and end time
-      const registrationStartTimeUnixStamp =
-        await this.state.ElectionInstance.methods
-          .getRegistrationStartTime()
-          .call();
-      const registrationEndTimeUnixTimeStamp =
-        await this.state.ElectionInstance.methods
-          .getRegistrationEndTime()
-          .call();
+      const electionStatus = await this.state.ElectionInstance.methods
+        .getElectionInitStatus()
+        .call();
+      this.setState({ electionStatus: electionStatus });
 
-      const registrationStartDateTimeLocal = getLocalDateTime(
-        registrationStartTimeUnixStamp
-      );
-      const registrationEndDateTimeLocal = getLocalDateTime(
-        registrationEndTimeUnixTimeStamp
-      );
+      console.log(this.state.electionStatus);
 
-      console.log(registrationStartDateTimeLocal);
-      console.log(registrationEndDateTimeLocal);
+      if (electionStatus) {
+        //get registration start and end time
+        const registrationStartTimeUnixStamp =
+          await this.state.ElectionInstance.methods
+            .getRegistrationStartTime()
+            .call();
+        const registrationEndTimeUnixTimeStamp =
+          await this.state.ElectionInstance.methods
+            .getRegistrationEndTime()
+            .call();
 
-      this.setState({
-        registrationStartDateTimeLocal: registrationStartDateTimeLocal,
-        registrationEndDateTimeLocal: registrationEndDateTimeLocal,
-      });
+        const registrationStartDateTimeLocal = getLocalDateTime(
+          registrationStartTimeUnixStamp
+        );
+        const registrationEndDateTimeLocal = getLocalDateTime(
+          registrationEndTimeUnixTimeStamp
+        );
 
-    
+        console.log(registrationStartDateTimeLocal);
+        console.log(registrationEndDateTimeLocal);
+
+        this.setState({
+          registrationStartDateTimeLocal: registrationStartDateTimeLocal,
+          registrationEndDateTimeLocal: registrationEndDateTimeLocal,
+        });
+      }
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -202,16 +209,14 @@ export default class Registration extends Component {
           <>
             <div className="container-main">
               <div className="container-item">
-              <div className="candidate-info-header">
-              <h2>
-                  Registration End Date 
-                </h2>
-              <center><small>{this.state.registrationEndDateTimeLocal}</small></center>
+                <div className="candidate-info-header">
+                  <h2>Registration End Date</h2>
+                  <center>
+                    <small>{this.state.registrationEndDateTimeLocal}</small>
+                  </center>
+                </div>
               </div>
 
-              </div>
-             
-              
               <h2>Registration</h2>
               <small>Register to vote.</small>
               <div className="container-item">
