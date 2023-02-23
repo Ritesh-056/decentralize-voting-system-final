@@ -18,6 +18,7 @@ import Election from "../artifacts/contracts/Election.sol/Election.json";
 // CSS
 import "./Home.css";
 import HomeTitleForm from "./HomeTitleForm";
+import ElectionStatusAdminHome from "./ElectionStatusAdminHome";
 
 // const buttonRef = React.createRef();
 class Home extends Component {
@@ -25,8 +26,6 @@ class Home extends Component {
   // this.props.electionDetail
   // electionTitle:
   // this.props.electionTitles
-
-
 
   constructor(props) {
     super(props);
@@ -36,7 +35,8 @@ class Home extends Component {
       web3: null,
       isAdmin: false,
       elStarted: false,
-      electionStatus:false,
+      electionStatus: false,
+      electionInitStatus: false,
       elEnded: false,
       elDetails: {},
     };
@@ -99,12 +99,12 @@ class Home extends Component {
         .getOrganizationTitle()
         .call();
 
-       
-      const electionStatus = await this.state.ElectionInstance.methods
-      .getElectionInitStatus().call();
-      this.setState({electionStatus: electionStatus})  
+      const electionInitStatus = await this.state.ElectionInstance.methods
+        .getElectionInitStatus()
+        .call();
+      this.setState({ electionInitStatus: electionInitStatus });
 
-     console.log(this.state.electionStatus)
+      console.log(this.state.electionInitStatus);
 
       this.props.addElectionDetail({
         adminName: adminName,
@@ -120,7 +120,6 @@ class Home extends Component {
       console.error(error);
     }
   };
-
 
   //convert local time into unix timestamp
   convertDateTimeToUnix = (dateTime) => {
@@ -145,7 +144,7 @@ class Home extends Component {
       )
       .send({ from: this.state.account, gas: 1000000 });
 
-      alert("Election saved successful");
+    alert("Election saved successful");
     window.location.reload();
   };
   addTitle = () => {};
@@ -174,7 +173,6 @@ class Home extends Component {
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <div className="container-main">
-        
           {/* {!this.state.elStarted & !this.state.elEnded ? (
             <div className="container-item info">
               <center>
@@ -192,7 +190,7 @@ class Home extends Component {
           <>
             <this.renderAdminHome />
           </>
-        ) : this.state.electionStatus ? (
+        ) : this.state.electionInitStatus ? (
           <>
             <UserHome el={this.props.electionDetail} />
           </>
@@ -218,7 +216,11 @@ class Home extends Component {
 
   renderAdminHome = () => {
     const EMsg = (props) => {
-      return <span style={{ color: "red", fontSize: 12 }}>{props.msg}</span>;
+      return (
+        <span style={{ color: "red", fontSize: 12, paddingLeft: 32 }}>
+          {props.msg}
+        </span>
+      );
     };
 
     const AdminHome = () => {
@@ -230,13 +232,44 @@ class Home extends Component {
       } = useForm();
 
       const onSubmit = (data) => {
+        const votingstartTime = this.convertDateTimeToUnix(
+          data.votingStartDateTime
+        );
+        const votingEndTime = this.convertDateTimeToUnix(
+          data.votingEndDateTime
+        );
+        const registrationStartTime = this.convertDateTimeToUnix(
+          data.registrationStartDateTime
+        );
+        const registrationEndTime = this.convertDateTimeToUnix(
+          data.registrationEndDateTime
+        );
+
+        if (registrationEndTime <= registrationStartTime) {
+          return alert(
+            "Registration end time should be greater than registration start time"
+          );
+        }
+
+        if (votingstartTime <= registrationEndTime) {
+          return alert(
+            "Voting start time should be greater than registration end time"
+          );
+        }
+
+        if (votingEndTime <= votingstartTime) {
+          return alert(
+            "Voting end time should be greater than voting start time"
+          );
+        }
+
         this.registerElection(data);
       };
 
       return (
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {!this.state.electionStatus ? (
+            {!this.state.electionInitStatus ? (
               <div className="container-main">
                 {/* about-admin */}
                 <div className="about-admin">
@@ -244,8 +277,10 @@ class Home extends Component {
                   <div className="container-item center-items">
                     <div className="container-item-inside">
                       <label className="label-home">
-                        <p className="label-home-title">Full Name</p>
-                        {errors.adminFName && <EMsg msg="*required" />}
+                        <p className="label-home-title">
+                          Full Name
+                          {errors.adminFName && <EMsg msg="*required" />}
+                        </p>
                         <input
                           className="input-home"
                           type="text"
@@ -263,10 +298,13 @@ class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        <p className="label-home-title">Email</p>
-                        {errors.adminEmail && (
-                          <EMsg msg={errors.adminEmail.message} />
-                        )}
+                        <p className="label-home-title">
+                          Email
+                          {errors.adminEmail && (
+                            <EMsg msg={errors.adminEmail.message} />
+                          )}
+                        </p>
+
                         <input
                           className="input-home"
                           placeholder="email@gmail.com"
@@ -284,8 +322,9 @@ class Home extends Component {
                       <label className="label-home">
                         <p className="label-home-title">
                           Job Title or Position
+                          {errors.adminTitle && <EMsg msg="*required" />}
                         </p>
-                        {errors.adminTitle && <EMsg msg="*required" />}
+
                         <input
                           className="input-home"
                           type="text"
@@ -307,8 +346,10 @@ class Home extends Component {
                     <div className="container-item-inside">
                       <HomeTitleForm />
                       <label className="label-home">
-                        <p className="label-home-title">Organization Name</p>
-                        {errors.organizationName && <EMsg msg="*required" />}
+                        <p className="label-home-title">
+                          Organization Name
+                          {errors.organizationTitle && <EMsg msg="*required" />}
+                        </p>
                         <input
                           className="input-home"
                           type="text"
@@ -322,10 +363,11 @@ class Home extends Component {
                       <label className="label-home">
                         <p className="label-home-title">
                           Registration Start From
+                          {errors.registrationStartDateTime && (
+                            <EMsg msg="*required" />
+                          )}
                         </p>
-                        {errors.registrationStartDateTime && (
-                          <EMsg msg="*required" />
-                        )}
+
                         <input
                           className="input-home"
                           type="datetime-local"
@@ -337,10 +379,13 @@ class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        <p className="label-home-title">Registration End At</p>
-                        {errors.registrationEndDateTime && (
-                          <EMsg msg="*required" />
-                        )}
+                        <p className="label-home-title">
+                          Registration End At
+                          {errors.registrationEndDateTime && (
+                            <EMsg msg="* required" />
+                          )}
+                        </p>
+
                         <input
                           className="input-home"
                           type="datetime-local"
@@ -352,8 +397,13 @@ class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        <p className="label-home-title">Election Start From</p>
-                        {errors.votingStartDateTime && <EMsg msg="*required" />}
+                        <p className="label-home-title">
+                          Election Start From
+                          {errors.votingStartDateTime && (
+                            <EMsg msg="*required" />
+                          )}
+                        </p>
+
                         <input
                           className="input-home"
                           type="datetime-local"
@@ -365,8 +415,11 @@ class Home extends Component {
                       </label>
 
                       <label className="label-home">
-                        <p className="label-home-title">Elections End At</p>
-                        {errors.votingEndDateTime && <EMsg msg="*required" />}
+                        <p className="label-home-title">
+                          Elections End At
+                          {errors.votingEndDateTime && <EMsg msg="*required" />}
+                        </p>
+
                         <input
                           className="input-home"
                           type="datetime-local"
@@ -380,23 +433,16 @@ class Home extends Component {
                   </div>
                 </div>
               </div>
-            ) : this.state.electionStatus ? (
+            ) : !this.state.isAdmin ? (
               <UserHome el={this.state.elDetails} />
-            ) : null}
-            {/* <StartEnd
-              elStarted={this.state.elStarted}
-              elEnded={this.state.elEnded}
-              endElFn={this.endElection}
-            /> */}
+            ) : (
+              <ElectionStatusAdminHome el={this.state.elDetails} />
+            )}
             <StartEnd
-              elStarted={this.state.electionStatus}
+              elStarted={this.state.elStarted}
               elEnded={this.state.elEnded}
               endElFn={this.endElection}
             />
-            {/* <ElectionStatus
-              elStarted={this.state.elStarted}
-              elEnded={this.state.elEnded}
-            /> */}
           </form>
         </div>
       );

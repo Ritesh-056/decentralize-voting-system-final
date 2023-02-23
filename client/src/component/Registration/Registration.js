@@ -14,6 +14,7 @@ import RegistrationInit from "../RegistrationStatus";
 
 //get getlocaldataTime func
 import { getLocalDateTime } from "../../DateTimeLocal";
+import ElectionStatus from "../ElectionStatus";
 
 export default class Registration extends Component {
   constructor(props) {
@@ -25,7 +26,8 @@ export default class Registration extends Component {
       isAdmin: false,
       isElStarted: false,
       isElEnded: false,
-      registrationStatus: false,
+      electionStarted: false,
+      electionInitStatus:false,
       voterCount: undefined,
       voterName: "",
       voterPhone: "",
@@ -83,12 +85,11 @@ export default class Registration extends Component {
       const currentTimeStamp = Math.floor(Date.now() / 1000);
       console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
-      const registrationStatus = await this.state.ElectionInstance.methods
-        .getRegistrationStatus(currentTimeStamp)
+      const electionStarted = await this.state.ElectionInstance.methods
+        .getElectionStatus(currentTimeStamp)
         .call();
-      this.setState({ registrationStatus: registrationStatus });
-      console.log(registrationStatus);
-
+      this.setState({ electionStarted: electionStarted });
+    
       // Total number of voters
       const voterCount = await this.state.ElectionInstance.methods
         .getTotalVoter()
@@ -129,14 +130,14 @@ export default class Registration extends Component {
         },
       });
 
-      const electionStatus = await this.state.ElectionInstance.methods
+      const electionInitStatus = await this.state.ElectionInstance.methods
         .getElectionInitStatus()
         .call();
-      this.setState({ electionStatus: electionStatus });
+      this.setState({ electionInitStatus: electionInitStatus });
 
-      console.log(this.state.electionStatus);
+      console.log(this.state.electionInitStatus);
 
-      if (electionStatus) {
+      if (electionInitStatus) {
         //get registration start and end time
         const registrationStartTimeUnixStamp =
           await this.state.ElectionInstance.methods
@@ -203,20 +204,11 @@ export default class Registration extends Component {
     return (
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-        {!this.state.registrationStatus ? (
-          <RegistrationInit />
+        {this.state.electionStarted ? (
+          <ElectionStatus />
         ) : (
           <>
             <div className="container-main">
-              <div className="container-item">
-                <div className="candidate-info-header">
-                  <h2>Registration End Date</h2>
-                  <center>
-                    <small>{this.state.registrationEndDateTimeLocal}</small>
-                  </center>
-                </div>
-              </div>
-
               <h2>Registration</h2>
               <small>Register to vote.</small>
               <div className="container-item">

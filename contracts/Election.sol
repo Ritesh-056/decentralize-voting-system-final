@@ -237,7 +237,7 @@ contract Election {
     function registerAsVoter(
         string memory _name,
         string memory _phone
-    ) public registrationOnGoing {
+    ) public {
         Voter memory newVoter = Voter({
             voterAddress: msg.sender,
             name: _name,
@@ -314,6 +314,21 @@ contract Election {
             isRegistrationOnGoing = false;
         }
         return isRegistrationOnGoing;
+    }
+
+    function getElectionStatus(
+        uint256 _timeStamp
+    ) public view returns (bool) {
+        bool isVotingOnGoing;
+        if (
+            _timeStamp >= votingStartTime &&
+            _timeStamp <= votingEndTime
+        ) {
+            isVotingOnGoing = true;
+        } else {
+            isVotingOnGoing = false;
+        }
+        return isVotingOnGoing;
     }
 
     function getVoterStatusForCandidate(

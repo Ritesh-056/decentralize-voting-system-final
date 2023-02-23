@@ -5,12 +5,8 @@ function UserHome(props) {
     <div>
       <div className="container-main" style={{ color: "white" }}>
         <div className="container-list title">
-          {/* {this.props.electionTitles.map((item, index) => (
-            <div key={index}>{item.name}</div>
-          ))} */}
-          <h1>{props.el.electionTitle}</h1>
-          <br />
-          <center>{props.el.organizationTitle}</center>
+        <h1><center>Election has been initialized.</center></h1>
+          <h2><center>{props.el.organizationTitle}</center></h2>
           <table style={{ marginTop: "21px" }}>
             <tr>
               <th>admin</th>
