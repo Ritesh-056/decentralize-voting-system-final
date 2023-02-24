@@ -5,6 +5,7 @@ contract Election {
     bool started;
     bool ended;
     bool isElectionInit;
+    bool alreadyRegisteredCandidate;
 
     uint256 voterCount;
     uint256 candidateCount;
@@ -37,6 +38,7 @@ contract Election {
         registrationEndTime = 0 ;
         votingStartTime = 0;
         votingEndTime = 0;
+        alreadyRegisteredCandidate = false;
     }
 
     // Candidate attrb
@@ -226,6 +228,8 @@ contract Election {
         candidateDetails[msg.sender] = newCandidate;
         candidates.push(msg.sender);
         candidateCount += 1;
+
+        alreadyRegisteredCandidate = true;
     }
 
     //verify candidate
@@ -304,6 +308,10 @@ contract Election {
 
     function getEnd() public view returns (bool) {
         return ended;
+    }
+
+    function getAlreadyRegisteredCandidateStatus() public view returns(bool){
+        return alreadyRegisteredCandidate;
     }
 
     function getRegistrationStatus(

@@ -8,7 +8,6 @@ import Election from "../../artifacts/contracts/Election.sol/Election.json";
 import "./CandidateRegistration.css";
 import NotVoter from "../NotVoter";
 import { getLocalDateTime } from "../../DateTimeLocal";
-import convertDateTimeToUnix from "../../component/Home";
 import {
   RegistrationInit,
   RegistrationEnded,
@@ -33,6 +32,7 @@ export default class CandidateRegistration extends Component {
       candidates: [],
       isRegistrationEnded: false,
       voterStatusForCandidate: false,
+      alreadyRegisteredCandidate:false,
       candidateCount: undefined,
       currentCandidate: {
         candidateAddress: undefined,
@@ -152,10 +152,11 @@ export default class CandidateRegistration extends Component {
           .call();
 
       const currentDate = new Date();
-      const unixdateTime = this.convertDateTimeToUnix(currentDate); 
+      const unixdateTime = this.convertDateTimeToUnix(currentDate);
       this.setState({
         ...this.state,
-        isRegistrationEnded: unixdateTime >= registrationEndTimeUnixTimeStamp ? true : false,
+        isRegistrationEnded:
+          unixdateTime >= registrationEndTimeUnixTimeStamp ? true : false,
       });
 
       const registrationOnGoing = await this.state.ElectionInstance.methods
@@ -163,8 +164,7 @@ export default class CandidateRegistration extends Component {
         .call();
       this.setState({ registrationOnGoing: registrationOnGoing });
       console.log("Is voting time ongoing", this.state.registrationOnGoing);
-     
-      
+
       const registrationStartDateTimeLocal = getLocalDateTime(
         registrationStartTimeUnixStamp
       );
@@ -179,8 +179,17 @@ export default class CandidateRegistration extends Component {
         registrationStartDateTimeLocal: registrationStartDateTimeLocal,
         registrationEndDateTimeLocal: registrationEndDateTimeLocal,
       });
-      
-      
+
+      const alreadyRegisteredCandidate =
+        await this.state.ElectionInstance.methods
+          .getAlreadyRegisteredCandidateStatus()
+          .call();
+
+          this.setState({alreadyRegisteredCandidate : alreadyRegisteredCandidate});
+
+        console.log(this.state.alreadyRegisteredCandidate);  
+
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -220,7 +229,7 @@ export default class CandidateRegistration extends Component {
     const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
     return unixTimestamp;
   };
-  
+
   render() {
     if (!this.state.web3) {
       return (
@@ -244,7 +253,9 @@ export default class CandidateRegistration extends Component {
         {this.state.isRegistrationEnded ? (
           <RegistrationEnded />
         ) : this.state.registrationOnGoing ? (
-          <>
+            this.state.alreadyRegisteredCandidate ? <>
+            
+            </>:  <>
             <div className="container-main">
               <div className="container-item">
                 <div className="candidate-info-header">
