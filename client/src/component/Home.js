@@ -127,7 +127,7 @@ class Home extends Component {
     const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
     return unixTimestamp;
   };
-
+  
   // register and start election
   registerElection = async (data) => {
     await this.state.ElectionInstance.methods
@@ -438,11 +438,15 @@ class Home extends Component {
             ) : (
               <ElectionStatusAdminHome el={this.state.elDetails} />
             )}
-            <StartEnd
-              elStarted={this.state.elStarted}
-              elEnded={this.state.elEnded}
-              endElFn={this.endElection}
-            />
+            {this.state.electionInitStatus ? null : (
+              <>
+                <StartEnd
+                  elStarted={this.state.elStarted}
+                  elEnded={this.state.elEnded}
+                  endElFn={this.endElection}
+                />
+              </>
+            )}
           </form>
         </div>
       );

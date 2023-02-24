@@ -124,6 +124,14 @@ export default class Voting extends Component {
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
       }
+
+
+      const votingstartedTime = await this.state.ElectionInstance.methods.getVotingStartTime().call();
+      const votingEndedTime = await this.state.ElectionInstance.methods.getVotingEndTime().call();
+      console.log(votingstartedTime,votingEndedTime);
+
+
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(

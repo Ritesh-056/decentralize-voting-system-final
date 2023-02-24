@@ -7,19 +7,15 @@ const StartEnd = (props) => {
       className="container-main"
       style={{ borderTop: "1px solid", marginTop: "0px" }}
     >
-      {props.electionInitStatus ? (
-        <>
-              <div className="container-item">
-                <button type="submit" className="btn-election">
-                  Save Election {props.elEnded ? "Again" : null}
-                </button>
-              </div>
-        </>
-      ) :null}
+      <>
+        <div className="container-item">
+          <button type="submit" className="btn-election">
+            Save Election {props.elEnded ? "Again" : null}
+          </button>
+        </div>
+      </>
     </div>
   );
 };
 
 export default StartEnd;
-
-

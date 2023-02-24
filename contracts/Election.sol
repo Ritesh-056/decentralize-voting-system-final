@@ -33,6 +33,10 @@ contract Election {
         started = false;
         ended = false;
         isElectionInit = false;
+        registrationStartTime = 0;
+        registrationEndTime = 0 ;
+        votingStartTime = 0;
+        votingEndTime = 0;
     }
 
     // Candidate attrb
@@ -232,6 +236,7 @@ contract Election {
         candidateDetails[candidateAddress].isVerified = _verifedStatus;
         approvedCandidates.push(candidateAddress);
     }
+
 
     // Request to be added as voter
     function registerAsVoter(

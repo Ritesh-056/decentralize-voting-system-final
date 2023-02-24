@@ -6,9 +6,13 @@ import NavbarAdmin from "../Navbar/NavigationAdmin";
 import getWeb3 from "../../getWeb3";
 import Election from "../../artifacts/contracts/Election.sol/Election.json";
 import "./CandidateRegistration.css";
-import RegistrationInit from "../RegistrationStatus";
 import NotVoter from "../NotVoter";
 import { getLocalDateTime } from "../../DateTimeLocal";
+import convertDateTimeToUnix from "../../component/Home";
+import {
+  RegistrationInit,
+  RegistrationEnded,
+} from "../../component/RegistrationStatus";
 
 export default class CandidateRegistration extends Component {
   constructor(props) {
@@ -22,11 +26,12 @@ export default class CandidateRegistration extends Component {
       isElEnded: false,
       header: "",
       slogan: "",
-      selectedElectionIndex:0,
+      selectedElectionIndex: 0,
       selectedElection: "",
       electionTitles: [],
-      registrationStatus: false,
+      registrationOnGoing: false,
       candidates: [],
+      isRegistrationEnded: false,
       voterStatusForCandidate: false,
       candidateCount: undefined,
       currentCandidate: {
@@ -77,18 +82,7 @@ export default class CandidateRegistration extends Component {
         this.setState({ isAdmin: true });
       }
 
-      // Get start and end values
-      const currentTimeStamp = Math.floor(Date.now() / 1000);
-      console.log("Window date time request time: ", getLocalDateTime(currentTimeStamp));
-
-      // Get start and end values
-      const registrationStatus = await this.state.ElectionInstance.methods
-        .getRegistrationStatus(currentTimeStamp)
-        .call();
-      this.setState({ registrationStatus: registrationStatus });
-
       const accountAddress = this.state.account;
-      console.log(accountAddress);
       const voterStatusForCandidate = await this.state.ElectionInstance.methods
         .getVoterStatusForCandidate(accountAddress)
         .call();
@@ -147,9 +141,6 @@ export default class CandidateRegistration extends Component {
       this.setState({ selectedElection: electionTitles[0] });
       this.setState({ selectedElectionIndex: 0 });
 
-
-
-
       //get registration start and end time
       const registrationStartTimeUnixStamp =
         await this.state.ElectionInstance.methods
@@ -160,6 +151,20 @@ export default class CandidateRegistration extends Component {
           .getRegistrationEndTime()
           .call();
 
+      const currentDate = new Date();
+      const unixdateTime = this.convertDateTimeToUnix(currentDate); 
+      this.setState({
+        ...this.state,
+        isRegistrationEnded: unixdateTime >= registrationEndTimeUnixTimeStamp ? true : false,
+      });
+
+      const registrationOnGoing = await this.state.ElectionInstance.methods
+        .getRegistrationStatus(unixdateTime)
+        .call();
+      this.setState({ registrationOnGoing: registrationOnGoing });
+      console.log("Is voting time ongoing", this.state.registrationOnGoing);
+     
+      
       const registrationStartDateTimeLocal = getLocalDateTime(
         registrationStartTimeUnixStamp
       );
@@ -174,6 +179,8 @@ export default class CandidateRegistration extends Component {
         registrationStartDateTimeLocal: registrationStartDateTimeLocal,
         registrationEndDateTimeLocal: registrationEndDateTimeLocal,
       });
+      
+      
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -185,7 +192,7 @@ export default class CandidateRegistration extends Component {
 
   handleSelectChange(event) {
     this.setState({ selectedElection: event.target.value });
-    this.setState({selectedElectionIndex:event.target.selectedIndex})
+    this.setState({ selectedElectionIndex: event.target.selectedIndex });
     console.log(this.state.selectedElectionIndex);
   }
 
@@ -198,12 +205,22 @@ export default class CandidateRegistration extends Component {
 
   registerAsCandidate = async () => {
     await this.state.ElectionInstance.methods
-      .registerAsCandidate(this.state.header, this.state.slogan,this.state.selectedElectionIndex)
+      .registerAsCandidate(
+        this.state.header,
+        this.state.slogan,
+        this.state.selectedElectionIndex
+      )
       .send({ from: this.state.account, gas: 1000000 });
     alert("Candidate registration successful");
     window.location.reload();
   };
 
+  convertDateTimeToUnix = (dateTime) => {
+    const dateObj = new Date(dateTime);
+    const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
+    return unixTimestamp;
+  };
+  
   render() {
     if (!this.state.web3) {
       return (
@@ -224,9 +241,9 @@ export default class CandidateRegistration extends Component {
     return (
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-        {!this.state.registrationStatus ? (
-          <RegistrationInit />
-        ) : (
+        {this.state.isRegistrationEnded ? (
+          <RegistrationEnded />
+        ) : this.state.registrationOnGoing ? (
           <>
             <div className="container-main">
               <div className="container-item">
@@ -325,6 +342,8 @@ export default class CandidateRegistration extends Component {
               </div>
             ) : null}
           </>
+        ) : (
+          <RegistrationInit />
         )}
       </>
     );

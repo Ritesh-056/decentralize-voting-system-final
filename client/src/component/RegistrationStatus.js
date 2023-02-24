@@ -1,6 +1,6 @@
 import React from "react";
 
-const RegistrationInit = () => {
+export const  RegistrationInit =() => {
   // Component: Displaying election not initialize message.
   return (
     <div className="container-item info">
@@ -11,4 +11,19 @@ const RegistrationInit = () => {
     </div>
   );
 };
-export default RegistrationInit;
+
+
+
+export const  RegistrationEnded =() => {
+  // Component: Displaying election not initialize message.
+  return (
+    <div className="container-item info">
+      <center>
+        <h3>Oops! registration is closed.</h3>
+        <p>Registration is not available after election start.</p>
+      </center>
+    </div>
+  );
+};
+
+export default {RegistrationInit,RegistrationEnded};

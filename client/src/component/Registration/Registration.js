@@ -155,9 +155,6 @@ export default class Registration extends Component {
           registrationEndTimeUnixTimeStamp
         );
 
-        console.log(registrationStartDateTimeLocal);
-        console.log(registrationEndDateTimeLocal);
-
         this.setState({
           registrationStartDateTimeLocal: registrationStartDateTimeLocal,
           registrationEndDateTimeLocal: registrationEndDateTimeLocal,
