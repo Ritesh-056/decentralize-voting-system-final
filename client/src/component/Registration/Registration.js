@@ -135,31 +135,10 @@ export default class Registration extends Component {
         .call();
       this.setState({ electionInitStatus: electionInitStatus });
 
-      console.log(this.state.electionInitStatus);
+      console.log("Registration started status",this.state.electionInitStatus);
 
-      if (electionInitStatus) {
-        //get registration start and end time
-        const registrationStartTimeUnixStamp =
-          await this.state.ElectionInstance.methods
-            .getRegistrationStartTime()
-            .call();
-        const registrationEndTimeUnixTimeStamp =
-          await this.state.ElectionInstance.methods
-            .getRegistrationEndTime()
-            .call();
 
-        const registrationStartDateTimeLocal = getLocalDateTime(
-          registrationStartTimeUnixStamp
-        );
-        const registrationEndDateTimeLocal = getLocalDateTime(
-          registrationEndTimeUnixTimeStamp
-        );
 
-        this.setState({
-          registrationStartDateTimeLocal: registrationStartDateTimeLocal,
-          registrationEndDateTimeLocal: registrationEndDateTimeLocal,
-        });
-      }
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);

@@ -11,6 +11,7 @@ import { getLocalDateTime } from "../../DateTimeLocal";
 import {
   RegistrationInit,
   RegistrationEnded,
+  RegistrationDenied,
 } from "../../component/RegistrationStatus";
 
 export default class CandidateRegistration extends Component {
@@ -32,7 +33,7 @@ export default class CandidateRegistration extends Component {
       candidates: [],
       isRegistrationEnded: false,
       voterStatusForCandidate: false,
-      alreadyRegisteredCandidate:false,
+      alreadyRegisteredCandidate: false,
       candidateCount: undefined,
       currentCandidate: {
         candidateAddress: undefined,
@@ -156,14 +157,22 @@ export default class CandidateRegistration extends Component {
       this.setState({
         ...this.state,
         isRegistrationEnded:
-          unixdateTime >= registrationEndTimeUnixTimeStamp ? true : false,
+        unixdateTime >= registrationEndTimeUnixTimeStamp ? true : false,
       });
+
+      console.log(
+        "Is registration time closed",
+        this.state.isRegistrationEnded
+      );
 
       const registrationOnGoing = await this.state.ElectionInstance.methods
         .getRegistrationStatus(unixdateTime)
         .call();
       this.setState({ registrationOnGoing: registrationOnGoing });
-      console.log("Is voting time ongoing", this.state.registrationOnGoing);
+      console.log(
+        "Is registration time ongoing",
+        this.state.registrationOnGoing
+      );
 
       const registrationStartDateTimeLocal = getLocalDateTime(
         registrationStartTimeUnixStamp
@@ -185,11 +194,9 @@ export default class CandidateRegistration extends Component {
           .getAlreadyRegisteredCandidateStatus()
           .call();
 
-          this.setState({alreadyRegisteredCandidate : alreadyRegisteredCandidate});
+      this.setState({ alreadyRegisteredCandidate: alreadyRegisteredCandidate });
 
-        console.log(this.state.alreadyRegisteredCandidate);  
-
-
+      console.log(this.state.alreadyRegisteredCandidate);
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -253,108 +260,116 @@ export default class CandidateRegistration extends Component {
         {this.state.isRegistrationEnded ? (
           <RegistrationEnded />
         ) : this.state.registrationOnGoing ? (
-            this.state.alreadyRegisteredCandidate ? <>
-            
-            </>:  <>
-            <div className="container-main">
-              <div className="container-item">
-                <div className="candidate-info-header">
-                  <h2>Registration End Date</h2>
-                  <center>
-                    <small>{this.state.registrationEndDateTimeLocal}</small>
-                  </center>
+          this.state.alreadyRegisteredCandidate ? (
+            <>
+              <RegistrationDenied />
+            </>
+          ) : (
+            <>
+              <div className="container-main">
+                <div className="container-item">
+                  <div className="candidate-info-header">
+                    <h2>Registration End Date</h2>
+                    <center>
+                      <small>{this.state.registrationEndDateTimeLocal}</small>
+                    </center>
+                  </div>
+                </div>
+                <h2>Add candidate</h2>
+                <small>Total candidates: {this.state.candidateCount}</small>
+                <div className="container-item">
+                  <form className="form">
+                    <label className={"label-ac"}>
+                      Candidate Header
+                      <input
+                        className={"input-ac"}
+                        type="text"
+                        placeholder="Candidate "
+                        value={this.state.header}
+                        onChange={this.updateHeader}
+                      />
+                    </label>
+                    <label className={"label-ac"}>
+                      Candidate Symbol
+                      <input
+                        className={"input-ac"}
+                        type="text"
+                        placeholder="Candidate Symbol"
+                        value={this.state.slogan}
+                        onChange={this.updateSlogan}
+                      />
+                    </label>
+
+                    <label className={"label-ac"}>
+                      Select an election title
+                      <select
+                        className={"select-election-ac"}
+                        // value={this.state.selectedElection}
+                        value={this.state.selectedElection}
+                        onChange={this.handleSelectChange}
+                      >
+                        {this.state.electionTitles.map((title, index) => (
+                          <option key={index} value={title}>
+                            {title}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    {!this.state.voterStatusForCandidate ? (
+                      <></>
+                    ) : (
+                      <>
+                        <center>
+                          <button
+                            className="btn-add"
+                            onClick={(e) => {
+                              console.log("Button clicked from here");
+                              e.preventDefault();
+                              if (
+                                this.state.header == "" ||
+                                this.state.slogan == "" ||
+                                this.state.selectedElectionIndex < 0
+                              ) {
+                                alert("Please check your candidates details.");
+                              } else {
+                                console.log(
+                                  this.state.header,
+                                  this.state.slogan,
+                                  this.state.selectedElectionIndex
+                                );
+                                this.registerAsCandidate();
+                              }
+                            }}
+                          >
+                            Add
+                          </button>
+                        </center>
+                      </>
+                    )}
+                  </form>
                 </div>
               </div>
-              <h2>Add candidate</h2>
-              <small>Total candidates: {this.state.candidateCount}</small>
-              <div className="container-item">
-                <form className="form">
-                  <label className={"label-ac"}>
-                    Candidate Header
-                    <input
-                      className={"input-ac"}
-                      type="text"
-                      placeholder="Candidate "
-                      value={this.state.header}
-                      onChange={this.updateHeader}
-                    />
-                  </label>
-                  <label className={"label-ac"}>
-                    Candidate Symbol
-                    <input
-                      className={"input-ac"}
-                      type="text"
-                      placeholder="Candidate Symbol"
-                      value={this.state.slogan}
-                      onChange={this.updateSlogan}
-                    />
-                  </label>
 
-                  <label className={"label-ac"}>
-                    Select an election title
-                    <select
-                      className={"select-election-ac"}
-                      // value={this.state.selectedElection}
-                      value={this.state.selectedElection}
-                      onChange={this.handleSelectChange}
-                    >
-                      {this.state.electionTitles.map((title, index) => (
-                        <option key={index} value={title}>
-                          {title}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+              {!this.state.voterStatusForCandidate ? <NotVoter /> : null}
 
-                  {!this.state.voterStatusForCandidate ? (
-                    <></>
-                  ) : (
-                    <>
-                      <center>
-                        <button
-                          className="btn-add"
-                          onClick={(e) => {
-                            console.log("Button clicked from here");
-                            e.preventDefault();
-                            if (
-                              this.state.header == "" ||
-                              this.state.slogan == "" ||
-                              this.state.selectedElectionIndex < 0
-                            ) {
-                              alert("Please check your candidates details.");
-                            } else {
-                              console.log(
-                                this.state.header,
-                                this.state.slogan,
-                                this.state.selectedElectionIndex
-                              );
-                              this.registerAsCandidate();
-                            }
-                          }}
-                        >
-                          Add
-                        </button>
-                      </center>
-                    </>
-                  )}
-                </form>
-              </div>
-            </div>
-
-            {!this.state.voterStatusForCandidate ? <NotVoter /> : null}
-
-            {this.state.isAdmin ? (
-              <div
-                className="container-main"
-                style={{ borderTop: "1px solid" }}
-              >
-                <small>Total Candidates: {this.state.candidates.length}</small>
-                {loadAdded(this.state.candidates)}
-              </div>
-            ) : null}
-          </>
+              {this.state.isAdmin ? (
+                <div
+                  className="container-main"
+                  style={{ borderTop: "1px solid" }}
+                >
+                  <small>
+                    Total Candidates: {this.state.candidates.length}
+                  </small>
+                  {loadAdded(this.state.candidates)}
+                </div>
+              ) : null}
+            </>
+          )
         ) : (
-          <RegistrationInit />
+          <>
+            <RegistrationInit />
+          </>
         )}
       </>
     );
