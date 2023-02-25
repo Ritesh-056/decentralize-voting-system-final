@@ -120,6 +120,7 @@ export default class Result extends Component {
         .getElectionEndedStatus()
         .call();
       this.setState({ isElectionEnded: isElectionEnded });
+      console.log("Is election ended:",this.state.isElectionEnded);
 
       // Get start and end values
       const currentTimeStamp = Math.floor(Date.now() / 1000);
@@ -162,49 +163,46 @@ export default class Result extends Component {
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <br />
         <div>
-          {this.state.electionInitStatus ? (
-            this.state.electionStarted ? (
-              <>
-                <div className="container-item attention">
-                  <center>
-                    <h3>The election is being conducted at the movement.</h3>
-                    <p>Result will be displayed once the election has ended.</p>
-                    <p>Go ahead and cast your vote {"(if not already)"}.</p>
-                    <br />
-                    <Link
-                      to="/Voting"
-                      style={{
-                        color: "black",
-                        textDecoration: "underline",
-                        color: "white",
-                      }}
-                    >
-                      Voting Page
-                    </Link>
-                  </center>
-                </div>
-              </>
-            ) : this.state.isElectionEnded ? (
-              <ElectionNotStarted />
-            ) : (
-              <>
-                <div className="container-main">
-                  <h2>Displaying the results of candidates</h2>
-                </div>
-              </>
-            )
-          ) : (
-            <>
-              <NotInit />
-            </>
-          )}
+          { !this.state.electionInitStatus ? (
+            <NotInit />
+          ) : this.state.electionStarted ? (
+            <div className="container-item attention">
+              <center>
+                <h3>The election is being conducted at the movement.</h3>
+                <p>Result will be displayed once the election has ended.</p>
+                <p>Go ahead and cast your vote {"(if not already)"}.</p>
+                <br />
+                <Link
+                  to="/Voting"
+                  style={{ color: "black", textDecoration: "underline" }}
+                >
+                  Voting Page
+                </Link>
+              </center>
+            </div>
+          ) : this.state.isElectionEnded ? (
+            displayResults(this.state.candidates)
+          ) : null}
         </div>
       </>
     );
   }
 }
-
 function displayWinner(candidates) {
+  const getWinner = (candidates) => {
+    // Returns an object having maxium vote count
+    let maxVoteRecived = 0;
+    let winnerCandidate = [];
+    for (let i = 0; i < candidates.length; i++) {
+      if (candidates[i].voteCount > maxVoteRecived) {
+        maxVoteRecived = candidates[i].voteCount;
+        winnerCandidate = [candidates[i]];
+      } else if (candidates[i].voteCount === maxVoteRecived) {
+        winnerCandidate.push(candidates[i]);
+      }
+    }
+    return winnerCandidate;
+  };
   const renderWinner = (winner) => {
     return (
       <div className="container-winner">
@@ -220,15 +218,15 @@ function displayWinner(candidates) {
       </div>
     );
   };
-  // const winnerCandidate = getWinner(candidates);
-  return <>{this.state.winnerCandidates.map(this.renderWinner)}</>;
+  const winnerCandidate = getWinner(candidates);
+  return <>{winnerCandidate.map(renderWinner)}</>;
 }
 
 export function displayResults(candidates) {
   const renderResults = (candidate) => {
     return (
-      <tr style={{ backgroundColor: "transparent" }}>
-        <td>{candidate.candidateId}</td>
+      <tr style={{backgroundColor:"transparent"}}>
+        <td>{candidate.id}</td>
         <td>{candidate.header}</td>
         <td>{candidate.voteCount}</td>
       </tr>

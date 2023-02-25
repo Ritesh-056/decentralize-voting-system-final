@@ -302,8 +302,8 @@ contract Election {
 
     function getAlreadyRegisteredCandidateStatus(address _currentAddress) public view returns(bool){
         bool isAlreadyRegistered = false; 
-        for (uint i = 0; i < approvedCandidates.length; i++) {
-            if (_currentAddress == approvedCandidates[i]) {
+        for (uint i = 0; i < candidates.length; i++) {
+            if (_currentAddress == candidates[i]) {
                 isAlreadyRegistered = true;
                 break;
             }

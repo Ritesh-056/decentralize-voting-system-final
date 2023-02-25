@@ -328,7 +328,7 @@ export default class Voting extends Component {
                   )}
                 </div>
               </>
-            ) : !this.state.isElectionEnded ? (
+            ) : this.state.isElectionEnded ? (
               <>
                 <div className="container-item attention">
                   <center>
