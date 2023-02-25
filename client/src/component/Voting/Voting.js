@@ -141,17 +141,23 @@ export default class Voting extends Component {
       console.log("Voting started time:",getLocalDateTime(votingstartedTime));
       console.log("Voting end time:",getLocalDateTime(votingEndedTime));
 
-       // Get start and end values
-       const currentTimeStamp = Math.floor(Date.now() / 1000);
-       console.log("Current send time is", getLocalDateTime(currentTimeStamp));
- 
-       const electionStarted = await this.state.ElectionInstance.methods
-         .getElectionStatus(currentTimeStamp)
-         .call();
-       this.setState({ electionStarted: electionStarted });
-       console.log("Election started", this.state.electionStarted);
+      
 
+     // Get start and end values
+     const isElectionEnded = await this.state.ElectionInstance.methods
+       .getElectionEndedStatus()
+       .call();
+     this.setState({ isElectionEnded: isElectionEnded });
 
+     // Get start and end values
+     const currentTimeStamp = Math.floor(Date.now() / 1000);
+     console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+
+     const electionStarted = await this.state.ElectionInstance.methods
+       .getElectionStatus(currentTimeStamp)
+       .call();
+     this.setState({ electionStarted: electionStarted });
+     console.log("Election started", this.state.electionStarted);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(

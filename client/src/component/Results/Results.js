@@ -26,9 +26,8 @@ export default class Result extends Component {
       isAdmin: false,
       candidateCount: undefined,
       candidates: [],
-      isElStarted: false,
-      electionStarted:false,
-      isElEnded: false,
+      isElectionEnded: false,
+      electionStarted: false,
       electionInitStatus: false,
       winnerCandidates: [],
     };
@@ -63,12 +62,6 @@ export default class Result extends Component {
         .getTotalCandidate()
         .call();
       this.setState({ candidateCount: candidateCount });
-
-      // Get start and end values
-      const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ isElStarted: start });
-      const end = await this.state.ElectionInstance.methods.getEnd().call();
-      this.setState({ isElEnded: end });
 
       // Loadin Candidates detials
       for (let i = 0; i < this.state.candidateCount; i++) {
@@ -120,19 +113,26 @@ export default class Result extends Component {
         .getElectionInitStatus()
         .call();
       this.setState({ electionInitStatus: electionInitStatus });
-      console.log("Is Election init",electionInitStatus);
+      console.log("Is Election init", electionInitStatus);
+
+      // Get start and end values
+      const isElectionEnded = await this.state.ElectionInstance.methods
+        .getElectionEndedStatus()
+        .call();
+      this.setState({ isElectionEnded: isElectionEnded });
+
+      // Get start and end values
+      const currentTimeStamp = Math.floor(Date.now() / 1000);
+      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+
+      const electionStarted = await this.state.ElectionInstance.methods
+        .getElectionStatus(currentTimeStamp)
+        .call();
+      this.setState({ electionStarted: electionStarted });
+      console.log("Election started", this.state.electionStarted);
 
 
-        // Get start and end values
-        const currentTimeStamp = Math.floor(Date.now() / 1000);
-        console.log("Current send time is", getLocalDateTime(currentTimeStamp));
-  
-        const electionStarted = await this.state.ElectionInstance.methods
-          .getElectionStatus(currentTimeStamp)
-          .call();
-        this.setState({ electionStarted: electionStarted });
-        console.log("Election started", this.state.electionStarted);
-
+      
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -166,23 +166,40 @@ export default class Result extends Component {
         <br />
         <div>
           {this.state.electionInitStatus ? (
-            this.state.electionStarted ? 
-            <>
-              <div className="container-item attention">
-                <center>
-                  <h3>The election is being conducted at the movement.</h3>
-                  <p>Result will be displayed once the election has ended.</p>
-                  <p>Go ahead and cast your vote {"(if not already)"}.</p>
-                  <br />
-                  <Link
-                    to="/Voting"
-                    style={{ color: "black", textDecoration: "underline" }}
-                  >
-                    Voting Page
-                  </Link>
-                </center>
-              </div>
-            </>:<><ElectionNotStarted/></>
+            this.state.electionStarted ? (
+              this.state.isElectionEnded ? (
+                <>
+                  <h1>Displaying the results of candidates</h1>
+                </>
+              ) : (
+                <>
+                  <div className="container-item attention">
+                    <center>
+                      <h3>The election is being conducted at the movement.</h3>
+                      <p>
+                        Result will be displayed once the election has ended.
+                      </p>
+                      <p>Go ahead and cast your vote {"(if not already)"}.</p>
+                      <br />
+                      <Link
+                        to="/Voting"
+                        style={{
+                          color: "black",
+                          textDecoration: "underline",
+                          color: "white",
+                        }}
+                      >
+                        Voting Page
+                      </Link>
+                    </center>
+                  </div>
+                </>
+              )
+            ) : (
+              <>
+                <ElectionNotStarted />
+              </>
+            )
           ) : (
             <>
               <NotInit />
@@ -194,22 +211,7 @@ export default class Result extends Component {
   }
 }
 
-
 function displayWinner(candidates) {
-  // const getWinner = (candidates) => {
-  //   // Returns an object having maxium vote count
-  //   let maxVoteRecived = 0;
-  //   let winnerCandidate = [];
-  //   for (let i = 0; i < candidates.length; i++) {
-  //     if (candidates[i].voteCount > maxVoteRecived) {
-  //       maxVoteRecived = candidates[i].voteCount;
-  //       winnerCandidate = [candidates[i]];
-  //     } else if (candidates[i].voteCount === maxVoteRecived) {
-  //       winnerCandidate.push(candidates[i]);
-  //     }
-  //   }
-  //   return winnerCandidate;
-  // };
   const renderWinner = (winner) => {
     return (
       <div className="container-winner">

@@ -2,8 +2,6 @@
 pragma solidity >=0.8.11 <0.9.0;
 
 contract Election {
-    bool  started;
-    bool  ended;
     bool isElectionInit;
 
     uint256 voterCount;
@@ -19,10 +17,10 @@ contract Election {
     mapping(address => Candidate) public candidateDetails;
 
     //voting and registration start and end time
-    uint256 public registrationStartTime;
-    uint256 public registrationEndTime;
-    uint256 public votingStartTime;
-    uint256 public votingEndTime;
+    uint256  registrationStartTime;
+    uint256  registrationEndTime;
+    uint256  votingStartTime;
+    uint256  votingEndTime;
 
 
 
@@ -30,8 +28,6 @@ contract Election {
         admin = msg.sender;
         candidateCount = 0;
         voterCount = 0;
-        started = false;
-        ended = false;
         isElectionInit = false;
         registrationStartTime = 0;
         registrationEndTime = 0 ;
@@ -296,20 +292,10 @@ contract Election {
        return isElectionInit; 
     }
 
-
-    // Get election start and end values
-    function getStart() public view returns (bool) {
-        bool isElectionStarted = false;
-        if(block.timestamp >= votingStartTime   && block.timestamp <= votingEndTime){
-          isElectionStarted = true; 
-        }
-        return isElectionStarted;
-    }
-
-    function getEnd() public view returns (bool) {
-        bool isElectionEnded = false;
-        if(block.timestamp >= votingEndTime){
-          isElectionEnded = true; 
+    function getElectionEndedStatus() public view returns (bool) {
+        bool isElectionEnded = false; 
+           if(block.timestamp >= votingEndTime){
+            isElectionEnded = true; 
         }
         return isElectionEnded;
     }

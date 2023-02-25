@@ -137,11 +137,6 @@ export default class CandidateRegistration extends Component {
         },
       });
 
-      const electionInitStatus = await this.state.ElectionInstance.methods
-        .getElectionInitStatus()
-        .call();
-      this.setState({ electionInitStatus: electionInitStatus });
-
       //get election titles
       const electionTitles = await this.state.ElectionInstance.methods
         .getElectionTitles()
@@ -211,6 +206,31 @@ export default class CandidateRegistration extends Component {
         "Is already a register as candidate",
         this.state.alreadyRegisteredCandidate
       );
+
+
+
+      const electionInitStatus = await this.state.ElectionInstance.methods
+      .getElectionInitStatus()
+      .call();
+    this.setState({ electionInitStatus: electionInitStatus });
+
+    console.log("Registration started status",this.state.electionInitStatus);
+
+    // Get start and end values
+    const isElectionEnded = await this.state.ElectionInstance.methods
+    .getElectionEndedStatus()
+    .call();
+    this.setState({ isElectionEnded: isElectionEnded });
+
+    // Get start and end values
+    const currentTimeStamp = Math.floor(Date.now() / 1000);
+    console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+
+    const electionStarted = await this.state.ElectionInstance.methods
+    .getElectionStatus(currentTimeStamp)
+    .call();
+    this.setState({ electionStarted: electionStarted });
+    console.log("Election started", this.state.electionStarted);
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
