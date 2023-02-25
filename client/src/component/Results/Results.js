@@ -130,9 +130,6 @@ export default class Result extends Component {
         .call();
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
-
-
-      
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -167,37 +164,33 @@ export default class Result extends Component {
         <div>
           {this.state.electionInitStatus ? (
             this.state.electionStarted ? (
-              this.state.isElectionEnded ? (
-                <>
-                  <h1>Displaying the results of candidates</h1>
-                </>
-              ) : (
-                <>
-                  <div className="container-item attention">
-                    <center>
-                      <h3>The election is being conducted at the movement.</h3>
-                      <p>
-                        Result will be displayed once the election has ended.
-                      </p>
-                      <p>Go ahead and cast your vote {"(if not already)"}.</p>
-                      <br />
-                      <Link
-                        to="/Voting"
-                        style={{
-                          color: "black",
-                          textDecoration: "underline",
-                          color: "white",
-                        }}
-                      >
-                        Voting Page
-                      </Link>
-                    </center>
-                  </div>
-                </>
-              )
+              <>
+                <div className="container-item attention">
+                  <center>
+                    <h3>The election is being conducted at the movement.</h3>
+                    <p>Result will be displayed once the election has ended.</p>
+                    <p>Go ahead and cast your vote {"(if not already)"}.</p>
+                    <br />
+                    <Link
+                      to="/Voting"
+                      style={{
+                        color: "black",
+                        textDecoration: "underline",
+                        color: "white",
+                      }}
+                    >
+                      Voting Page
+                    </Link>
+                  </center>
+                </div>
+              </>
+            ) : this.state.isElectionEnded ? (
+              <ElectionNotStarted />
             ) : (
               <>
-                <ElectionNotStarted />
+                <div className="container-main">
+                  <h2>Displaying the results of candidates</h2>
+                </div>
               </>
             )
           ) : (

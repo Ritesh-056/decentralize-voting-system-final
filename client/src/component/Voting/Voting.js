@@ -28,10 +28,10 @@ export default class Voting extends Component {
       electionTitles: [],
       candidateCount: undefined,
       candidates: [],
-      electionStarted:false,
+      electionStarted: false,
       isElStarted: false,
       isElEnded: false,
-      electionInitStatus:false,
+      electionInitStatus: false,
       currentVoter: {
         address: undefined,
         name: null,
@@ -77,12 +77,6 @@ export default class Voting extends Component {
         .call();
       this.setState({ candidateCount: candidateCount });
 
-      // Get start and end values
-      const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ isElStarted: start });
-      const end = await this.state.ElectionInstance.methods.getEnd().call();
-      this.setState({ isElEnded: end });
-
       // Loading Candidates details
       for (let i = 0; i < this.state.candidateCount; i++) {
         const candidateAddress = await this.state.ElectionInstance.methods
@@ -120,8 +114,8 @@ export default class Voting extends Component {
       });
 
       const electionInitStatus = await this.state.ElectionInstance.methods
-      .getElectionInitStatus()
-      .call();
+        .getElectionInitStatus()
+        .call();
       this.setState({ electionInitStatus: electionInitStatus });
 
       const electionTitles = await this.state.ElectionInstance.methods
@@ -134,30 +128,33 @@ export default class Voting extends Component {
         this.setState({ isAdmin: true });
       }
 
+      const votingstartedTime = await this.state.ElectionInstance.methods
+        .getVotingStartTime()
+        .call();
+      const votingEndedTime = await this.state.ElectionInstance.methods
+        .getVotingEndTime()
+        .call();
 
-      const votingstartedTime = await this.state.ElectionInstance.methods.getVotingStartTime().call();
-      const votingEndedTime = await this.state.ElectionInstance.methods.getVotingEndTime().call();
+      console.log("Voting started time:", getLocalDateTime(votingstartedTime));
+      console.log("Voting end time:", getLocalDateTime(votingEndedTime));
 
-      console.log("Voting started time:",getLocalDateTime(votingstartedTime));
-      console.log("Voting end time:",getLocalDateTime(votingEndedTime));
+      // Get start and end values
+      const isElectionEnded = await this.state.ElectionInstance.methods
+        .getElectionEndedStatus()
+        .call();
+      this.setState({ isElectionEnded: isElectionEnded });
 
-      
+      console.log("Election ended status", this.state.isElectionEnded);
 
-     // Get start and end values
-     const isElectionEnded = await this.state.ElectionInstance.methods
-       .getElectionEndedStatus()
-       .call();
-     this.setState({ isElectionEnded: isElectionEnded });
+      // Get start and end values
+      const currentTimeStamp = Math.floor(Date.now() / 1000);
+      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
-     // Get start and end values
-     const currentTimeStamp = Math.floor(Date.now() / 1000);
-     console.log("Current send time is", getLocalDateTime(currentTimeStamp));
-
-     const electionStarted = await this.state.ElectionInstance.methods
-       .getElectionStatus(currentTimeStamp)
-       .call();
-     this.setState({ electionStarted: electionStarted });
-     console.log("Election started", this.state.electionStarted);
+      const electionStarted = await this.state.ElectionInstance.methods
+        .getElectionStatus(currentTimeStamp)
+        .call();
+      this.setState({ electionStarted: electionStarted });
+      console.log("Election started", this.state.electionStarted);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -168,7 +165,9 @@ export default class Voting extends Component {
   };
 
   renderElectionCategories = (electionTitles, index) => {
-    const candidates = this.state.candidates.filter(candidate => candidate.electionTitleIndex == index);
+    const candidates = this.state.candidates.filter(
+      (candidate) => candidate.electionTitleIndex == index
+    );
 
     return (
       <>
@@ -258,104 +257,102 @@ export default class Voting extends Component {
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <div>
-          {this.state.electionInitStatus? (!this.state.electionStarted? (
-            <ElectionNotStarted />
-          ) : this.state.isElStarted && !this.state.isElEnded ? (
-            <>
-              {this.state.currentVoter.isRegistered ? (
-                this.state.currentVoter.isVerified ? (
-                  this.state.currentVoter.hasVoted ? (
-                    <div className="container-item success">
-                      <div>
-                        <strong>You've casted your vote.</strong>
-                        <p />
-                        <center>
-                          <Link
-                            to="/Results"
-                            style={{
-                              color: "black",
-                              textDecoration: "underline",
-                            }}
-                          >
-                            See Results
-                          </Link>
-                        </center>
+          {this.state.electionInitStatus ? (
+            this.state.electionStarted ? (
+              <>
+                {this.state.currentVoter.isRegistered ? (
+                  this.state.currentVoter.isVerified ? (
+                    this.state.currentVoter.hasVoted ? (
+                      <div className="container-item success">
+                        <div>
+                          <strong>You've casted your vote.</strong>
+                          <p />
+                          <center>
+                            <Link
+                              to="/Results"
+                              style={{
+                                color: "black",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              See Results
+                            </Link>
+                          </center>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="container-item info">
+                        <center>Go ahead and cast your vote.</center>
+                      </div>
+                    )
                   ) : (
-                    <div className="container-item info">
-                      <center>Go ahead and cast your vote.</center>
+                    <div className="container-item attention">
+                      <center>Please wait for admin to verify.</center>
                     </div>
                   )
                 ) : (
-                  <div className="container-item attention">
-                    <center>Please wait for admin to verify.</center>
-                  </div>
-                )
-              ) : (
-                <>
-                  <div className="container-item attention">
-                    <center>
-                      <p>You're not registered. Please register first.</p>
-                      <br />
-                      <Link
-                        to="/Registration"
-                        style={{ color: "black", textDecoration: "underline" }}
-                      >
-                        Registration Page
-                      </Link>
-                    </center>
-                  </div>
-                </>
-              )}
-              {/* <div className="container-main">
-                <h2>Candidates</h2>
-                <small>Total candidates: {this.state.candidates.length}</small>
-                {this.state.candidates.length < 1 ? (
-                  <div className="container-item attention">
-                    <center>Not one to vote for.</center>
-                  </div>
-                ) : (
                   <>
-                    {this.state.candidates.map(this.renderCandidates)}
+                    <div className="container-item attention">
+                      <center>
+                        <p>You're not registered. Please register first.</p>
+                        <br />
+                        <Link
+                          to="/Registration"
+                          style={{
+                            color: "black",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          Registration Page
+                        </Link>
+                      </center>
+                    </div>
                   </>
                 )}
-              </div> */}
-
-              <div className="container-main">
-                <h2>Elections Categories</h2>
-                <small>
-                  Total Category: {this.state.electionTitles.length}
-                </small>
-                {this.state.electionTitles.length < 1 ? (
-                  <div className="container-item attention">
-                    <center>No any election to vote for.</center>
-                  </div>
-                ) : (
-                  <>
-                    {this.state.electionTitles.map((electionTitle, index) =>
-                      this.renderElectionCategories(electionTitle, index)
-                    )}
-                  </>
-                )}
-              </div>
-            </>
-          ) : !this.state.isElStarted && this.state.isElEnded ? (
+      
+                <div className="container-main">
+                  <h2>Elections Categories</h2>
+                  <small>
+                    Total Category: {this.state.electionTitles.length}
+                  </small>
+                  {this.state.electionTitles.length < 1 ? (
+                    <div className="container-item attention">
+                      <center>No any election to vote for.</center>
+                    </div>
+                  ) : (
+                    <>
+                      {this.state.electionTitles.map((electionTitle, index) =>
+                        this.renderElectionCategories(electionTitle, index)
+                      )}
+                    </>
+                  )}
+                </div>
+              </>
+            ) : !this.state.isElectionEnded ? (
+              <>
+                <div className="container-item attention">
+                  <center>
+                    <h3>The Election ended.</h3>
+                    <br />
+                    <Link
+                      to="/Results"
+                      style={{ color: "black", textDecoration: "underline" }}
+                    >
+                      See results
+                    </Link>
+                  </center>
+                </div>
+              </>
+            ) : (
+              <>
+                <ElectionNotStarted />
+              </>
+            )
+          ) : (
             <>
-              <div className="container-item attention">
-                <center>
-                  <h3>The Election ended.</h3>
-                  <br />
-                  <Link
-                    to="/Results"
-                    style={{ color: "black", textDecoration: "underline" }}
-                  >
-                    See results
-                  </Link>
-                </center>
-              </div>
+              <NotInit />
             </>
-          ) : null):<><NotInit/></>}
+          )}
         </div>
       </>
     );

@@ -11,5 +11,7 @@ const ElectionNotStarted = () => {
     </div>
   );
 };
+
+
 export default ElectionNotStarted;
 
