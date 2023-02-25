@@ -8,6 +8,8 @@ import Election from "../../artifacts/contracts/Election.sol/Election.json";
 import "./CandidateRegistration.css";
 import NotVoter from "../NotVoter";
 import { getLocalDateTime } from "../../DateTimeLocal";
+import NotInit from "../NotInit";
+import { loadAdded } from "./LoadCandidates";
 import {
   RegistrationInit,
   RegistrationEnded,
@@ -26,6 +28,7 @@ export default class CandidateRegistration extends Component {
       isElEnded: false,
       header: "",
       slogan: "",
+      electionInitStatus: false,
       selectedElectionIndex: 0,
       selectedElection: "",
       electionTitles: [],
@@ -134,6 +137,11 @@ export default class CandidateRegistration extends Component {
         },
       });
 
+      const electionInitStatus = await this.state.ElectionInstance.methods
+        .getElectionInitStatus()
+        .call();
+      this.setState({ electionInitStatus: electionInitStatus });
+
       //get election titles
       const electionTitles = await this.state.ElectionInstance.methods
         .getElectionTitles()
@@ -157,7 +165,7 @@ export default class CandidateRegistration extends Component {
       this.setState({
         ...this.state,
         isRegistrationEnded:
-        unixdateTime >= registrationEndTimeUnixTimeStamp ? true : false,
+          unixdateTime >= registrationEndTimeUnixTimeStamp ? true : false,
       });
 
       console.log(
@@ -174,29 +182,35 @@ export default class CandidateRegistration extends Component {
         this.state.registrationOnGoing
       );
 
+
+      ///registration start and end times
       const registrationStartDateTimeLocal = getLocalDateTime(
         registrationStartTimeUnixStamp
       );
       const registrationEndDateTimeLocal = getLocalDateTime(
         registrationEndTimeUnixTimeStamp
       );
-
-      console.log(registrationStartDateTimeLocal);
-      console.log(registrationEndDateTimeLocal);
-
       this.setState({
         registrationStartDateTimeLocal: registrationStartDateTimeLocal,
         registrationEndDateTimeLocal: registrationEndDateTimeLocal,
       });
+      console.log(
+        "Registration start time , Registration end time",
+        registrationStartDateTimeLocal,
+        registrationEndDateTimeLocal
+      );
 
+
+      ///is already a candidate
       const alreadyRegisteredCandidate =
         await this.state.ElectionInstance.methods
-          .getAlreadyRegisteredCandidateStatus()
+          .getAlreadyRegisteredCandidateStatus(this.state.account)
           .call();
-
       this.setState({ alreadyRegisteredCandidate: alreadyRegisteredCandidate });
-
-      console.log(this.state.alreadyRegisteredCandidate);
+      console.log(
+        "Is already a register as candidate",
+        this.state.alreadyRegisteredCandidate
+      );
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -254,209 +268,135 @@ export default class CandidateRegistration extends Component {
         </>
       );
     }
+
     return (
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-        {this.state.isRegistrationEnded ? (
-          <RegistrationEnded />
-        ) : this.state.registrationOnGoing ? (
-          this.state.alreadyRegisteredCandidate ? (
+        {this.state.electionInitStatus ? (
+          this.state.registrationOnGoing ? (
+            this.state.alreadyRegisteredCandidate ? (
+              <>
+                <RegistrationDenied />
+              </>
+            ) : (
+              <>
+                <div className="container-main">
+                  <div className="container-item">
+                    <div className="candidate-info-header">
+                      <h2>Registration End Date</h2>
+                      <center>
+                        <small>{this.state.registrationEndDateTimeLocal}</small>
+                      </center>
+                    </div>
+                  </div>
+                  <h2>Add candidate</h2>
+                  <small>Total candidates: {this.state.candidateCount}</small>
+                  <div className="container-item">
+                    <form className="form">
+                      <label className={"label-ac"}>
+                        Candidate Header
+                        <input
+                          className={"input-ac"}
+                          type="text"
+                          placeholder="Candidate "
+                          value={this.state.header}
+                          onChange={this.updateHeader}
+                        />
+                      </label>
+                      <label className={"label-ac"}>
+                        Candidate Symbol
+                        <input
+                          className={"input-ac"}
+                          type="text"
+                          placeholder="Candidate Symbol"
+                          value={this.state.slogan}
+                          onChange={this.updateSlogan}
+                        />
+                      </label>
+
+                      <label className={"label-ac"}>
+                        Select an election title
+                        <select
+                          className={"select-election-ac"}
+                          // value={this.state.selectedElection}
+                          value={this.state.selectedElection}
+                          onChange={this.handleSelectChange}
+                        >
+                          {this.state.electionTitles.map((title, index) => (
+                            <option key={index} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      {!this.state.voterStatusForCandidate ? (
+                        <></>
+                      ) : (
+                        <>
+                          <center>
+                            <button
+                              className="btn-add"
+                              onClick={(e) => {
+                                console.log("Button clicked from here");
+                                e.preventDefault();
+                                if (
+                                  this.state.header == "" ||
+                                  this.state.slogan == "" ||
+                                  this.state.selectedElectionIndex < 0
+                                ) {
+                                  alert(
+                                    "Please check your candidates details."
+                                  );
+                                } else {
+                                  console.log(
+                                    this.state.header,
+                                    this.state.slogan,
+                                    this.state.selectedElectionIndex
+                                  );
+                                  this.registerAsCandidate();
+                                }
+                              }}
+                            >
+                              Add
+                            </button>
+                          </center>
+                        </>
+                      )}
+                    </form>
+                  </div>
+                </div>
+
+                {!this.state.voterStatusForCandidate ? <NotVoter /> : null}
+
+                {this.state.isAdmin ? (
+                  <div
+                    className="container-main"
+                    style={{ borderTop: "1px solid" }}
+                  >
+                    <small>
+                      Total Candidates: {this.state.candidates.length}
+                    </small>
+                    {loadAdded(this.state.candidates)}
+                  </div>
+                ) : null}
+              </>
+            )
+          ) : this.state.isRegistrationEnded ? (
             <>
-              <RegistrationDenied />
+              <RegistrationEnded />
             </>
           ) : (
             <>
-              <div className="container-main">
-                <div className="container-item">
-                  <div className="candidate-info-header">
-                    <h2>Registration End Date</h2>
-                    <center>
-                      <small>{this.state.registrationEndDateTimeLocal}</small>
-                    </center>
-                  </div>
-                </div>
-                <h2>Add candidate</h2>
-                <small>Total candidates: {this.state.candidateCount}</small>
-                <div className="container-item">
-                  <form className="form">
-                    <label className={"label-ac"}>
-                      Candidate Header
-                      <input
-                        className={"input-ac"}
-                        type="text"
-                        placeholder="Candidate "
-                        value={this.state.header}
-                        onChange={this.updateHeader}
-                      />
-                    </label>
-                    <label className={"label-ac"}>
-                      Candidate Symbol
-                      <input
-                        className={"input-ac"}
-                        type="text"
-                        placeholder="Candidate Symbol"
-                        value={this.state.slogan}
-                        onChange={this.updateSlogan}
-                      />
-                    </label>
-
-                    <label className={"label-ac"}>
-                      Select an election title
-                      <select
-                        className={"select-election-ac"}
-                        // value={this.state.selectedElection}
-                        value={this.state.selectedElection}
-                        onChange={this.handleSelectChange}
-                      >
-                        {this.state.electionTitles.map((title, index) => (
-                          <option key={index} value={title}>
-                            {title}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-
-                    {!this.state.voterStatusForCandidate ? (
-                      <></>
-                    ) : (
-                      <>
-                        <center>
-                          <button
-                            className="btn-add"
-                            onClick={(e) => {
-                              console.log("Button clicked from here");
-                              e.preventDefault();
-                              if (
-                                this.state.header == "" ||
-                                this.state.slogan == "" ||
-                                this.state.selectedElectionIndex < 0
-                              ) {
-                                alert("Please check your candidates details.");
-                              } else {
-                                console.log(
-                                  this.state.header,
-                                  this.state.slogan,
-                                  this.state.selectedElectionIndex
-                                );
-                                this.registerAsCandidate();
-                              }
-                            }}
-                          >
-                            Add
-                          </button>
-                        </center>
-                      </>
-                    )}
-                  </form>
-                </div>
-              </div>
-
-              {!this.state.voterStatusForCandidate ? <NotVoter /> : null}
-
-              {this.state.isAdmin ? (
-                <div
-                  className="container-main"
-                  style={{ borderTop: "1px solid" }}
-                >
-                  <small>
-                    Total Candidates: {this.state.candidates.length}
-                  </small>
-                  {loadAdded(this.state.candidates)}
-                </div>
-              ) : null}
+              <RegistrationInit />
             </>
           )
         ) : (
           <>
-            <RegistrationInit />
+            <NotInit />
           </>
         )}
       </>
     );
   }
-}
-
-export function loadAdded(candidates) {
-  const renderAdded = (candidate) => {
-    return (
-      <>
-        <div className="container-list success">
-          <div
-            style={{
-              maxHeight: "21px",
-            }}
-          >
-            {"["}
-            {candidate.candidateId}
-            {"] "}
-            <strong>{candidate.header}</strong>:{"  "}
-            {candidate.slogan}
-          </div>
-        </div>
-      </>
-    );
-  };
-  return (
-    <div className="container-main" style={{ borderTop: "1px solid" }}>
-      <div className="container-item info">
-        <center>Candidates </center>
-      </div>
-      {candidates.length < 1 ? (
-        <div className="container-item alert">
-          <center>No candidates </center>
-        </div>
-      ) : (
-        <div
-          className="container-item"
-          style={{
-            display: "block",
-            backgroundColor: "#DDFFFF",
-          }}
-        >
-          {candidates.map(renderAdded)}
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function loadAllCandidates(candidates) {
-  const renderAllCandidates = (candidate) => {
-    return (
-      <>
-        <div className="container-list success">
-          <table>
-            <tr>
-              <th>Candidate Address</th>
-              <td>{candidate.candidateAddress}</td>
-            </tr>
-            <tr>
-              <th>Candidate Header</th>
-              <td>{candidate.header}</td>
-            </tr>
-            <tr>
-              <th>Candidate Slogan</th>
-              <td>{candidate.slogan}</td>
-            </tr>
-            <tr>
-              <th>Verified</th>
-              <td>{candidate.isVerified ? "True" : "False"}</td>
-            </tr>
-            <tr>
-              <th>Registered</th>
-              <td>{candidate.isRegistered ? "True" : "False"}</td>
-            </tr>
-          </table>
-        </div>
-      </>
-    );
-  };
-  return (
-    <>
-      <div className="container-item success">
-        <center>List of Candidates</center>
-      </div>
-      {candidates.map(renderAllCandidates)}
-    </>
-  );
 }

@@ -12,3 +12,4 @@ const ElectionStatus = () => {
   );
 };
 export default ElectionStatus;
+

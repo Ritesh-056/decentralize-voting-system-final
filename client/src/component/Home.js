@@ -76,11 +76,11 @@ class Home extends Component {
         this.setState({ isAdmin: true });
       }
 
-      // Get election start and end values
-      const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ elStarted: start });
-      const end = await this.state.ElectionInstance.methods.getEnd().call();
-      this.setState({ elEnded: end });
+      // // Get election start and end values
+      // const start = await this.state.ElectionInstance.methods.getStart().call();
+      // this.setState({ elStarted: start });
+      // const end = await this.state.ElectionInstance.methods.getEnd().call();
+      // this.setState({ elEnded: end });
 
       // Getting election details from the contract
       const adminName = await this.state.ElectionInstance.methods

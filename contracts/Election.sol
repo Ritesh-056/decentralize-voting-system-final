@@ -2,10 +2,9 @@
 pragma solidity >=0.8.11 <0.9.0;
 
 contract Election {
-    bool started;
-    bool ended;
+    bool  started;
+    bool  ended;
     bool isElectionInit;
-    bool alreadyRegisteredCandidate;
 
     uint256 voterCount;
     uint256 candidateCount;
@@ -38,7 +37,6 @@ contract Election {
         registrationEndTime = 0 ;
         votingStartTime = 0;
         votingEndTime = 0;
-        alreadyRegisteredCandidate = false;
     }
 
     // Candidate attrb
@@ -228,8 +226,6 @@ contract Election {
         candidateDetails[msg.sender] = newCandidate;
         candidates.push(msg.sender);
         candidateCount += 1;
-
-        alreadyRegisteredCandidate = true;
     }
 
     //verify candidate
@@ -303,15 +299,30 @@ contract Election {
 
     // Get election start and end values
     function getStart() public view returns (bool) {
-        return started;
+        bool isElectionStarted = false;
+        if(block.timestamp >= votingStartTime   && block.timestamp <= votingEndTime){
+          isElectionStarted = true; 
+        }
+        return isElectionStarted;
     }
 
     function getEnd() public view returns (bool) {
-        return ended;
+        bool isElectionEnded = false;
+        if(block.timestamp >= votingEndTime){
+          isElectionEnded = true; 
+        }
+        return isElectionEnded;
     }
 
-    function getAlreadyRegisteredCandidateStatus() public view returns(bool){
-        return alreadyRegisteredCandidate;
+    function getAlreadyRegisteredCandidateStatus(address _currentAddress) public view returns(bool){
+        bool isAlreadyRegistered = false; 
+        for (uint i = 0; i < approvedVoters.length; i++) {
+            if (_currentAddress == candidates[i]) {
+                isAlreadyRegistered = true;
+                break;
+            }
+        }
+        return isAlreadyRegistered ;
     }
 
     function getRegistrationStatus(

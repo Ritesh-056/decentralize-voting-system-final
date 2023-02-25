@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import Navbar from "../Navbar/Navigation";
 import NavbarAdmin from "../Navbar/NavigationAdmin";
 import NotInit from "../NotInit";
+import ElectionNotStarted from "../ElectionNotStarted";
+import { getLocalDateTime } from "../../DateTimeLocal";
 
 // Contract
 import getWeb3 from "../../getWeb3";
@@ -25,8 +27,10 @@ export default class Result extends Component {
       candidateCount: undefined,
       candidates: [],
       isElStarted: false,
+      electionStarted:false,
       isElEnded: false,
-      winnerCandidates:[]
+      electionInitStatus: false,
+      winnerCandidates: [],
     };
   }
   componentDidMount = async () => {
@@ -62,13 +66,12 @@ export default class Result extends Component {
 
       // Get start and end values
       const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ isElStarted: true });
+      this.setState({ isElStarted: start });
       const end = await this.state.ElectionInstance.methods.getEnd().call();
       this.setState({ isElEnded: end });
 
       // Loadin Candidates detials
       for (let i = 0; i < this.state.candidateCount; i++) {
-
         const candidateAddress = await this.state.ElectionInstance.methods
           .candidates(i)
           .call();
@@ -87,13 +90,13 @@ export default class Result extends Component {
 
       this.setState({ candidates: this.state.candidates });
 
-
-
       //winner candidate details
-      const winnerAddress = await this.state.ElectionInstance.methods.getWinner().call();
+      const winnerAddress = await this.state.ElectionInstance.methods
+        .getWinner()
+        .call();
       const winnerCandidate = await this.state.ElectionInstance.methods
-      .candidateDetails(winnerAddress)
-      .call();
+        .candidateDetails(winnerAddress)
+        .call();
 
       this.state.winnerCandidates.push({
         candidateAddress: winnerCandidate.candidateAddress,
@@ -102,9 +105,9 @@ export default class Result extends Component {
         slogan: winnerCandidate.slogan,
         isVerified: winnerCandidate.isVerified,
         isRegistered: winnerCandidate.isRegistered,
-        voteCount:winnerCandidate.voteCount
-      })
-   
+        voteCount: winnerCandidate.voteCount,
+      });
+
       this.setState({ winnerCandidates: this.state.winnerCandidates });
 
       // Admin account and verification
@@ -112,6 +115,24 @@ export default class Result extends Component {
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
       }
+
+      const electionInitStatus = await this.state.ElectionInstance.methods
+        .getElectionInitStatus()
+        .call();
+      this.setState({ electionInitStatus: electionInitStatus });
+      console.log("Is Election init",electionInitStatus);
+
+
+        // Get start and end values
+        const currentTimeStamp = Math.floor(Date.now() / 1000);
+        console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+  
+        const electionStarted = await this.state.ElectionInstance.methods
+          .getElectionStatus(currentTimeStamp)
+          .call();
+        this.setState({ electionStarted: electionStarted });
+        console.log("Election started", this.state.electionStarted);
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -129,7 +150,10 @@ export default class Result extends Component {
           <center>
             <div className="loader">
               <div className="spinner"></div>
-              <div className="spin-text"> Loading Web3, accounts, and contract !</div>
+              <div className="spin-text">
+                {" "}
+                Loading Web3, accounts, and contract !
+              </div>
             </div>
           </center>
         </>
@@ -141,31 +165,35 @@ export default class Result extends Component {
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <br />
         <div>
-          {!this.state.isElStarted && !this.state.isElEnded ? (
-            <NotInit />
-          ) : this.state.isElStarted && !this.state.isElEnded ? (
-            <div className="container-item attention">
-              <center>
-                <h3>The election is being conducted at the movement.</h3>
-                <p>Result will be displayed once the election has ended.</p>
-                <p>Go ahead and cast your vote {"(if not already)"}.</p>
-                <br />
-                <Link
-                  to="/Voting"
-                  style={{ color: "black", textDecoration: "underline" }}
-                >
-                  Voting Page
-                </Link>
-              </center>
-            </div>
-          ) : !this.state.isElStarted && this.state.isElEnded ? (
-            displayResults(this.state.candidates)
-          ) : null}
+          {this.state.electionInitStatus ? (
+            this.state.electionStarted ? 
+            <>
+              <div className="container-item attention">
+                <center>
+                  <h3>The election is being conducted at the movement.</h3>
+                  <p>Result will be displayed once the election has ended.</p>
+                  <p>Go ahead and cast your vote {"(if not already)"}.</p>
+                  <br />
+                  <Link
+                    to="/Voting"
+                    style={{ color: "black", textDecoration: "underline" }}
+                  >
+                    Voting Page
+                  </Link>
+                </center>
+              </div>
+            </>:<><ElectionNotStarted/></>
+          ) : (
+            <>
+              <NotInit />
+            </>
+          )}
         </div>
       </>
     );
   }
 }
+
 
 function displayWinner(candidates) {
   // const getWinner = (candidates) => {
@@ -204,7 +232,7 @@ function displayWinner(candidates) {
 export function displayResults(candidates) {
   const renderResults = (candidate) => {
     return (
-      <tr  style={{backgroundColor:"transparent"}}>
+      <tr style={{ backgroundColor: "transparent" }}>
         <td>{candidate.candidateId}</td>
         <td>{candidate.header}</td>
         <td>{candidate.voteCount}</td>

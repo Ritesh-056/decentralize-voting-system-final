@@ -10,10 +10,12 @@ import NotInit from "../NotInit";
 // Contract
 import getWeb3 from "../../getWeb3";
 import Election from "../../artifacts/contracts/Election.sol/Election.json";
+import ElectionNotStarted from "../ElectionNotStarted";
 
 // CSS
 import "./Voting.css";
 import NotCandidateCounted from "../NoCandidateCounted";
+import { getLocalDateTime } from "../../DateTimeLocal";
 
 export default class Voting extends Component {
   constructor(props) {
@@ -26,8 +28,10 @@ export default class Voting extends Component {
       electionTitles: [],
       candidateCount: undefined,
       candidates: [],
+      electionStarted:false,
       isElStarted: false,
       isElEnded: false,
+      electionInitStatus:false,
       currentVoter: {
         address: undefined,
         name: null,
@@ -75,7 +79,7 @@ export default class Voting extends Component {
 
       // Get start and end values
       const start = await this.state.ElectionInstance.methods.getStart().call();
-      this.setState({ isElStarted: true });
+      this.setState({ isElStarted: start });
       const end = await this.state.ElectionInstance.methods.getEnd().call();
       this.setState({ isElEnded: end });
 
@@ -115,6 +119,11 @@ export default class Voting extends Component {
         },
       });
 
+      const electionInitStatus = await this.state.ElectionInstance.methods
+      .getElectionInitStatus()
+      .call();
+      this.setState({ electionInitStatus: electionInitStatus });
+
       const electionTitles = await this.state.ElectionInstance.methods
         .getElectionTitles()
         .call();
@@ -128,8 +137,19 @@ export default class Voting extends Component {
 
       const votingstartedTime = await this.state.ElectionInstance.methods.getVotingStartTime().call();
       const votingEndedTime = await this.state.ElectionInstance.methods.getVotingEndTime().call();
-      console.log(votingstartedTime,votingEndedTime);
 
+      console.log("Voting started time:",getLocalDateTime(votingstartedTime));
+      console.log("Voting end time:",getLocalDateTime(votingEndedTime));
+
+       // Get start and end values
+       const currentTimeStamp = Math.floor(Date.now() / 1000);
+       console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+ 
+       const electionStarted = await this.state.ElectionInstance.methods
+         .getElectionStatus(currentTimeStamp)
+         .call();
+       this.setState({ electionStarted: electionStarted });
+       console.log("Election started", this.state.electionStarted);
 
 
     } catch (error) {
@@ -232,8 +252,8 @@ export default class Voting extends Component {
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <div>
-          {!this.state.isElStarted && !this.state.isElEnded ? (
-            <NotInit />
+          {this.state.electionInitStatus? (!this.state.electionStarted? (
+            <ElectionNotStarted />
           ) : this.state.isElStarted && !this.state.isElEnded ? (
             <>
               {this.state.currentVoter.isRegistered ? (
@@ -329,7 +349,7 @@ export default class Voting extends Component {
                 </center>
               </div>
             </>
-          ) : null}
+          ) : null):<><NotInit/></>}
         </div>
       </>
     );

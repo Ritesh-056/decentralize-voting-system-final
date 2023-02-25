@@ -89,6 +89,7 @@ export default class Registration extends Component {
         .getElectionStatus(currentTimeStamp)
         .call();
       this.setState({ electionStarted: electionStarted });
+      console.log("Election started", this.state.electionStarted);
     
       // Total number of voters
       const voterCount = await this.state.ElectionInstance.methods
