@@ -82,6 +82,7 @@ export default class Result extends Component {
           candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
+          voteCount:candidate.voteCount,
           isVerified: candidate.isVerified,
           isRegistered: candidate.isRegistered,
         });
@@ -230,7 +231,7 @@ export function displayResults(candidates) {
   const renderResults = (candidate) => {
     return (
       <tr style={{backgroundColor:"transparent"}}>
-        <td>{candidate.id}</td>
+        <td>{candidate.candidateId}</td>
         <td>{candidate.header}</td>
         <td>{candidate.voteCount}</td>
       </tr>

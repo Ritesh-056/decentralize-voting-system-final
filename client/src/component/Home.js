@@ -39,7 +39,17 @@ class Home extends Component {
       electionStatus: false,
       electionInitStatus: false,
       elEnded: false,
-      elDetails: {},
+      elDetails: {
+        adminName:null,
+        adminEmail:null,
+        adminTitle:null,
+        organizationTitle:null,
+        electionTitles:[],
+        registrationStartTime: null,
+        registrationEndTime: null,
+        votingStartTime: null,
+        votingEndTime: null,
+      },
     };
   }
 
@@ -79,12 +89,12 @@ class Home extends Component {
       // end values of election
       const currentTimeStamp = Math.floor(Date.now() / 1000);
       console.log("Current send time is", getLocalDateTime(currentTimeStamp));
-     
+
       const isElectionEnded = await this.state.ElectionInstance.methods
         .getElectionEndedStatus(currentTimeStamp)
         .call();
       this.setState({ isElectionEnded: isElectionEnded });
-      console.log("Is election endeded", isElectionEnded)
+      console.log("Is election endeded", isElectionEnded);
 
       // Getting election details from the contract
       const adminName = await this.state.ElectionInstance.methods
@@ -117,7 +127,6 @@ class Home extends Component {
         organizationTitle: organizationTitle,
       });
 
-
       const votingstartedTime = await this.state.ElectionInstance.methods
         .getVotingStartTime()
         .call();
@@ -125,8 +134,35 @@ class Home extends Component {
         .getVotingEndTime()
         .call();
 
+           //get registration start and end time
+      const registrationStartTimeUnixStamp =
+      await this.state.ElectionInstance.methods
+        .getRegistrationStartTime()
+        .call();
+    const registrationEndTimeUnixTimeStamp =
+      await this.state.ElectionInstance.methods
+        .getRegistrationEndTime()
+        .call();
+
+      console.log("Registration started time:", getLocalDateTime(registrationStartTimeUnixStamp));
+      console.log("Registration end time:", getLocalDateTime(registrationEndTimeUnixTimeStamp));
       console.log("Voting started time:", getLocalDateTime(votingstartedTime));
       console.log("Voting end time:", getLocalDateTime(votingEndedTime));
+   
+
+      this.setState({
+        elDetails: {
+          adminName:adminName,
+          adminEmail:adminEmail,
+          adminTitle:adminTitle,
+          organizationTitle:organizationTitle,
+          electionTitles:electionTitles,
+          registrationStartTime:  getLocalDateTime(registrationStartTimeUnixStamp),
+          registrationEndTime: getLocalDateTime(registrationEndTimeUnixTimeStamp),
+          votingStartTime: getLocalDateTime(votingstartedTime),
+          votingEndTime: getLocalDateTime(votingEndedTime),
+        },
+      });
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
