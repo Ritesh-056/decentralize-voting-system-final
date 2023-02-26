@@ -12,22 +12,29 @@ td {
 tr:nth-child(even) {
   background-color: white;
 }
-.container-winner {
+
+
+.container-winner-test {
   transition: ease all 0.75s;
-  background-color: #f5fffa;
   border-radius: 7px;
-  width: 700px;
+  width: 500px;
   padding: 25px;
-  margin-right: auto;
-  margin-left: auto;
   margin-top: 17px;
   margin-bottom: 17px;
-  overflow: auto;
+  display: flex; /* Add display flex property */
+  align-items: center;
+  justify-content: center; /* Add justify-content center property */
+  background: #228B22;
+  border: 1px solid #000000;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 12.5px;
+  color: #343045;
 }
+
 .winner-slogan {
   padding: 7px 7px 7px 1px;
-  color: #ccab00;
-  font-size: 1.5em;
+  /* color: #ccab00; */
+  font-size: 1em;
   margin: 7px 0px;
   text-align: justify;
   overflow: auto;
@@ -37,7 +44,7 @@ tr:nth-child(even) {
   max-height: 150px;
   display: inline-block;
   margin-right: 1%;
-  overflow: auto;
+ 
 }
 .winner-votes {
   width: 25%;
@@ -45,13 +52,16 @@ tr:nth-child(even) {
   display: inline-block;
   margin-left: 1%;
 }
+
+.winner-name {
+  padding: 30px;
+}
 .winner-tag {
   text-align: left;
-  color: hotpink;
+  /* color: hotpink; */
 }
 .votes-tag {
   text-align: left;
-  color: darkgray;
 }
 .vote-count {
   margin-top: 11px;

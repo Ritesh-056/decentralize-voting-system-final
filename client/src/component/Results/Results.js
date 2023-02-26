@@ -15,6 +15,7 @@ import Election from "../../artifacts/contracts/Election.sol/Election.json";
 
 // CSS
 import "./Results.css";
+import NotCandidateCounted from "../NoCandidateCounted";
 
 export default class Result extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ export default class Result extends Component {
       isAdmin: false,
       candidateCount: undefined,
       candidates: [],
+      electionTitles: [],
       isElectionEnded: false,
       electionStarted: false,
       electionInitStatus: false,
@@ -57,11 +59,9 @@ export default class Result extends Component {
       // example of interacting with the contract's methods.
       this.setState({ web3, ElectionInstance: instance, account: accounts[0] });
 
-
-         // Get start and end values
-         const currentTimeStamp = Math.floor(Date.now() / 1000);
-         console.log("Current send time is", getLocalDateTime(currentTimeStamp));
-   
+      // Get start and end values
+      const currentTimeStamp = Math.floor(Date.now() / 1000);
+      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
       // Get total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
@@ -82,7 +82,8 @@ export default class Result extends Component {
           candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
-          voteCount:candidate.voteCount,
+          electionTitleIndex: candidate.electionTitleIndex,
+          voteCount: candidate.voteCount,
           isVerified: candidate.isVerified,
           isRegistered: candidate.isRegistered,
         });
@@ -103,6 +104,7 @@ export default class Result extends Component {
         candidateId: winnerCandidate.candidateId,
         header: winnerCandidate.header,
         slogan: winnerCandidate.slogan,
+        electionTitleIndex: winnerCandidate.electionTitleIndex,
         isVerified: winnerCandidate.isVerified,
         isRegistered: winnerCandidate.isRegistered,
         voteCount: winnerCandidate.voteCount,
@@ -127,15 +129,19 @@ export default class Result extends Component {
         .getElectionEndedStatus(currentTimeStamp)
         .call();
       this.setState({ isElectionEnded: isElectionEnded });
-      console.log("Is election ended:",this.state.isElectionEnded);
-
- 
+      console.log("Is election ended:", this.state.isElectionEnded);
 
       const electionStarted = await this.state.ElectionInstance.methods
         .getElectionStatus(currentTimeStamp)
         .call();
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
+
+      const electionTitles = await this.state.ElectionInstance.methods
+        .getElectionTitles()
+        .call();
+      this.setState({ electionTitles: electionTitles });
+      console.log(this.state.electionTitles);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -143,6 +149,46 @@ export default class Result extends Component {
       );
       console.error(error);
     }
+  };
+
+  renderElectionCategories = (electionTitles, index) => {
+    const candidates = this.state.candidates
+      .filter((candidate) => candidate.electionTitleIndex == index)
+      .sort((a, b) => a.candidateId - b.candidateId);
+
+    return (
+      <>
+        <div className="container-item-election-category">
+          <div className="candidate-info-header-title">
+            <h2 style={{ padding: 32 }}>{electionTitles}</h2>
+          </div>
+          {candidates.length >= 1 ? (
+            displayResults(candidates)
+          ) : (
+            <>
+              <NotCandidateCounted />
+            </>
+          )}
+        </div>
+      </>
+    );
+  };
+
+  renderCandidates = (candidate) => {
+    return (
+      <div className="container-item">
+        <div className="candidate-data">
+          <h2>
+            {`[${candidate.candidateId}] `}
+            {candidate.header}
+          </h2>{" "}
+          <small>{candidate.slogan}</small>
+        </div>
+        <div className="vote-btn-container">
+          <small>{candidate.voteCount}</small>
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -168,7 +214,7 @@ export default class Result extends Component {
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <br />
         <div>
-          { !this.state.electionInitStatus ? (
+          {!this.state.electionInitStatus ? (
             <NotInit />
           ) : this.state.electionStarted ? (
             <div className="container-item attention">
@@ -186,8 +232,27 @@ export default class Result extends Component {
               </center>
             </div>
           ) : this.state.isElectionEnded ? (
-            displayResults(this.state.candidates)
-          ) : null}
+            <>
+              <div className="container-main">
+                <h2>Elections Categories</h2>
+                <small>
+                  Total Category: {this.state.electionTitles.length}
+                </small>
+                {this.state.electionTitles.length < 1 ? (
+                  <div className="container-item attention">
+                    <center>No any election to vote for.</center>
+                  </div>
+                ) : (
+                  <>
+                    {this.state.electionTitles.map((electionTitle, index) =>
+                      this.renderElectionCategories(electionTitle, index)
+                    )}
+                  </>
+                )}
+              </div>
+            </>
+          ) : 
+          null}
         </div>
       </>
     );
@@ -210,16 +275,30 @@ function displayWinner(candidates) {
   };
   const renderWinner = (winner) => {
     return (
-      <div className="container-winner">
-        <div className="winner-info">
-          <p className="winner-tag">Winner!</p>
-          <h2> {winner.header}</h2>
-          <p className="winner-slogan">{winner.slogan}</p>
+      // <div className="container-winner">
+      //   <div className="winner-info">
+      //     <p className="winner-tag">Winner!</p>
+      //     <h2> {winner.header}</h2>
+      //     <p className="winner-slogan">{winner.slogan}</p>
+      //   </div>
+      //   <div className="winner-votes">
+      //     <div className="votes-tag">Total Votes: </div>
+      //     <div className="vote-count">{winner.voteCount}</div>
+      //   </div>
+      // </div>
+
+      <div className="container-winner-test">
+
+        <div className="candidate-data">
+        <center><h2>Winner</h2></center>
+          <h2>
+            {`[${winner.candidateId}] `}
+            {winner.header}
+          </h2>{" "}
+          <small>{winner.slogan}</small>{" "}
+          <small>Total Vote:<h2>{winner.voteCount}</h2></small>{" "}
         </div>
-        <div className="winner-votes">
-          <div className="votes-tag">Total Votes: </div>
-          <div className="vote-count">{winner.voteCount}</div>
-        </div>
+       
       </div>
     );
   };
@@ -230,7 +309,7 @@ function displayWinner(candidates) {
 export function displayResults(candidates) {
   const renderResults = (candidate) => {
     return (
-      <tr style={{backgroundColor:"transparent"}}>
+      <tr style={{ backgroundColor: "transparent" }}>
         <td>{candidate.candidateId}</td>
         <td>{candidate.header}</td>
         <td>{candidate.voteCount}</td>
