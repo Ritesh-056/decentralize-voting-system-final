@@ -19,6 +19,7 @@ export default class CandidateVerification extends Component {
       web3: null,
       isAdmin: false,
       candidateCount: undefined,
+      electionTitles:[],
       candidates: [],
     };
   }
@@ -73,11 +74,21 @@ export default class CandidateVerification extends Component {
           voteCount:candidate.voteCount,
           header: candidate.header,
           slogan: candidate.slogan,
+          electionTitleIndex:candidate.electionTitleIndex,
           isVerified: candidate.isVerified,
           isRegistered: candidate.isRegistered,
         });
       }
       this.setState({ candidates: this.state.candidates });
+    
+
+      const electionTitles = await this.state.ElectionInstance.methods
+      .getElectionTitles()
+      .call();
+
+      this.setState({electionTitles:electionTitles})
+      
+    
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -93,6 +104,8 @@ export default class CandidateVerification extends Component {
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
+
+    const electionTitleOfCandidate  = this.state.electionTitles.filter((title,key) => key == candidate.electionTitleIndex)
     return (
       <>
         {candidate.isVerified ? (
@@ -102,10 +115,12 @@ export default class CandidateVerification extends Component {
               <tr>
                 <th>Header</th>
                 <th>Slogan</th>
+                <th>Election Title</th>
               </tr>
               <tr style={{backgroundColor:"transparent"}}>
                 <td className="tbl">{candidate.header}</td>
                 <td className="tbl">{candidate.slogan}</td>
+                <td className="tbl">{electionTitleOfCandidate}</td>
               </tr>
               
             </table>
@@ -135,6 +150,11 @@ export default class CandidateVerification extends Component {
             <tr>
               <th>Registered</th>
               <td>{candidate.isRegistered ? "True" : "False"}</td>
+            </tr>
+
+            <tr style={{backgroundColor:"transparent"}}>
+              <th>Election Title</th>
+              <td>{electionTitleOfCandidate}</td>
             </tr>
           </table>
           <div style={{marginTop:"2%"}}>

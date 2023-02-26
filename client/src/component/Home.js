@@ -10,6 +10,7 @@ import UserHome from "./UserHome";
 import StartEnd from "./StartEnd";
 import { connect } from "react-redux";
 import { addElectionDetail } from "../redux/action/index";
+import { getLocalDateTime } from "../DateTimeLocal";
 
 // Contract
 import getWeb3 from "../getWeb3";
@@ -75,12 +76,15 @@ class Home extends Component {
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
       }
-
-      // // Get election start and end values
-      // const start = await this.state.ElectionInstance.methods.getStart().call();
-      // this.setState({ elStarted: start });
-      // const end = await this.state.ElectionInstance.methods.getEnd().call();
-      // this.setState({ elEnded: end });
+      // end values of election
+      const currentTimeStamp = Math.floor(Date.now() / 1000);
+      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+     
+      const isElectionEnded = await this.state.ElectionInstance.methods
+        .getElectionEndedStatus(currentTimeStamp)
+        .call();
+      this.setState({ isElectionEnded: isElectionEnded });
+      console.log("Is election endeded", isElectionEnded)
 
       // Getting election details from the contract
       const adminName = await this.state.ElectionInstance.methods
@@ -112,6 +116,17 @@ class Home extends Component {
         adminTitle: adminTitle,
         organizationTitle: organizationTitle,
       });
+
+
+      const votingstartedTime = await this.state.ElectionInstance.methods
+        .getVotingStartTime()
+        .call();
+      const votingEndedTime = await this.state.ElectionInstance.methods
+        .getVotingEndTime()
+        .call();
+
+      console.log("Voting started time:", getLocalDateTime(votingstartedTime));
+      console.log("Voting end time:", getLocalDateTime(votingEndedTime));
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -127,7 +142,7 @@ class Home extends Component {
     const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
     return unixTimestamp;
   };
-  
+
   // register and start election
   registerElection = async (data) => {
     await this.state.ElectionInstance.methods

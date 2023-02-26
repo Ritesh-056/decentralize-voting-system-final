@@ -57,6 +57,12 @@ export default class Result extends Component {
       // example of interacting with the contract's methods.
       this.setState({ web3, ElectionInstance: instance, account: accounts[0] });
 
+
+         // Get start and end values
+         const currentTimeStamp = Math.floor(Date.now() / 1000);
+         console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+   
+
       // Get total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
         .getTotalCandidate()
@@ -117,14 +123,12 @@ export default class Result extends Component {
 
       // Get start and end values
       const isElectionEnded = await this.state.ElectionInstance.methods
-        .getElectionEndedStatus()
+        .getElectionEndedStatus(currentTimeStamp)
         .call();
       this.setState({ isElectionEnded: isElectionEnded });
       console.log("Is election ended:",this.state.isElectionEnded);
 
-      // Get start and end values
-      const currentTimeStamp = Math.floor(Date.now() / 1000);
-      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+ 
 
       const electionStarted = await this.state.ElectionInstance.methods
         .getElectionStatus(currentTimeStamp)

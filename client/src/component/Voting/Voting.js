@@ -71,6 +71,16 @@ export default class Voting extends Component {
         account: accounts[0],
       });
 
+      // Get start and end values
+      const currentTimeStamp = Math.floor(Date.now() / 1000);
+      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+
+      // Admin account and verification
+      const admin = await this.state.ElectionInstance.methods.getAdmin().call();
+      if (this.state.account === admin) {
+        this.setState({ isAdmin: true });
+      }
+
       // Get total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
         .getTotalCandidate()
@@ -122,11 +132,6 @@ export default class Voting extends Component {
         .getElectionTitles()
         .call();
       this.setState({ electionTitles: electionTitles });
-      // Admin account and verification
-      const admin = await this.state.ElectionInstance.methods.getAdmin().call();
-      if (this.state.account === admin) {
-        this.setState({ isAdmin: true });
-      }
 
       const votingstartedTime = await this.state.ElectionInstance.methods
         .getVotingStartTime()
@@ -138,17 +143,13 @@ export default class Voting extends Component {
       console.log("Voting started time:", getLocalDateTime(votingstartedTime));
       console.log("Voting end time:", getLocalDateTime(votingEndedTime));
 
-      // Get start and end values
-      const isElectionEnded = await this.state.ElectionInstance.methods
-        .getElectionEndedStatus()
-        .call();
-      this.setState({ isElectionEnded: isElectionEnded });
+      // // Get start and end values
+      // const isElectionEnded = await this.state.ElectionInstance.methods
+      //   .getElectionEndedStatus(currentTimeStamp)
+      //   .call();
+      // this.setState({ isElectionEnded: isElectionEnded });
 
-      console.log("Election ended status", this.state.isElectionEnded);
-
-      // Get start and end values
-      const currentTimeStamp = Math.floor(Date.now() / 1000);
-      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+      // console.log("Election ended status", this.state.isElectionEnded);
 
       const electionStarted = await this.state.ElectionInstance.methods
         .getElectionStatus(currentTimeStamp)
@@ -309,7 +310,7 @@ export default class Voting extends Component {
                     </div>
                   </>
                 )}
-      
+
                 <div className="container-main">
                   <h2>Elections Categories</h2>
                   <small>

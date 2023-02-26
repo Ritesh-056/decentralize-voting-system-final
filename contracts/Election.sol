@@ -292,11 +292,14 @@ contract Election {
        return isElectionInit; 
     }
 
-    function getElectionEndedStatus() public view returns (bool) {
+    function getElectionEndedStatus(uint256 _timeStamp) public view returns (bool) {
         bool isElectionEnded = false; 
-           if(block.timestamp >= votingEndTime){
-            isElectionEnded = true; 
+        if(isElectionInit){
+            if(_timeStamp >= votingEndTime){
+                isElectionEnded = true; 
+            }
         }
+       
         return isElectionEnded;
     }
 

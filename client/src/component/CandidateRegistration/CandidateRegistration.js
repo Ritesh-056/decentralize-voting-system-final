@@ -85,6 +85,11 @@ export default class CandidateRegistration extends Component {
         this.setState({ isAdmin: true });
       }
 
+
+         // Get start and end values
+         const currentTimeStamp = Math.floor(Date.now() / 1000);
+         console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+   
       const accountAddress = this.state.account;
       const voterStatusForCandidate = await this.state.ElectionInstance.methods
         .getVoterStatusForCandidate(accountAddress)
@@ -217,13 +222,10 @@ export default class CandidateRegistration extends Component {
 
     // Get start and end values
     const isElectionEnded = await this.state.ElectionInstance.methods
-    .getElectionEndedStatus()
+    .getElectionEndedStatus(currentTimeStamp)
     .call();
     this.setState({ isElectionEnded: isElectionEnded });
 
-    // Get start and end values
-    const currentTimeStamp = Math.floor(Date.now() / 1000);
-    console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
     const electionStarted = await this.state.ElectionInstance.methods
     .getElectionStatus(currentTimeStamp)
