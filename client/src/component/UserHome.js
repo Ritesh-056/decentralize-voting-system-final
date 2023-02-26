@@ -1,6 +1,5 @@
 // Node module
 import React from "react";
-
 function UserHome(props) {
   const electionDetails = props.el;
   return (

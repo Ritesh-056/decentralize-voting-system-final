@@ -143,13 +143,13 @@ export default class Voting extends Component {
       console.log("Voting started time:", getLocalDateTime(votingstartedTime));
       console.log("Voting end time:", getLocalDateTime(votingEndedTime));
 
-      // // Get start and end values
-      // const isElectionEnded = await this.state.ElectionInstance.methods
-      //   .getElectionEndedStatus(currentTimeStamp)
-      //   .call();
-      // this.setState({ isElectionEnded: isElectionEnded });
+      // Get start and end values
+      const isElectionEnded = await this.state.ElectionInstance.methods
+        .getElectionEndedStatus(currentTimeStamp)
+        .call();
+      this.setState({ isElectionEnded: isElectionEnded });
 
-      // console.log("Election ended status", this.state.isElectionEnded);
+      console.log("Election ended status", this.state.isElectionEnded);
 
       const electionStarted = await this.state.ElectionInstance.methods
         .getElectionStatus(currentTimeStamp)
@@ -166,15 +166,16 @@ export default class Voting extends Component {
   };
 
   renderElectionCategories = (electionTitles, index) => {
-    const candidates = this.state.candidates.filter(
-      (candidate) => candidate.electionTitleIndex == index
-    );
+
+    const candidates = this.state.candidates
+  .filter((candidate) => candidate.electionTitleIndex == index)
+  .sort((a, b) => a.candidateId - b.candidateId);
 
     return (
       <>
         <div className="container-item-election-category">
           <div className="candidate-info-header-title">
-            <h2>{electionTitles}</h2>
+            <h2 style={{padding:32}}>{electionTitles}</h2>
           </div>
           {candidates.length >= 1 ? (
             candidates.map(this.renderCandidates)
@@ -209,9 +210,8 @@ export default class Voting extends Component {
     };
     return (
       <div className="container-item">
-        <div className="candidate-info">
+        <div className="candidate-data">
           <h2>
-            {/* {candidate.header} <small>#{candidate.id}</small> */}
             {`[${candidate.candidateId}] `}
             {candidate.header}
           </h2>{" "}
@@ -272,11 +272,11 @@ export default class Voting extends Component {
                             <Link
                               to="/Results"
                               style={{
-                                color: "black",
+                                color: "white",
                                 textDecoration: "underline",
                               }}
                             >
-                              See Results
+                               <button className="btn-election">View result</button>
                             </Link>
                           </center>
                         </div>
@@ -304,7 +304,7 @@ export default class Voting extends Component {
                             textDecoration: "underline",
                           }}
                         >
-                          Registration Page
+                        <button className="btn-election">Register here</button>
                         </Link>
                       </center>
                     </div>
@@ -333,13 +333,13 @@ export default class Voting extends Component {
               <>
                 <div className="container-item attention">
                   <center>
-                    <h3>The Election ended.</h3>
+                    <h3>Oops! Election is already ended. You can view the results.</h3>
                     <br />
                     <Link
                       to="/Results"
-                      style={{ color: "black", textDecoration: "underline" }}
+                      style={{ color: "white", textDecoration: "underline" }}
                     >
-                      See results
+                      <button className="btn-election">View result</button>
                     </Link>
                   </center>
                 </div>

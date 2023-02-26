@@ -181,7 +181,7 @@ export default class Result extends Component {
                   to="/Voting"
                   style={{ color: "black", textDecoration: "underline" }}
                 >
-                  Voting Page
+                  <button className="btn-election">Vote Candidate</button>
                 </Link>
               </center>
             </div>

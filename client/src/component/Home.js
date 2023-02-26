@@ -20,6 +20,8 @@ import Election from "../artifacts/contracts/Election.sol/Election.json";
 import "./Home.css";
 import HomeTitleForm from "./HomeTitleForm";
 import ElectionStatusAdminHome from "./ElectionStatusAdminHome";
+import ElectionNotStarted from "./ElectionNotStarted";
+import NotInit from "./NotInit";
 
 // const buttonRef = React.createRef();
 class Home extends Component {
@@ -38,6 +40,7 @@ class Home extends Component {
       elStarted: false,
       electionStatus: false,
       electionInitStatus: false,
+      isElectionEnded:false,
       elEnded: false,
       elDetails: {
         adminName:null,
@@ -243,9 +246,9 @@ class Home extends Component {
           </>
         ) : this.state.electionInitStatus ? (
           <>
-            <UserHome el={this.props.electionDetail} />
+            <UserHome el={this.state.elDetails} />
           </>
-        ) : !this.state.elStarted && this.state.elEnded ? (
+        ) : this.state.isElectionEnded? (
           <>
             <div className="container-item attention">
               <center>
@@ -260,7 +263,7 @@ class Home extends Component {
               </center>
             </div>
           </>
-        ) : null}
+        ) : <><NotInit/></>}
       </>
     );
   }
