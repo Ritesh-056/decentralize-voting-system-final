@@ -72,7 +72,7 @@ export default class Result extends Component {
       // Loadin Candidates detials
       for (let i = 0; i < this.state.candidateCount; i++) {
         const candidateAddress = await this.state.ElectionInstance.methods
-          .candidates(i)
+          .approvedCandidates(i)
           .call();
         const candidate = await this.state.ElectionInstance.methods
           .candidateDetails(candidateAddress)
@@ -275,28 +275,17 @@ function displayWinner(candidates) {
   };
   const renderWinner = (winner) => {
     return (
-      // <div className="container-winner">
-      //   <div className="winner-info">
-      //     <p className="winner-tag">Winner!</p>
-      //     <h2> {winner.header}</h2>
-      //     <p className="winner-slogan">{winner.slogan}</p>
-      //   </div>
-      //   <div className="winner-votes">
-      //     <div className="votes-tag">Total Votes: </div>
-      //     <div className="vote-count">{winner.voteCount}</div>
-      //   </div>
-      // </div>
-
       <div className="container-winner-test">
 
         <div className="candidate-data">
-        <center><h2>Winner</h2></center>
+        <h2>Winner</h2>
           <h2>
             {`[${winner.candidateId}] `}
             {winner.header}
           </h2>{" "}
-          <small>{winner.slogan}</small>{" "}
-          <small>Total Vote:<h2>{winner.voteCount}</h2></small>{" "}
+          <small>{winner.slogan}</small><br/><br/>
+          <small>Total Vote : </small>{" "}<br/>
+          <p style={{ fontSize:45,fontWeight:"bold",textAlign:"center"}}>{winner.voteCount}</p>
         </div>
        
       </div>
