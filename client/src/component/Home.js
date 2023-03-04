@@ -22,6 +22,7 @@ import HomeTitleForm from "./HomeTitleForm";
 import ElectionStatusAdminHome from "./ElectionStatusAdminHome";
 import ElectionNotStarted from "./ElectionNotStarted";
 import NotInit from "./NotInit";
+import modifyUserInputStr from "../../src/Utils";
 
 // const buttonRef = React.createRef();
 class Home extends Component {
@@ -96,7 +97,7 @@ class Home extends Component {
       const isElectionEnded = await this.state.ElectionInstance.methods
         .getElectionEndedStatus(currentTimeStamp)
         .call();
-      this.setState({ isElectionEnded: false });
+      this.setState({ isElectionEnded: isElectionEnded });
       console.log("Is election endeded", isElectionEnded);
 
       // Getting election details from the contract
@@ -195,10 +196,12 @@ class Home extends Component {
   registerElection = async (data) => {
     await this.state.ElectionInstance.methods
       .setElectionDetails(
-        data.adminFName.toLowerCase() + " " + data.adminLName.toLowerCase(),
-        data.adminEmail.toLowerCase(),
-        data.adminTitle.toLowerCase(),
-        data.organizationTitle.toLowerCase(),
+        modifyUserInputStr(data.adminFName) +
+          " " +
+          modifyUserInputStr(data.adminLName),
+        data.adminEmail.toLowercase(),
+        modifyUserInputStr(data.adminTitle),
+        modifyUserInputStr(data.organizationTitle),
         this.convertDateTimeToUnix(data.votingStartDateTime),
         this.convertDateTimeToUnix(data.votingEndDateTime),
         this.convertDateTimeToUnix(data.registrationStartDateTime),

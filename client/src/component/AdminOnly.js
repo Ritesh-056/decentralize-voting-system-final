@@ -2,7 +2,7 @@ import React from "react";
 
 const AdminOnly = (props) => {
   return (
-    <div className="container-item attention" style={{ borderColor: "tomato" }}>
+    <div className="container-item attention">
       <center>
         <div style={{ margin: "17px" }}>
           <h1>{props.page}</h1>
