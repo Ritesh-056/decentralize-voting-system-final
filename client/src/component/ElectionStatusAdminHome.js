@@ -6,7 +6,7 @@ function ElectionStatusAdminHome(props) {
   return (
     <div className="container-main">
       <h2>Election Details</h2>
-      <small>Election Titles :{electionDetails.electionTitles.length}</small>
+      <small>Election Titles : {electionDetails.electionTitles.length}</small>
         <small>
           <ol type="number" style={{paddingTop:16,paddingLeft:120}}>
             {electionDetails.electionTitles.map((title, index) => (
@@ -14,8 +14,8 @@ function ElectionStatusAdminHome(props) {
             ))}
           </ol>
         </small>
-
-      <div className="container-list attention">
+        
+      <div className="container-item ">
         <table>
           <tr>
             <th>Admin Name</th>

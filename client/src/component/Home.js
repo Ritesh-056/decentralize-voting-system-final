@@ -40,14 +40,14 @@ class Home extends Component {
       elStarted: false,
       electionStatus: false,
       electionInitStatus: false,
-      isElectionEnded:false,
+      isElectionEnded: false,
       elEnded: false,
       elDetails: {
-        adminName:null,
-        adminEmail:null,
-        adminTitle:null,
-        organizationTitle:null,
-        electionTitles:[],
+        adminName: null,
+        adminEmail: null,
+        adminTitle: null,
+        organizationTitle: null,
+        electionTitles: [],
         registrationStartTime: null,
         registrationEndTime: null,
         votingStartTime: null,
@@ -96,7 +96,7 @@ class Home extends Component {
       const isElectionEnded = await this.state.ElectionInstance.methods
         .getElectionEndedStatus(currentTimeStamp)
         .call();
-      this.setState({ isElectionEnded: isElectionEnded });
+      this.setState({ isElectionEnded: false });
       console.log("Is election endeded", isElectionEnded);
 
       // Getting election details from the contract
@@ -137,31 +137,40 @@ class Home extends Component {
         .getVotingEndTime()
         .call();
 
-           //get registration start and end time
+      //get registration start and end time
       const registrationStartTimeUnixStamp =
-      await this.state.ElectionInstance.methods
-        .getRegistrationStartTime()
-        .call();
-    const registrationEndTimeUnixTimeStamp =
-      await this.state.ElectionInstance.methods
-        .getRegistrationEndTime()
-        .call();
+        await this.state.ElectionInstance.methods
+          .getRegistrationStartTime()
+          .call();
+      const registrationEndTimeUnixTimeStamp =
+        await this.state.ElectionInstance.methods
+          .getRegistrationEndTime()
+          .call();
 
-      console.log("Registration started time:", getLocalDateTime(registrationStartTimeUnixStamp));
-      console.log("Registration end time:", getLocalDateTime(registrationEndTimeUnixTimeStamp));
+      console.log(
+        "Registration started time:",
+        getLocalDateTime(registrationStartTimeUnixStamp)
+      );
+      console.log(
+        "Registration end time:",
+        getLocalDateTime(registrationEndTimeUnixTimeStamp)
+      );
       console.log("Voting started time:", getLocalDateTime(votingstartedTime));
       console.log("Voting end time:", getLocalDateTime(votingEndedTime));
-   
 
       this.setState({
         elDetails: {
-          adminName:adminName,
-          adminEmail:adminEmail,
-          adminTitle:adminTitle,
-          organizationTitle:organizationTitle,
-          electionTitles:electionTitles,
-          registrationStartTime:  getLocalDateTime(registrationStartTimeUnixStamp),
-          registrationEndTime: getLocalDateTime(registrationEndTimeUnixTimeStamp),
+          adminName: adminName,
+          adminEmail: adminEmail,
+          adminTitle: adminTitle,
+          organizationTitle: organizationTitle,
+          electionTitles: electionTitles,
+          registrationStartTime: getLocalDateTime(
+            registrationStartTimeUnixStamp
+          ),
+          registrationEndTime: getLocalDateTime(
+            registrationEndTimeUnixTimeStamp
+          ),
           votingStartTime: getLocalDateTime(votingstartedTime),
           votingEndTime: getLocalDateTime(votingEndedTime),
         },
@@ -226,20 +235,6 @@ class Home extends Component {
     return (
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-        <div className="container-main">
-          {/* {!this.state.elStarted & !this.state.elEnded ? (
-            <div className="container-item info">
-              <center>
-                <h3>The election has not been initialize.</h3>
-                {this.state.isAdmin ? (
-                  <p>Set up the election.</p>
-                ) : (
-                  <p>Please wait..</p>
-                )}
-              </center>
-            </div>
-          ) : null} */}
-        </div>
         {this.state.isAdmin ? (
           <>
             <this.renderAdminHome />
@@ -248,22 +243,11 @@ class Home extends Component {
           <>
             <UserHome el={this.state.elDetails} />
           </>
-        ) : this.state.isElectionEnded? (
+        ) : (
           <>
-            <div className="container-item attention">
-              <center>
-                <h3>The Election ended.</h3>
-                <br />
-                <Link
-                  to="/Results"
-                  style={{ color: "black", textDecoration: "underline" }}
-                >
-                  See results
-                </Link>
-              </center>
-            </div>
+            <NotInit />
           </>
-        ) : <><NotInit/></>}
+        )}
       </>
     );
   }
@@ -323,175 +307,204 @@ class Home extends Component {
       return (
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {!this.state.electionInitStatus ? (
-              <div className="container-main">
-                {/* about-admin */}
-                <div className="about-admin">
-                  <h2>About Admin</h2>
-                  <div className="container-item center-items">
-                    <div className="container-item-inside">
-                      <label className="label-home">
-                        <p className="label-home-title">
-                          Full Name
-                          {errors.adminFName && <EMsg msg="*required" />}
-                        </p>
-                        <input
-                          className="input-home"
-                          type="text"
-                          placeholder="John"
-                          {...register("adminFName", {
-                            required: true,
-                          })}
-                        />
-                        <input
-                          className="input-home"
-                          type="text"
-                          placeholder="Doe"
-                          {...register("adminLName")}
-                        />
-                      </label>
+            {!this.state.isElectionEnded ? (
+              this.state.electionInitStatus ? (
+                <>
+                  <ElectionStatusAdminHome el={this.state.elDetails} />
+                </>
+              ) : (
+                <div className="container-main">
+                  {/* about-admin */}
+                  <div className="about-admin">
+                    <h2>About Admin</h2>
+                    <div className="container-item center-items">
+                      <div className="container-item-inside">
+                        <label className="label-home">
+                          <p className="label-home-title">
+                            Full Name
+                            {errors.adminFName && <EMsg msg="*required" />}
+                          </p>
+                          <input
+                            className="input-home"
+                            type="text"
+                            placeholder="John"
+                            {...register("adminFName", {
+                              required: true,
+                            })}
+                          />
+                          <input
+                            className="input-home"
+                            type="text"
+                            placeholder="Doe"
+                            {...register("adminLName")}
+                          />
+                        </label>
 
-                      <label className="label-home">
-                        <p className="label-home-title">
-                          Email
-                          {errors.adminEmail && (
-                            <EMsg msg={errors.adminEmail.message} />
-                          )}
-                        </p>
+                        <label className="label-home">
+                          <p className="label-home-title">
+                            Email
+                            {errors.adminEmail && (
+                              <EMsg msg={errors.adminEmail.message} />
+                            )}
+                          </p>
 
-                        <input
-                          className="input-home"
-                          placeholder="email@gmail.com"
-                          name="adminEmail"
-                          {...register("adminEmail", {
-                            required: "*required",
-                            pattern: {
-                              value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/, // email validation using RegExp
-                              message: "*Invalid",
-                            },
-                          })}
-                        />
-                      </label>
+                          <input
+                            className="input-home"
+                            placeholder="email@gmail.com"
+                            name="adminEmail"
+                            {...register("adminEmail", {
+                              required: "*required",
+                              pattern: {
+                                value:
+                                  /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/, // email validation using RegExp
+                                message: "*Invalid",
+                              },
+                            })}
+                          />
+                        </label>
 
-                      <label className="label-home">
-                        <p className="label-home-title">
-                          Job Title or Position
-                          {errors.adminTitle && <EMsg msg="*required" />}
-                        </p>
+                        <label className="label-home">
+                          <p className="label-home-title">
+                            Job Title or Position
+                            {errors.adminTitle && <EMsg msg="*required" />}
+                          </p>
 
-                        <input
-                          className="input-home"
-                          type="text"
-                          placeholder=" HR HEAD "
-                          {...register("adminTitle", {
-                            required: true,
-                          })}
-                        />
-                      </label>
+                          <input
+                            className="input-home"
+                            type="text"
+                            placeholder=" HR HEAD "
+                            {...register("adminTitle", {
+                              required: true,
+                            })}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  {/* about-election */}
+                  <div className="about-election">
+                    <center>
+                      <h2>About Election</h2>
+                    </center>
+                    <div className="container-item center-items">
+                      <div className="container-item-inside">
+                        <HomeTitleForm />
+                        <label className="label-home">
+                          <p className="label-home-title">
+                            Organization Name
+                            {errors.organizationTitle && (
+                              <EMsg msg="*required" />
+                            )}
+                          </p>
+                          <input
+                            className="input-home"
+                            type="text"
+                            placeholder="Kathford Int'l College"
+                            {...register("organizationTitle", {
+                              required: true,
+                            })}
+                          />
+                        </label>
+
+                        <label className="label-home">
+                          <p className="label-home-title">
+                            Registration Start From
+                            {errors.registrationStartDateTime && (
+                              <EMsg msg="*required" />
+                            )}
+                          </p>
+
+                          <input
+                            className="input-home"
+                            type="datetime-local"
+                            placeholder="registration start date"
+                            {...register("registrationStartDateTime", {
+                              required: true,
+                            })}
+                          />
+                        </label>
+
+                        <label className="label-home">
+                          <p className="label-home-title">
+                            Registration End At
+                            {errors.registrationEndDateTime && (
+                              <EMsg msg="* required" />
+                            )}
+                          </p>
+
+                          <input
+                            className="input-home"
+                            type="datetime-local"
+                            placeholder="registration end date"
+                            {...register("registrationEndDateTime", {
+                              required: true,
+                            })}
+                          />
+                        </label>
+
+                        <label className="label-home">
+                          <p className="label-home-title">
+                            Election Start From
+                            {errors.votingStartDateTime && (
+                              <EMsg msg="*required" />
+                            )}
+                          </p>
+
+                          <input
+                            className="input-home"
+                            type="datetime-local"
+                            placeholder="election start date"
+                            {...register("votingStartDateTime", {
+                              required: true,
+                            })}
+                          />
+                        </label>
+
+                        <label className="label-home">
+                          <p className="label-home-title">
+                            Elections End At
+                            {errors.votingEndDateTime && (
+                              <EMsg msg="*required" />
+                            )}
+                          </p>
+
+                          <input
+                            className="input-home"
+                            type="datetime-local"
+                            placeholder="election end date"
+                            {...register("votingEndDateTime", {
+                              required: true,
+                            })}
+                          />
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
-                {/* about-election */}
-                <div className="about-election">
-                  <center>
-                    <h2>About Election</h2>
-                  </center>
-                  <div className="container-item center-items">
-                    <div className="container-item-inside">
-                      <HomeTitleForm />
-                      <label className="label-home">
-                        <p className="label-home-title">
-                          Organization Name
-                          {errors.organizationTitle && <EMsg msg="*required" />}
-                        </p>
-                        <input
-                          className="input-home"
-                          type="text"
-                          placeholder="Kathford Int'l College"
-                          {...register("organizationTitle", {
-                            required: true,
-                          })}
-                        />
-                      </label>
-
-                      <label className="label-home">
-                        <p className="label-home-title">
-                          Registration Start From
-                          {errors.registrationStartDateTime && (
-                            <EMsg msg="*required" />
-                          )}
-                        </p>
-
-                        <input
-                          className="input-home"
-                          type="datetime-local"
-                          placeholder="registration start date"
-                          {...register("registrationStartDateTime", {
-                            required: true,
-                          })}
-                        />
-                      </label>
-
-                      <label className="label-home">
-                        <p className="label-home-title">
-                          Registration End At
-                          {errors.registrationEndDateTime && (
-                            <EMsg msg="* required" />
-                          )}
-                        </p>
-
-                        <input
-                          className="input-home"
-                          type="datetime-local"
-                          placeholder="registration end date"
-                          {...register("registrationEndDateTime", {
-                            required: true,
-                          })}
-                        />
-                      </label>
-
-                      <label className="label-home">
-                        <p className="label-home-title">
-                          Election Start From
-                          {errors.votingStartDateTime && (
-                            <EMsg msg="*required" />
-                          )}
-                        </p>
-
-                        <input
-                          className="input-home"
-                          type="datetime-local"
-                          placeholder="election start date"
-                          {...register("votingStartDateTime", {
-                            required: true,
-                          })}
-                        />
-                      </label>
-
-                      <label className="label-home">
-                        <p className="label-home-title">
-                          Elections End At
-                          {errors.votingEndDateTime && <EMsg msg="*required" />}
-                        </p>
-
-                        <input
-                          className="input-home"
-                          type="datetime-local"
-                          placeholder="election end date"
-                          {...register("votingEndDateTime", {
-                            required: true,
-                          })}
-                        />
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : !this.state.isAdmin ? (
-              <UserHome el={this.state.elDetails} />
+              )
             ) : (
-              <ElectionStatusAdminHome el={this.state.elDetails} />
+              <>
+                {" "}
+                <>
+                  <div className="container-item attention">
+                    <center>
+                      <h3>
+                        Oops! Election is already ended. You can view the
+                        results.
+                      </h3>
+                      <br />
+                      <Link
+                        to="/Results"
+                        style={{ color: "black", textDecoration: "underline" }}
+                      >
+                        <button className="btn-election">View result</button>
+                      </Link>
+                    </center>
+                  </div>
+                </>
+              </>
             )}
+
             {this.state.electionInitStatus ? null : (
               <>
                 <StartEnd

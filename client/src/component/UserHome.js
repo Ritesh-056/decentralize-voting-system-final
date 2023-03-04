@@ -4,17 +4,17 @@ function UserHome(props) {
   const electionDetails = props.el;
   return (
     <div className="container-main">
-      <h2>Election Details</h2>
-      <small>Election Titles :{electionDetails.electionTitles.length}</small>
+       <h2>Election Details</h2>
+      <small>Election Titles : {electionDetails.electionTitles.length}</small>
         <small>
-          <ol type="number" style={{paddingTop:120}}>
+          <ol type="number" style={{paddingTop:16,paddingLeft:120}}>
             {electionDetails.electionTitles.map((title, index) => (
               <li style={{paddingBottom:8}} key={index}>{index+1}.{' '}{title}</li>
             ))}
           </ol>
         </small>
 
-      <div className="container-list attention">
+      <div className="container-item">
         <table>
           <tr>
             <th>Admin Name</th>

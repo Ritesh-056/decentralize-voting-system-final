@@ -16,7 +16,7 @@ const HomeTitleForm = () => {
           <input
             className="input-home"
             type="text"
-            placeholder="Kathford Int'l College"
+            placeholder="Choosing president"
             // {...register("electionTitles", {
             //   required: true,
             // })}
