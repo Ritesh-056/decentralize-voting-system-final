@@ -19,7 +19,7 @@ function ElectionStatusAdminHome(props) {
         <table>
           <tr>
             <th>Admin Name</th>
-            <td>{electionDetails.adminName.toUpperCase()}</td>
+            <td>{electionDetails.adminName}</td>
           </tr>
           <tr style={{ backgroundColor: "transparent" }}>
             <th>Admin Email</th>

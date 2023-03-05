@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewTitle } from "../redux/action/index";
 
-const HomeTitleForm = () => {
+const HomeTitleForm = ({ register }) => {
   const [electionTitle, setElectionTitle] = useState("");
   // const [elections, setElections] = useState([]);
   const elections = useSelector((state) => state.electionTitlesReducer);
@@ -30,8 +30,12 @@ const HomeTitleForm = () => {
           className=""
           onClick={(e) => {
             e.preventDefault();
-            dispatch(addNewTitle(electionTitle));
-            setElectionTitle("");
+            if (electionTitle == "") {
+              alert("Oops! Election title is empty.");
+            } else {
+              dispatch(addNewTitle(electionTitle));
+              setElectionTitle("");
+            }
           }}
         >
           Add Title

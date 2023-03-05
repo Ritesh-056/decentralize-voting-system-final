@@ -32,6 +32,7 @@ export default class Result extends Component {
       electionStarted: false,
       electionInitStatus: false,
       winnerCandidates: [],
+      isSingleElectionAndElection:false,
     };
   }
   componentDidMount = async () => {
@@ -142,6 +143,13 @@ export default class Result extends Component {
         .call();
       this.setState({ electionTitles: electionTitles });
       console.log(this.state.electionTitles);
+
+      const isSingleElectionAndElection = await this.state.ElectionInstance.methods
+      .checkForSingleElectionAndCandidate()
+      .call();
+      
+      console.log("Is single election and singe candidate:", this.state.isSingleElectionAndElection); 
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -251,8 +259,7 @@ export default class Result extends Component {
                 )}
               </div>
             </>
-          ) : 
-          null}
+          ) : null}
         </div>
       </>
     );
@@ -276,18 +283,20 @@ function displayWinner(candidates) {
   const renderWinner = (winner) => {
     return (
       <div className="container-winner-test">
-
         <div className="candidate-data">
-        <h2>Winner</h2>
+          <h2>Winner</h2>
           <h2>
             {`[${winner.candidateId}] `}
             {winner.header}
           </h2>{" "}
-          <small>{winner.slogan}</small><br/><br/>
-          <small>Total Vote : </small>{" "}<br/>
-          <p style={{ fontSize:45,fontWeight:"bold",textAlign:"center"}}>{winner.voteCount}</p>
+          <small>{winner.slogan}</small>
+          <br />
+          <br />
+          <small>Total Vote : </small> <br />
+          <p style={{ fontSize: 45, fontWeight: "bold", textAlign: "center" }}>
+            {winner.voteCount}
+          </p>
         </div>
-       
       </div>
     );
   };

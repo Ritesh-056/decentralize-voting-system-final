@@ -97,7 +97,7 @@ class Home extends Component {
       const isElectionEnded = await this.state.ElectionInstance.methods
         .getElectionEndedStatus(currentTimeStamp)
         .call();
-      this.setState({ isElectionEnded: isElectionEnded });
+      this.setState({ isElectionEnded: false });
       console.log("Is election endeded", isElectionEnded);
 
       // Getting election details from the contract
@@ -194,11 +194,11 @@ class Home extends Component {
 
   // register and start election
   registerElection = async (data) => {
+    
+    console.log("Btn clicked"); 
     await this.state.ElectionInstance.methods
       .setElectionDetails(
-        modifyUserInputStr(data.adminFName) +
-          " " +
-          modifyUserInputStr(data.adminLName),
+        modifyUserInputStr(data.adminFName) +" "+modifyUserInputStr(data.adminLName),
         data.adminEmail.toLowercase(),
         modifyUserInputStr(data.adminTitle),
         modifyUserInputStr(data.organizationTitle),
@@ -256,6 +256,7 @@ class Home extends Component {
   }
 
   renderAdminHome = () => {
+
     const EMsg = (props) => {
       return (
         <span style={{ color: "red", fontSize: 12, paddingLeft: 32 }}>
@@ -391,7 +392,7 @@ class Home extends Component {
                     </center>
                     <div className="container-item center-items">
                       <div className="container-item-inside">
-                        <HomeTitleForm />
+                      <HomeTitleForm register={register} />
                         <label className="label-home">
                           <p className="label-home-title">
                             Organization Name
@@ -510,11 +511,7 @@ class Home extends Component {
 
             {this.state.electionInitStatus ? null : (
               <>
-                <StartEnd
-                  elStarted={this.state.elStarted}
-                  elEnded={this.state.elEnded}
-                  endElFn={this.endElection}
-                />
+                <StartEnd/>
               </>
             )}
           </form>

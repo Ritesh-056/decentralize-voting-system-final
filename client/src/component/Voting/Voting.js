@@ -16,6 +16,8 @@ import ElectionNotStarted from "../ElectionNotStarted";
 import "./Voting.css";
 import NotCandidateCounted from "../NoCandidateCounted";
 import { getLocalDateTime } from "../../DateTimeLocal";
+import SingleCandidateStatus from "./SingleCandidateStatus";
+
 
 export default class Voting extends Component {
   constructor(props) {
@@ -166,19 +168,24 @@ export default class Voting extends Component {
   };
 
   renderElectionCategories = (electionTitles, index) => {
-
     const candidates = this.state.candidates
-  .filter((candidate) => candidate.electionTitleIndex == index)
-  .sort((a, b) => a.candidateId - b.candidateId);
+      .filter((candidate) => candidate.electionTitleIndex == index)
+      .sort((a, b) => a.candidateId - b.candidateId);
 
     return (
       <>
         <div className="container-item-election-category">
           <div className="candidate-info-header-title">
-            <h2 style={{padding:32}}>{electionTitles}</h2>
+            <h2 style={{ padding: 32 }}>{electionTitles}</h2>
           </div>
           {candidates.length >= 1 ? (
-            candidates.map(this.renderCandidates)
+            candidates.length == 1 ? (
+              <>
+                <SingleCandidateStatus candidate={candidates[0]} />
+              </>
+            ) : (
+              candidates.map(this.renderCandidates)
+            )
           ) : (
             <>
               <NotCandidateCounted />
@@ -210,6 +217,7 @@ export default class Voting extends Component {
     };
     return (
       <div className="container-item">
+        x
         <div className="candidate-data">
           <h2>
             {`[${candidate.candidateId}] `}
@@ -276,7 +284,9 @@ export default class Voting extends Component {
                                 textDecoration: "underline",
                               }}
                             >
-                               <button className="btn-election">View result</button>
+                              <button className="btn-election">
+                                View result
+                              </button>
                             </Link>
                           </center>
                         </div>
@@ -304,7 +314,9 @@ export default class Voting extends Component {
                             textDecoration: "underline",
                           }}
                         >
-                        <button className="btn-election">Register here</button>
+                          <button className="btn-election">
+                            Register here
+                          </button>
                         </Link>
                       </center>
                     </div>
@@ -333,7 +345,9 @@ export default class Voting extends Component {
               <>
                 <div className="container-item attention">
                   <center>
-                    <h3>Oops! Election is already ended. You can view the results.</h3>
+                    <h3>
+                      Oops! Election is already ended. You can view the results.
+                    </h3>
                     <br />
                     <Link
                       to="/Results"
