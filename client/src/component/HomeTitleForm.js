@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewTitle } from "../redux/action/index";
 
-const HomeTitleForm = ({ register }) => {
+const HomeTitleForm = () => {
   const [electionTitle, setElectionTitle] = useState("");
   // const [elections, setElections] = useState([]);
   const elections = useSelector((state) => state.electionTitlesReducer);

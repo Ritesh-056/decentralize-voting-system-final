@@ -198,10 +198,10 @@ class Home extends Component {
     console.log("Btn clicked"); 
     await this.state.ElectionInstance.methods
       .setElectionDetails(
-        modifyUserInputStr(data.adminFName) +" "+modifyUserInputStr(data.adminLName),
-        data.adminEmail.toLowercase(),
-        modifyUserInputStr(data.adminTitle),
-        modifyUserInputStr(data.organizationTitle),
+        data.adminFName.toLowerCase() +" "+data.adminLName.toLowerCase(),
+        data.adminEmail.toLowerCase(),
+        data.adminTitle.toLowerCase(),
+        data.organizationTitle.toLowerCase(),
         this.convertDateTimeToUnix(data.votingStartDateTime),
         this.convertDateTimeToUnix(data.votingEndDateTime),
         this.convertDateTimeToUnix(data.registrationStartDateTime),
@@ -392,7 +392,7 @@ class Home extends Component {
                     </center>
                     <div className="container-item center-items">
                       <div className="container-item-inside">
-                      <HomeTitleForm register={register} />
+                      <HomeTitleForm />
                         <label className="label-home">
                           <p className="label-home-title">
                             Organization Name

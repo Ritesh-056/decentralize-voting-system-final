@@ -144,10 +144,19 @@ export default class Result extends Component {
       this.setState({ electionTitles: electionTitles });
       console.log(this.state.electionTitles);
 
-      const isSingleElectionAndElection = await this.state.ElectionInstance.methods
-      .checkForSingleElectionAndCandidate()
-      .call();
-      
+
+      if(this.state.electionTitles.length == 1 ){
+        const isSingleElectionAndElection = await this.state.ElectionInstance.methods
+        .checkForSingleElectionAndCandidate(0)
+        .call();
+        this.setState({isSingleElectionAndElection : isSingleElectionAndElection});
+        
+      }
+
+      if(this.state.isSingleElectionAndElection  ){
+        this.setState({isElectionEnded :true});
+      }
+     
       console.log("Is single election and singe candidate:", this.state.isSingleElectionAndElection); 
 
     } catch (error) {

@@ -45,11 +45,6 @@ contract Election {
         bool isRegistered;
     }
 
-    struct ElectionsCategory {
-        uint256 electionId;
-        string electionTitle;
-    }
-
     // Election attrb
     struct ElectionDetails {
         string adminName;
@@ -414,7 +409,9 @@ contract Election {
         return candidateListCount;
     }
 
-    function checkForSingleElectionAndCandidate() public view returns(bool){
+    function checkForSingleElectionAndCandidate(
+        uint256 _electionTitleIndex
+    ) public view returns (bool) {
         bool isSingleCandidateAndCandidate = false;
         uint256 candidateListCount = 0;
         uint256 electionLength = electionDetails.elections.length;
@@ -422,7 +419,7 @@ contract Election {
             for (uint256 i = 0; i < approvedCandidates.length; i++) {
                 if (
                     candidateDetails[approvedCandidates[i]]
-                        .electionTitleIndex == 0
+                        .electionTitleIndex == _electionTitleIndex
                 ) {
                     candidateListCount++;
                 }
@@ -434,4 +431,5 @@ contract Election {
 
         return isSingleCandidateAndCandidate;
     }
+
 }

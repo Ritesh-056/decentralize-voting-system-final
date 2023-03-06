@@ -31,9 +31,8 @@ export default class Voting extends Component {
       candidateCount: undefined,
       candidates: [],
       electionStarted: false,
-      isElStarted: false,
-      isElEnded: false,
       electionInitStatus: false,
+      isSingleElectionAndCandidate:false,
       currentVoter: {
         address: undefined,
         name: null,
@@ -158,6 +157,19 @@ export default class Voting extends Component {
         .call();
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
+
+
+      if(this.state.electionTitles.length == 1 ){
+        const isSingleElectionAndCandidate = await this.state.ElectionInstance.methods
+        .checkForSingleElectionAndCandidate(0)
+        .call();
+        this.setState({isSingleElectionAndCandidate : isSingleElectionAndCandidate});
+        
+      }
+
+      if(this.state.isSingleElectionAndCandidate && this.state.registrationEnded){
+        this.setState({isElectionEnded :true});
+      }
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
