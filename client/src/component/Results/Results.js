@@ -32,7 +32,7 @@ export default class Result extends Component {
       electionStarted: false,
       electionInitStatus: false,
       winnerCandidates: [],
-      isSingleElectionAndElection:false,
+      isSingleElectionAndCandidate:false,
     };
   }
   componentDidMount = async () => {
@@ -146,18 +146,18 @@ export default class Result extends Component {
 
 
       if(this.state.electionTitles.length == 1 ){
-        const isSingleElectionAndElection = await this.state.ElectionInstance.methods
+        const isSingleElectionAndCandidate = await this.state.ElectionInstance.methods
         .checkForSingleElectionAndCandidate(0)
         .call();
-        this.setState({isSingleElectionAndElection : isSingleElectionAndElection});
+        this.setState({isSingleElectionAndCandidate : isSingleElectionAndCandidate});
         
       }
 
-      if(this.state.isSingleElectionAndElection  ){
+      if(this.state.isSingleElectionAndCandidate  ){
         this.setState({isElectionEnded :true});
       }
      
-      console.log("Is single election and singe candidate:", this.state.isSingleElectionAndElection); 
+      console.log("Is single election and singe candidate:", this.state.isSingleElectionAndCandidate); 
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -279,13 +279,18 @@ function displayWinner(candidates) {
     // Returns an object having maxium vote count
     let maxVoteRecived = 0;
     let winnerCandidate = [];
-    for (let i = 0; i < candidates.length; i++) {
-      if (candidates[i].voteCount > maxVoteRecived) {
-        maxVoteRecived = candidates[i].voteCount;
-        winnerCandidate = [candidates[i]];
-      } else if (candidates[i].voteCount === maxVoteRecived) {
-        winnerCandidate.push(candidates[i]);
+    if(candidates.length >1 ){
+      for (let i = 0; i < candidates.length; i++) {
+        if (candidates[i].voteCount > maxVoteRecived) {
+          maxVoteRecived = candidates[i].voteCount;
+          winnerCandidate = [candidates[i]];
+        } else if (candidates[i].voteCount === maxVoteRecived) {
+          winnerCandidate.push(candidates[i]);
+        }
       }
+    }
+    if(candidates.length == 1){
+      winnerCandidate.push(candidates[0]);
     }
     return winnerCandidate;
   };
@@ -309,6 +314,8 @@ function displayWinner(candidates) {
       </div>
     );
   };
+
+
   const winnerCandidate = getWinner(candidates);
   return <>{winnerCandidate.map(renderWinner)}</>;
 }
