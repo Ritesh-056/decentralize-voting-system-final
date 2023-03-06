@@ -40,6 +40,7 @@ export default class Voting extends Component {
         hasVoted: false,
         isVerified: false,
         isRegistered: false,
+        voteCastedTitles:[]
       },
     };
   }
@@ -121,6 +122,7 @@ export default class Voting extends Component {
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,
+          voteCastedTitles:voter.voteCastedTitles
         },
       });
 
@@ -170,6 +172,8 @@ export default class Voting extends Component {
       if(this.state.isSingleElectionAndCandidate && this.state.registrationEnded){
         this.setState({isElectionEnded :true});
       }
+
+      console.log("Vote casted titles is", this.state.voteCastedTitles); 
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -179,9 +183,9 @@ export default class Voting extends Component {
     }
   };
 
-  renderElectionCategories = (electionTitles, index) => {
+  renderElectionCategories = (electionTitles, electionTitleIndex) => {
     const candidates = this.state.candidates
-      .filter((candidate) => candidate.electionTitleIndex == index)
+      .filter((candidate) => candidate.electionTitleIndex == electionTitleIndex)
       .sort((a, b) => a.candidateId - b.candidateId);
 
     return (
@@ -196,7 +200,10 @@ export default class Voting extends Component {
                 <SingleCandidateStatus candidate={candidates[0]} />
               </>
             ) : (
-              candidates.map(this.renderCandidates)
+              candidates.map((candidates) =>
+                this.renderCandidates(candidates, electionTitleIndex)
+              )
+              // candidates.map(this.renderCandidates,)
             )
           ) : (
             <>
@@ -215,6 +222,7 @@ export default class Voting extends Component {
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
+
     const confirmVote = (candidateAddress, header) => {
       var r = window.confirm(
         "Vote for " +
@@ -346,8 +354,8 @@ export default class Voting extends Component {
                     </div>
                   ) : (
                     <>
-                      {this.state.electionTitles.map((electionTitle, index) =>
-                        this.renderElectionCategories(electionTitle, index)
+                      {this.state.electionTitles.map((electionTitle, electionTitleIndex) =>
+                        this.renderElectionCategories(electionTitle, electionTitleIndex)
                       )}
                     </>
                   )}

@@ -67,6 +67,7 @@ contract Election {
         bool isVerified;
         bool hasVoted;
         bool isRegistered;
+        uint256[] voteCastedTitles;
     }
 
     modifier registrationOnGoing() {
@@ -234,7 +235,8 @@ contract Election {
             phone: _phone,
             hasVoted: false,
             isVerified: false,
-            isRegistered: true
+            isRegistered: true,
+            voteCastedTitles: new uint256[](0)
         });
         voterDetails[msg.sender] = newVoter;
         voters.push(msg.sender);
@@ -255,11 +257,15 @@ contract Election {
     }
 
     // Vote
-    function vote(address _candidateAddress) public votingTimeOnGoing {
-        require(voterDetails[msg.sender].hasVoted == false);
+    function vote(
+        address _candidateAddress,
+        uint256 _electionTitleIndex
+    ) public votingTimeOnGoing {
+        // require(voterDetails[msg.sender].hasVoted == false);
         require(voterDetails[msg.sender].isVerified == true);
         candidateDetails[_candidateAddress].voteCount += 1;
         voterDetails[msg.sender].hasVoted = true;
+        voterDetails[msg.sender].voteCastedTitles.push(_electionTitleIndex);
     }
 
     function getWinner() public view returns (address) {
@@ -431,5 +437,4 @@ contract Election {
 
         return isSingleCandidateAndCandidate;
     }
-
 }
