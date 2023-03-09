@@ -215,15 +215,15 @@ export default class Voting extends Component {
     );
   };
 
-  renderCandidates = (candidate) => {
-    const castVote = async (candidateAddress) => {
+  renderCandidates = (candidate, electionTitleIndex) => {
+    const castVote = async (candidateAddress,titleIndex) => {
       await this.state.ElectionInstance.methods
-        .vote(candidateAddress)
+        .vote(candidateAddress,titleIndex)
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
 
-    const confirmVote = (candidateAddress, header) => {
+    const confirmVote = (candidateAddress, header,titleIndex) => {
       var r = window.confirm(
         "Vote for " +
           header +
@@ -232,12 +232,11 @@ export default class Voting extends Component {
           ".\nAre you sure?"
       );
       if (r === true) {
-        castVote(candidateAddress);
+        castVote(candidateAddress,titleIndex);
       }
     };
     return (
       <div className="container-item">
-        x
         <div className="candidate-data">
           <h2>
             {`[${candidate.candidateId}] `}

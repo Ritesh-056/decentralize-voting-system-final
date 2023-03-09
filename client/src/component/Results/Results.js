@@ -145,19 +145,19 @@ export default class Result extends Component {
       console.log(this.state.electionTitles);
 
 
-      if(this.state.electionTitles.length == 1 ){
-        const isSingleElectionAndCandidate = await this.state.ElectionInstance.methods
-        .checkForSingleElectionAndCandidate(0)
-        .call();
-        this.setState({isSingleElectionAndCandidate : isSingleElectionAndCandidate});
+      // if(this.state.electionTitles.length == 1 ){
+      //   const isSingleElectionAndCandidate = await this.state.ElectionInstance.methods
+      //   .checkForSingleElectionAndCandidate(0)
+      //   .call();
+      //   this.setState({isSingleElectionAndCandidate : isSingleElectionAndCandidate});
         
-      }
+      // }
 
-      if(this.state.isSingleElectionAndCandidate  ){
-        this.setState({isElectionEnded :true});
-      }
+      // if(this.state.isSingleElectionAndCandidate  ){
+      //   this.setState({isElectionEnded :true});
+      // }
      
-      console.log("Is single election and singe candidate:", this.state.isSingleElectionAndCandidate); 
+      // console.log("Is single election and singe candidate:", this.state.isSingleElectionAndCandidate); 
 
     } catch (error) {
       // Catch any errors for any of the above operations.

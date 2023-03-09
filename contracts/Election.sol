@@ -262,6 +262,15 @@ contract Election {
         uint256 _electionTitleIndex
     ) public votingTimeOnGoing {
         // require(voterDetails[msg.sender].hasVoted == false);
+        
+        bool isAlreadyVoteToElectionTitle; 
+        for(uint256 i =0 ; i< voterDetails[msg.sender].voteCastedTitles.length; i++){
+            if(voterDetails[msg.sender].voteCastedTitles[i] == _electionTitleIndex){
+                isAlreadyVoteToElectionTitle = true;
+                break;
+            }
+        }
+        require(isAlreadyVoteToElectionTitle == false,"You have already voted to election title");
         require(voterDetails[msg.sender].isVerified == true);
         candidateDetails[_candidateAddress].voteCount += 1;
         voterDetails[msg.sender].hasVoted = true;
