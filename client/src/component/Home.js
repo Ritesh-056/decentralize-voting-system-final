@@ -198,10 +198,10 @@ class Home extends Component {
     console.log("Btn clicked"); 
     await this.state.ElectionInstance.methods
       .setElectionDetails(
-        data.adminFName.toLowerCase() +" "+data.adminLName.toLowerCase(),
+        data.adminFName+" "+data.adminLName,
         data.adminEmail.toLowerCase(),
-        data.adminTitle.toLowerCase(),
-        data.organizationTitle.toLowerCase(),
+        data.adminTitle,
+        data.organizationTitle,
         this.convertDateTimeToUnix(data.votingStartDateTime),
         this.convertDateTimeToUnix(data.votingEndDateTime),
         this.convertDateTimeToUnix(data.registrationStartDateTime),
