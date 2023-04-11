@@ -18,7 +18,6 @@ import NotCandidateCounted from "../NoCandidateCounted";
 import { getLocalDateTime } from "../../DateTimeLocal";
 import SingleCandidateStatus from "./SingleCandidateStatus";
 
-
 export default class Voting extends Component {
   constructor(props) {
     super(props);
@@ -32,7 +31,10 @@ export default class Voting extends Component {
       candidates: [],
       electionStarted: false,
       electionInitStatus: false,
-      isSingleElectionAndCandidate:false,
+      isSingleElectionAndCandidate: false,
+      registrationStartedSatus: false,
+      registrationEndedStatus:false,
+      isElectionEnded : false,
       currentVoter: {
         address: undefined,
         name: null,
@@ -40,7 +42,7 @@ export default class Voting extends Component {
         hasVoted: false,
         isVerified: false,
         isRegistered: false,
-        voteCastedTitles:[]
+        voteCastedTitles: [],
       },
     };
   }
@@ -122,7 +124,7 @@ export default class Voting extends Component {
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,
-          voteCastedTitles:voter.voteCastedTitles
+          voteCastedTitles: voter.voteCastedTitles,
         },
       });
 
@@ -161,19 +163,45 @@ export default class Voting extends Component {
       console.log("Election started", this.state.electionStarted);
 
 
-      if(this.state.electionTitles.length == 1 ){
-        const isSingleElectionAndCandidate = await this.state.ElectionInstance.methods
-        .checkForSingleElectionAndCandidate(0)
+      //get voting registration start and end times
+      const registrationStartedSatus = await this.state.ElectionInstance.methods
+        .getRegistrationStartedStatus(currentTimeStamp)
         .call();
-        this.setState({isSingleElectionAndCandidate : isSingleElectionAndCandidate});
-        
+      const registrationEndedStatus = await this.state.ElectionInstance.methods
+        .getRegistrationEndedStatus(currentTimeStamp)
+        .call();
+
+
+        this.setState({
+          registrationStartedSatus :registrationStartedSatus,
+          registrationEndedStatus: registrationEndedStatus
+        })
+
+        console.log("Is registration started", registrationStartedSatus);
+        console.log("Is registration ended", registrationEndedStatus);
+
+
+
+      //check for single election title and the candidate
+      const isSingleElectionAndCandidate =
+        await this.state.ElectionInstance.methods
+          .checkForSingleElectionAndCandidate(0)
+          .call();
+      this.setState({
+        isSingleElectionAndCandidate: isSingleElectionAndCandidate,
+      });
+
+
+
+     //check for singleElectionCandidate and registration ended status
+      if (
+        this.state.isSingleElectionAndCandidate &&
+        this.state.registrationEndedStatus
+      ) {
+        this.setState({ isElectionEnded: true });
       }
 
-      if(this.state.isSingleElectionAndCandidate && this.state.registrationEnded){
-        this.setState({isElectionEnded :true});
-      }
 
-      console.log("Vote casted titles is", this.state.voteCastedTitles); 
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -216,14 +244,14 @@ export default class Voting extends Component {
   };
 
   renderCandidates = (candidate, electionTitleIndex) => {
-    const castVote = async (candidateAddress,titleIndex) => {
+    const castVote = async (candidateAddress, titleIndex) => {
       await this.state.ElectionInstance.methods
-        .vote(candidateAddress,titleIndex)
+        .vote(candidateAddress, titleIndex)
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
 
-    const confirmVote = (candidateAddress, header,titleIndex) => {
+    const confirmVote = (candidateAddress, header, titleIndex) => {
       var r = window.confirm(
         "Vote for " +
           header +
@@ -232,7 +260,7 @@ export default class Voting extends Component {
           ".\nAre you sure?"
       );
       if (r === true) {
-        castVote(candidateAddress,titleIndex);
+        castVote(candidateAddress, titleIndex);
       }
     };
     return (
@@ -246,14 +274,22 @@ export default class Voting extends Component {
         </div>
         <div className="vote-btn-container">
           <button
-            onClick={() =>
-              confirmVote(candidate.candidateAddress, candidate.header)
-            }
+            onClick={() => {
+              for (var i = 0; i < this.state.voteCastedTitles.length; i++) {
+                const voteCastedTitleIndex = this.state.voteCastedTitles[i];
+                if (electionTitleIndex == voteCastedTitleIndex) {
+                  return alert("The election title is already voted");
+                }
+              }
+              return alert(
+                `The election title to be voted is  ${candidate.candidateId} ${candidate.candidateAddress}`
+              );
+              // return confirmVote(candidate.candidateAddress, candidate.header, electionTitleIndex);
+            }}
             className="vote-bth"
             disabled={
               !this.state.currentVoter.isRegistered ||
-              !this.state.currentVoter.isVerified ||
-              this.state.currentVoter.hasVoted
+              !this.state.currentVoter.isVerified
             }
           >
             Vote
@@ -353,8 +389,12 @@ export default class Voting extends Component {
                     </div>
                   ) : (
                     <>
-                      {this.state.electionTitles.map((electionTitle, electionTitleIndex) =>
-                        this.renderElectionCategories(electionTitle, electionTitleIndex)
+                      {this.state.electionTitles.map(
+                        (electionTitle, electionTitleIndex) =>
+                          this.renderElectionCategories(
+                            electionTitle,
+                            electionTitleIndex
+                          )
                       )}
                     </>
                   )}

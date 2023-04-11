@@ -262,15 +262,25 @@ contract Election {
         uint256 _electionTitleIndex
     ) public votingTimeOnGoing {
         // require(voterDetails[msg.sender].hasVoted == false);
-        
-        bool isAlreadyVoteToElectionTitle; 
-        for(uint256 i =0 ; i< voterDetails[msg.sender].voteCastedTitles.length; i++){
-            if(voterDetails[msg.sender].voteCastedTitles[i] == _electionTitleIndex){
+
+        bool isAlreadyVoteToElectionTitle = false;
+        for (
+            uint256 i = 0;
+            i < voterDetails[msg.sender].voteCastedTitles.length;
+            i++
+        ) {
+            if (
+                voterDetails[msg.sender].voteCastedTitles[i] ==
+                _electionTitleIndex
+            ) {
                 isAlreadyVoteToElectionTitle = true;
                 break;
             }
         }
-        require(isAlreadyVoteToElectionTitle == false,"You have already voted to election title");
+        require(
+            isAlreadyVoteToElectionTitle == false,
+            "You have already voted to election title"
+        );
         require(voterDetails[msg.sender].isVerified == true);
         candidateDetails[_candidateAddress].voteCount += 1;
         voterDetails[msg.sender].hasVoted = true;
@@ -375,6 +385,30 @@ contract Election {
 
     function getVotingEndTime() public view returns (uint256) {
         return votingEndTime;
+    }
+
+    //get registration set and get status
+    function getRegistrationStartedStatus(
+        uint256 _timeStamp
+    ) public view returns (bool) {
+        bool isRegistrationStarted = false;
+        if (
+            _timeStamp >= registrationStartTime &&
+            _timeStamp <= registrationEndTime
+        ) {
+            isRegistrationStarted = true;
+        }
+        return isRegistrationStarted;
+    }
+
+    function getRegistrationEndedStatus(
+        uint256 _timeStamp
+    ) public view returns (bool) {
+        bool isRegistrationEnded = false;
+        if (_timeStamp >= registrationEndTime) {
+            isRegistrationEnded = true;
+        }
+        return isRegistrationEnded;
     }
 
     //get candidate associated with the elections

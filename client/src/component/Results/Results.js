@@ -144,20 +144,43 @@ export default class Result extends Component {
       this.setState({ electionTitles: electionTitles });
       console.log(this.state.electionTitles);
 
+     //get voting registration start and end times
+     const registrationStartedSatus = await this.state.ElectionInstance.methods
+     .getRegistrationStartedStatus(currentTimeStamp)
+     .call();
+   const registrationEndedStatus = await this.state.ElectionInstance.methods
+     .getRegistrationEndedStatus(currentTimeStamp)
+     .call();
 
-      // if(this.state.electionTitles.length == 1 ){
-      //   const isSingleElectionAndCandidate = await this.state.ElectionInstance.methods
-      //   .checkForSingleElectionAndCandidate(0)
-      //   .call();
-      //   this.setState({isSingleElectionAndCandidate : isSingleElectionAndCandidate});
-        
-      // }
 
-      // if(this.state.isSingleElectionAndCandidate  ){
-      //   this.setState({isElectionEnded :true});
-      // }
-     
-      // console.log("Is single election and singe candidate:", this.state.isSingleElectionAndCandidate); 
+     this.setState({
+       registrationStartedSatus :registrationStartedSatus,
+       registrationEndedStatus: registrationEndedStatus
+     })
+
+     console.log("Is registration started", registrationStartedSatus);
+     console.log("Is registration ended", registrationEndedStatus);
+
+
+
+   //check for single election title and the candidate
+   const isSingleElectionAndCandidate =
+     await this.state.ElectionInstance.methods
+       .checkForSingleElectionAndCandidate(0)
+       .call();
+   this.setState({
+     isSingleElectionAndCandidate: isSingleElectionAndCandidate,
+   });
+
+
+
+  //check for singleElectionCandidate and registration ended status
+   if (
+     this.state.isSingleElectionAndCandidate &&
+     this.state.registrationEndedStatus
+   ) {
+     this.setState({ isElectionEnded: true });
+   }
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -268,7 +291,7 @@ export default class Result extends Component {
                 )}
               </div>
             </>
-          ) : null}
+          ) : <><p>This is just for dummy or checking purpose</p></>}
         </div>
       </>
     );
