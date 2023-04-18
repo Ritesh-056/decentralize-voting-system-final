@@ -163,7 +163,7 @@ export default class Result extends Component {
 
 
 
-   //check for single election title and the candidate
+  // check for single election title and the candidate
    const isSingleElectionAndCandidate =
      await this.state.ElectionInstance.methods
        .checkForSingleElectionAndCandidate(0)

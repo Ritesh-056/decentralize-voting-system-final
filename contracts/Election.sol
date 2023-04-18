@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.11 <0.9.0;
 
+import "hardhat/console.sol";
+
 contract Election {
     bool isElectionInit;
 
@@ -67,7 +69,7 @@ contract Election {
         bool isVerified;
         bool hasVoted;
         bool isRegistered;
-        uint256[] voteCastedTitles;
+        uint8[] voteCastedTitles;
     }
 
     modifier registrationOnGoing() {
@@ -215,7 +217,6 @@ contract Election {
         });
         candidateDetails[msg.sender] = newCandidate;
         candidates.push(msg.sender);
-        candidateCount += 1;
     }
 
     //verify candidate
@@ -225,6 +226,7 @@ contract Election {
     ) public onlyAdmin {
         candidateDetails[candidateAddress].isVerified = _verifedStatus;
         approvedCandidates.push(candidateAddress);
+        candidateCount += 1;
     }
 
     // Request to be added as voter
@@ -236,11 +238,10 @@ contract Election {
             hasVoted: false,
             isVerified: false,
             isRegistered: true,
-            voteCastedTitles: new uint256[](0)
+            voteCastedTitles: new uint8[](0)
         });
         voterDetails[msg.sender] = newVoter;
         voters.push(msg.sender);
-        voterCount += 1;
     }
 
     // Verify voter
@@ -254,12 +255,13 @@ contract Election {
     {
         voterDetails[voterAddress].isVerified = _verifedStatus;
         approvedVoters.push(voterAddress);
+        voterCount += 1;
     }
 
     // Vote
     function vote(
         address _candidateAddress,
-        uint256 _electionTitleIndex
+        uint8 _electionTitleIndex
     ) public votingTimeOnGoing {
         // require(voterDetails[msg.sender].hasVoted == false);
 
@@ -413,14 +415,14 @@ contract Election {
 
     //get candidate associated with the elections
     function getCandidatesForAssociatedElections(
-        uint256 _electionTitleIndex
+        uint8 _electionTitleIndex
     ) public view returns (Candidate[] memory) {
         Candidate[] memory candidatesTemp = new Candidate[](
             approvedCandidates.length
         );
-        uint256 numCandidates = 0;
+        uint8 numCandidates = 0;
 
-        for (uint256 i = 0; i < approvedCandidates.length; i++) {
+        for (uint i = 0; i < approvedCandidates.length; i++) {
             if (
                 candidateDetails[approvedCandidates[i]].electionTitleIndex ==
                 _electionTitleIndex
@@ -444,10 +446,10 @@ contract Election {
     }
 
     function getCandidateCountForAsscociatedElection(
-        uint256 _electionTitleIndex
-    ) public view returns (uint256) {
-        uint256 candidateListCount = 0;
-        for (uint256 i = 0; i < approvedCandidates.length; i++) {
+        uint8 _electionTitleIndex
+    ) public view returns (uint8) {
+        uint8 candidateListCount = 0;
+        for (uint i = 0; i < approvedCandidates.length; i++) {
             if (
                 candidateDetails[approvedCandidates[i]].electionTitleIndex ==
                 _electionTitleIndex
@@ -458,26 +460,31 @@ contract Election {
         return candidateListCount;
     }
 
+    //modifier to check if the election length is 1
+    modifier onlyOneElection() {
+        require(
+            electionDetails.elections.length == 1,
+            "There must be only one election"
+        );
+        _;
+    }
+
     function checkForSingleElectionAndCandidate(
         uint256 _electionTitleIndex
-    ) public view returns (bool) {
-        bool isSingleCandidateAndCandidate = false;
-        uint256 candidateListCount = 0;
-        uint256 electionLength = electionDetails.elections.length;
-        if (electionLength == 1) {
-            for (uint256 i = 0; i < approvedCandidates.length; i++) {
-                if (
-                    candidateDetails[approvedCandidates[i]]
-                        .electionTitleIndex == _electionTitleIndex
-                ) {
-                    candidateListCount++;
-                }
+    ) public view onlyOneElection returns (bool) {
+        bool isSingleElectionAndCandidate = false;
+        uint8 candidateListCount = 0;
+
+        for (uint i = 0; i < approvedCandidates.length; i++) {
+            if (
+                candidateDetails[approvedCandidates[i]].electionTitleIndex ==
+                _electionTitleIndex
+            ) {
+                candidateListCount++;
             }
         }
-        if (candidateListCount == 1) {
-            isSingleCandidateAndCandidate = true;
-        }
-
-        return isSingleCandidateAndCandidate;
+        require(candidateListCount == 1, "Canidate count must be one");
+        isSingleElectionAndCandidate = true;
+        return isSingleElectionAndCandidate;
     }
 }
