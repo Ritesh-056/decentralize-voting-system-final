@@ -109,13 +109,13 @@ export default class Result extends Component {
       const isElectionEnded = await this.state.ElectionInstance.methods
         .getElectionEndedStatus(currentTimeStamp)
         .call();
-      this.setState({ isElectionEnded: true });
+      this.setState({ isElectionEnded: isElectionEnded });
       console.log("Is election ended:", this.state.isElectionEnded);
 
       const electionStarted = await this.state.ElectionInstance.methods
         .getElectionStatus(currentTimeStamp)
         .call();
-      this.setState({ electionStarted: false });
+      this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
 
       const electionTitles = await this.state.ElectionInstance.methods

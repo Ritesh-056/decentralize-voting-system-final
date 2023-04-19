@@ -38,4 +38,17 @@ export const RegistrationDenied = () => {
   );
 };
 
-export default { RegistrationInit, RegistrationEnded, RegistrationDenied };
+
+export const VoterRegistrationEnded = () => {
+  // Component: Displaying election not initialize message.
+  return (
+    <div className="container-item info">
+      <center>
+        <h3>Registration is already ended.</h3>
+        <p>Oops! You are not able to register as a voter.</p>
+      </center>
+    </div>
+  );
+};
+
+export default { RegistrationInit, RegistrationEnded, RegistrationDenied,VoterRegistrationEnded };

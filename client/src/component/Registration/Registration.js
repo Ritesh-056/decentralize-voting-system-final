@@ -10,7 +10,7 @@ import "./Registration.css";
 // Contract
 import getWeb3 from "../../getWeb3";
 import Election from "../../artifacts/contracts/Election.sol/Election.json";
-import RegistrationInit from "../RegistrationStatus";
+import { VoterRegistrationEnded } from "../RegistrationStatus";
 
 //get getlocaldataTime func
 import { getLocalDateTime } from "../../DateTimeLocal";
@@ -188,7 +188,7 @@ export default class Registration extends Component {
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         {this.state.electionStarted ? (
-          <ElectionStatus />
+          <VoterRegistrationEnded/>
         ) : (
           <>
             <div className="container-main">
