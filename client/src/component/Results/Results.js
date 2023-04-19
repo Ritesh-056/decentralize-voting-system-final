@@ -64,9 +64,9 @@ export default class Result extends Component {
       const currentTimeStamp = Math.floor(Date.now() / 1000);
       console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
-     // Get total number of candidates
+     // Get total number of verified candidates
       const candidateCount = await this.state.ElectionInstance.methods
-        .getTotalCandidate()
+        .getVerifiedCandidates()
         .call();
       this.setState({ candidateCount: candidateCount });
 
@@ -274,7 +274,7 @@ export default class Result extends Component {
                 )}
               </div>
             </>
-          ) : <><p>This is just for dummy or checking purpose</p></>}
+          ) : <><ElectionNotStarted/></>}
         </div>
       </>
     );

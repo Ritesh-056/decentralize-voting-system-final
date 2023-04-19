@@ -80,14 +80,14 @@ export default class Registration extends Component {
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
       }
-    
+
          // Get start and end values
          const currentTimeStamp = Math.floor(Date.now() / 1000);
          console.log("Current send time is", getLocalDateTime(currentTimeStamp));
-   
+
       // Total number of voters
       const voterCount = await this.state.ElectionInstance.methods
-        .getTotalVoter()
+        .getVerifiedVoters()
         .call();
       this.setState({ voterCount: voterCount });
 
@@ -138,7 +138,7 @@ export default class Registration extends Component {
       .call();
       this.setState({ isElectionEnded: isElectionEnded });
 
-      
+
 
       const electionStarted = await this.state.ElectionInstance.methods
       .getElectionStatus(currentTimeStamp)

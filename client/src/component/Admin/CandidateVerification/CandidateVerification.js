@@ -55,9 +55,9 @@ export default class CandidateVerification extends Component {
         this.setState({ isAdmin: true });
       }
 
-      // Total number of candidates
+      // Total number of univerified candidates
       const candidateCount = await this.state.ElectionInstance.methods
-        .getTotalCandidate()
+        .getUnVerifiedCandidates()
         .call();
       this.setState({ candidateCount: candidateCount });
       // Loading all the candidates
@@ -80,15 +80,15 @@ export default class CandidateVerification extends Component {
         });
       }
       this.setState({ candidates: this.state.candidates });
-    
+
 
       const electionTitles = await this.state.ElectionInstance.methods
       .getElectionTitles()
       .call();
 
       this.setState({electionTitles:electionTitles})
-      
-    
+
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -122,7 +122,7 @@ export default class CandidateVerification extends Component {
                 <td className="tbl">{candidate.slogan}</td>
                 <td className="tbl">{electionTitleOfCandidate}</td>
               </tr>
-              
+
             </table>
           </div>
         ) : null}

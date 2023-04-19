@@ -85,9 +85,9 @@ export default class Voting extends Component {
         this.setState({ isAdmin: true });
       }
 
-      // Get total number of candidates
+      // Get total number of verified candidates
       const candidateCount = await this.state.ElectionInstance.methods
-        .getTotalCandidate()
+        .getVerifiedCandidates()
         .call();
       this.setState({ candidateCount: candidateCount });
 

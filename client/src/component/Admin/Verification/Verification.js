@@ -54,10 +54,11 @@ export default class Registration extends Component {
         this.setState({ isAdmin: true });
       }
 
-      // Total number of voters
+      // Total number of unverified voters
       const voterCount = await this.state.ElectionInstance.methods
-        .getTotalVoter()
+        .getUnVerifiedVoters()
         .call();
+
       this.setState({ voterCount: voterCount });
       // Loading all the voters
       for (let i = 0; i < this.state.voterCount; i++) {
@@ -109,7 +110,7 @@ export default class Registration extends Component {
                 <td className="tbl">{voter.phone}</td>
                 <td className="tbl">{voter.hasVoted ? "True" : "False"}</td>
               </tr>
-              
+
             </table>
           </div>
         ) : null}
@@ -130,7 +131,7 @@ export default class Registration extends Component {
               <th>Phone</th>
               <td>{voter.phone}</td>
             </tr>
-          
+
             <tr style={{background:"transparent"}}>
               <th>Voted</th>
               <td>{voter.hasVoted ? "True" : "False"}</td>

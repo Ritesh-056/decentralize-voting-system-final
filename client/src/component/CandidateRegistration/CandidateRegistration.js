@@ -89,16 +89,16 @@ export default class CandidateRegistration extends Component {
          // Get start and end values
          const currentTimeStamp = Math.floor(Date.now() / 1000);
          console.log("Current send time is", getLocalDateTime(currentTimeStamp));
-   
+
       const accountAddress = this.state.account;
       const voterStatusForCandidate = await this.state.ElectionInstance.methods
         .getVoterStatusForCandidate(accountAddress)
         .call();
       this.setState({ voterStatusForCandidate: voterStatusForCandidate });
 
-      // Total number of candidates
+      // Total number of verified candidates
       const candidateCount = await this.state.ElectionInstance.methods
-        .getTotalCandidate()
+        .getVerifiedCandidates()
         .call();
       this.setState({ candidateCount: candidateCount });
 
