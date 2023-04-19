@@ -7,6 +7,7 @@ contract Election {
     bool isElectionInit;
 
     address public admin;
+    uint8 candidateCount;
     address[] public voters; // array to store address of voters
     address[] public candidates; //array to store address of voters
 
@@ -24,6 +25,7 @@ contract Election {
 
     constructor() {
         admin = msg.sender;
+        candidateCount =0;
         isElectionInit = false;
         registrationStartTime = 0;
         registrationEndTime = 0;
@@ -33,6 +35,7 @@ contract Election {
 
     // Candidate attrb
     struct Candidate {
+        uint8 candidateId;
         address candidateAddress;
         string header;
         string slogan;
@@ -212,6 +215,7 @@ contract Election {
     ) public registrationOnGoing {
         Candidate memory newCandidate = Candidate({
             candidateAddress: msg.sender,
+            candidateId:candidateCount,
             header: _header,
             slogan: _slogan,
             electionTitleIndex: _electionTitleIndex,
@@ -221,6 +225,8 @@ contract Election {
         });
         candidateDetails[msg.sender] = newCandidate;
         candidates.push(msg.sender);
+        candidateCount +=1;
+
     }
 
     //verify candidate

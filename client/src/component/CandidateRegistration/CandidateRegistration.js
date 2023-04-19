@@ -96,7 +96,7 @@ export default class CandidateRegistration extends Component {
         .call();
       this.setState({ voterStatusForCandidate: voterStatusForCandidate });
 
-      // Total number of verified candidates
+      // Total number of verified candidate
       const candidateCount = await this.state.ElectionInstance.methods
         .getVerifiedCandidates()
         .call();

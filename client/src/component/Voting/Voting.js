@@ -33,8 +33,8 @@ export default class Voting extends Component {
       electionInitStatus: false,
       isSingleElectionAndCandidate: false,
       registrationStartedSatus: false,
-      registrationEndedStatus:false,
-      isElectionEnded : false,
+      registrationEndedStatus: false,
+      isElectionEnded: false,
       currentVoter: {
         address: undefined,
         name: null,
@@ -101,9 +101,9 @@ export default class Voting extends Component {
           .call();
         this.state.candidates.push({
           candidateAddress: candidate.candidateAddress,
-          candidateId: candidate.candidateId,
           header: candidate.header,
           slogan: candidate.slogan,
+          candidateId: candidate.candidateId,
           electionTitleIndex: candidate.electionTitleIndex,
           isVerified: candidate.isVerified,
           isRegistered: candidate.isRegistered,
@@ -138,6 +138,8 @@ export default class Voting extends Component {
         .call();
       this.setState({ electionTitles: electionTitles });
 
+      console.log("Election titles", electionTitles);
+
       const votingstartedTime = await this.state.ElectionInstance.methods
         .getVotingStartTime()
         .call();
@@ -162,7 +164,6 @@ export default class Voting extends Component {
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
 
-
       //get voting registration start and end times
       const registrationStartedSatus = await this.state.ElectionInstance.methods
         .getRegistrationStartedStatus(currentTimeStamp)
@@ -171,16 +172,15 @@ export default class Voting extends Component {
         .getRegistrationEndedStatus(currentTimeStamp)
         .call();
 
+      this.setState({
+        registrationStartedSatus: registrationStartedSatus,
+        registrationEndedStatus: registrationEndedStatus,
+      });
 
-        this.setState({
-          registrationStartedSatus :registrationStartedSatus,
-          registrationEndedStatus: registrationEndedStatus
-        })
+      console.log("Is registration started", registrationStartedSatus);
+      console.log("Is registration ended", registrationEndedStatus);
 
-        console.log("Is registration started", registrationStartedSatus);
-        console.log("Is registration ended", registrationEndedStatus);
-
-
+      console.log("Total Voted election titles", this.state.listOfVotedTitles);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -254,16 +254,26 @@ export default class Voting extends Component {
         <div className="vote-btn-container">
           <button
             onClick={() => {
-              for (var i = 0; i < this.state.voteCastedTitles.length; i++) {
-                const voteCastedTitleIndex = this.state.voteCastedTitles[i];
-                if (electionTitleIndex == voteCastedTitleIndex) {
-                  return alert("The election title is already voted");
-                }
+              const voteTitle = `Cast vote [${electionTitleIndex}] to ${candidate.header}.`;
+              const isAlreadyVoted =
+                this.state.currentVoter.voteCastedTitles.includes(
+                  electionTitleIndex
+                );
+
+              if (isAlreadyVoted) {
+                return alert("The election title is already voted");
+              } else {
+                // If the title is not already voted,
+                // add it to the list of voted titles
+                alert(voteTitle);
+                confirmVote(
+                  candidate.candidateAddress,
+                  candidate.header,
+                  electionTitleIndex
+                );
+                //  this.state.listOfVotedTitles.push({ votedTitleIndex: electionTitleIndex });
+                return alert("Election voted successfully");
               }
-              return alert(
-                `The election title to be voted is  ${candidate.candidateId} ${candidate.candidateAddress}`
-              );
-              // return confirmVote(candidate.candidateAddress, candidate.header, electionTitleIndex);
             }}
             className="vote-bth"
             disabled={
@@ -309,7 +319,6 @@ export default class Voting extends Component {
                       <div className="container-item success">
                         <div>
                           <strong>You've casted your vote.</strong>
-                          <p />
                           <center>
                             <Link
                               to="/Results"
@@ -318,7 +327,10 @@ export default class Voting extends Component {
                                 textDecoration: "underline",
                               }}
                             >
-                              <button className="btn-election">
+                              <button
+                                style={{ marginTop: 16 }}
+                                className="btn-election"
+                              >
                                 View result
                               </button>
                             </Link>

@@ -93,28 +93,6 @@ export default class Result extends Component {
       this.setState({ candidates: this.state.candidates });
 
 
-      //winner candidate details
-      const winnerAddress = await this.state.ElectionInstance.methods
-        .getWinnerCandidate(0)
-        .call();
-      const winnerCandidate = await this.state.ElectionInstance.methods
-        .candidateDetails(winnerAddress)
-        .call();
-
-
-      this.state.winnerCandidates.push({
-        candidateAddress: winnerCandidate.candidateAddress,
-        candidateId: winnerCandidate.candidateId,
-        header: winnerCandidate.header,
-        slogan: winnerCandidate.slogan,
-        electionTitleIndex: winnerCandidate.electionTitleIndex,
-        isVerified: winnerCandidate.isVerified,
-        isRegistered: winnerCandidate.isRegistered,
-        voteCount: winnerCandidate.voteCount,
-      });
-
-      this.setState({ winnerCandidates: this.state.winnerCandidates });
-
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
@@ -131,13 +109,13 @@ export default class Result extends Component {
       const isElectionEnded = await this.state.ElectionInstance.methods
         .getElectionEndedStatus(currentTimeStamp)
         .call();
-      this.setState({ isElectionEnded: isElectionEnded });
+      this.setState({ isElectionEnded: true });
       console.log("Is election ended:", this.state.isElectionEnded);
 
       const electionStarted = await this.state.ElectionInstance.methods
         .getElectionStatus(currentTimeStamp)
         .call();
-      this.setState({ electionStarted: electionStarted });
+      this.setState({ electionStarted: false });
       console.log("Election started", this.state.electionStarted);
 
       const electionTitles = await this.state.ElectionInstance.methods
@@ -285,6 +263,7 @@ function displayWinner(candidates) {
     // Returns an object having maxium vote count
     let maxVoteRecived = 0;
     let winnerCandidate = [];
+    if(candidates.length!=1){
       for (let i = 0; i < candidates.length; i++) {
         if (candidates[i].voteCount > maxVoteRecived) {
           maxVoteRecived = candidates[i].voteCount;
@@ -293,6 +272,9 @@ function displayWinner(candidates) {
           winnerCandidate.push(candidates[i]);
         }
       }
+    }else{
+      winnerCandidate.push(candidates[0]);
+    }
     return winnerCandidate;
   };
   const renderWinner = (winner) => {
