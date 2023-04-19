@@ -64,7 +64,7 @@ export default class Result extends Component {
       const currentTimeStamp = Math.floor(Date.now() / 1000);
       console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
-      // Get total number of candidates
+     // Get total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
         .getTotalCandidate()
         .call();
@@ -92,13 +92,15 @@ export default class Result extends Component {
 
       this.setState({ candidates: this.state.candidates });
 
+
       //winner candidate details
       const winnerAddress = await this.state.ElectionInstance.methods
-        .getWinner()
+        .getWinnerCandidate(0)
         .call();
       const winnerCandidate = await this.state.ElectionInstance.methods
         .candidateDetails(winnerAddress)
         .call();
+
 
       this.state.winnerCandidates.push({
         candidateAddress: winnerCandidate.candidateAddress,
@@ -162,25 +164,6 @@ export default class Result extends Component {
      console.log("Is registration ended", registrationEndedStatus);
 
 
-
-  // check for single election title and the candidate
-   const isSingleElectionAndCandidate =
-     await this.state.ElectionInstance.methods
-       .checkForSingleElectionAndCandidate(0)
-       .call();
-   this.setState({
-     isSingleElectionAndCandidate: isSingleElectionAndCandidate,
-   });
-
-
-
-  //check for singleElectionCandidate and registration ended status
-   if (
-     this.state.isSingleElectionAndCandidate &&
-     this.state.registrationEndedStatus
-   ) {
-     this.setState({ isElectionEnded: true });
-   }
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -302,7 +285,6 @@ function displayWinner(candidates) {
     // Returns an object having maxium vote count
     let maxVoteRecived = 0;
     let winnerCandidate = [];
-    if(candidates.length >1 ){
       for (let i = 0; i < candidates.length; i++) {
         if (candidates[i].voteCount > maxVoteRecived) {
           maxVoteRecived = candidates[i].voteCount;
@@ -311,10 +293,6 @@ function displayWinner(candidates) {
           winnerCandidate.push(candidates[i]);
         }
       }
-    }
-    if(candidates.length == 1){
-      winnerCandidate.push(candidates[0]);
-    }
     return winnerCandidate;
   };
   const renderWinner = (winner) => {

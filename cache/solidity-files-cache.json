@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/ritesh/decentralize-voting-system-business/contracts/Election.sol": {
-      "lastModificationDate": 1681233782219,
-      "contentHash": "6c1fbee7d70688d688726e76e40a455a",
+      "lastModificationDate": 1681889440860,
+      "contentHash": "936cb701d7d0bd93dc4f1870a24c87e8",
       "sourceName": "contracts/Election.sol",
       "solcConfig": {
         "version": "0.8.11",
@@ -28,7 +28,9 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "hardhat/console.sol"
+      ],
       "versionPragmas": [
         ">=0.8.11 <0.9.0"
       ],
@@ -69,6 +71,41 @@
       ],
       "artifacts": [
         "Migrations"
+      ]
+    },
+    "/home/ritesh/decentralize-voting-system-business/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1675819422254,
+      "contentHash": "4ff3cd2f6272c9a6516e9ee4f2b967d3",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">= 0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
       ]
     }
   }

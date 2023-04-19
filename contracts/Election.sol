@@ -6,8 +6,6 @@ import "hardhat/console.sol";
 contract Election {
     bool isElectionInit;
 
-    uint256 voterCount;
-    uint256 candidateCount;
     address public admin;
     address[] public voters; // array to store address of voters
     address[] public candidates; //array to store address of voters
@@ -26,8 +24,6 @@ contract Election {
 
     constructor() {
         admin = msg.sender;
-        candidateCount = 0;
-        voterCount = 0;
         isElectionInit = false;
         registrationStartTime = 0;
         registrationEndTime = 0;
@@ -37,7 +33,6 @@ contract Election {
 
     // Candidate attrb
     struct Candidate {
-        uint256 candidateId;
         address candidateAddress;
         string header;
         string slogan;
@@ -187,17 +182,27 @@ contract Election {
         return titles;
     }
 
-    // Get candidates count
-    function getTotalCandidate() public view returns (uint256) {
-        // Returns total number of candidates
-        return candidateCount;
+    // Get total unverified candidates count
+    function getUnVerifiedCandidates() public view returns (uint256) {
+        return candidates.length;
     }
 
-    // Get voters count
-    function getTotalVoter() public view returns (uint256) {
-        // Returns total number of voters
-        return voterCount;
+    // Get total inverified voters count
+    function getUnVerifiedVoters() public view returns (uint256) {
+        return voters.length;
     }
+
+
+    // Get verified candidates count
+    function getVerifiedCandidates() public view returns (uint256) {
+        return approvedCandidates.length;
+    }
+
+    // Get total inverified voters count
+    function getVerifiedVoters() public view returns (uint256) {
+        return approvedVoters.length;
+    }
+
 
     //Request to be added as candidate
     function registerAsCandidate(
@@ -207,7 +212,6 @@ contract Election {
     ) public registrationOnGoing {
         Candidate memory newCandidate = Candidate({
             candidateAddress: msg.sender,
-            candidateId: candidateCount,
             header: _header,
             slogan: _slogan,
             electionTitleIndex: _electionTitleIndex,
@@ -226,7 +230,6 @@ contract Election {
     ) public onlyAdmin {
         candidateDetails[candidateAddress].isVerified = _verifedStatus;
         approvedCandidates.push(candidateAddress);
-        candidateCount += 1;
     }
 
     // Request to be added as voter
@@ -255,10 +258,10 @@ contract Election {
     {
         voterDetails[voterAddress].isVerified = _verifedStatus;
         approvedVoters.push(voterAddress);
-        voterCount += 1;
     }
 
-    // Vote
+    // function to handle vote [checks if the voter
+    // has already voted to the particular elections]
     function vote(
         address _candidateAddress,
         uint8 _electionTitleIndex
@@ -289,24 +292,32 @@ contract Election {
         voterDetails[msg.sender].voteCastedTitles.push(_electionTitleIndex);
     }
 
-    function getWinner() public view returns (address) {
-        uint256 winnerVoteCount = 0;
-        address winnerAddress;
-        for (uint256 i = 0; i < candidateCount; i++) {
-            address candidateAddress = approvedCandidates[i];
-            uint256 miniVote = candidateDetails[candidateAddress].voteCount;
-            if (miniVote > winnerVoteCount) {
-                winnerVoteCount = miniVote;
-                winnerAddress = candidateAddress;
-            }
-        }
-        return winnerAddress;
-    }
-
+    //get voting initization status
     function getElectionInitStatus() public view returns (bool) {
         return isElectionInit;
     }
 
+    //get voting registration start
+    function getRegistrationStartTime() public view returns (uint256) {
+        return registrationStartTime;
+    }
+
+    //get voting registration end time
+    function getRegistrationEndTime() public view returns (uint256) {
+        return registrationEndTime;
+    }
+
+    // get voting start
+    function getVotingStartTime() public view returns (uint256) {
+        return votingStartTime;
+    }
+
+    //get voting end time
+    function getVotingEndTime() public view returns (uint256) {
+        return votingEndTime;
+    }
+
+    ///function gives the regsitration ended status.
     function getElectionEndedStatus(
         uint256 _timeStamp
     ) public view returns (bool) {
@@ -320,19 +331,7 @@ contract Election {
         return isElectionEnded;
     }
 
-    function getAlreadyRegisteredCandidateStatus(
-        address _currentAddress
-    ) public view returns (bool) {
-        bool isAlreadyRegistered = false;
-        for (uint i = 0; i < candidates.length; i++) {
-            if (_currentAddress == candidates[i]) {
-                isAlreadyRegistered = true;
-                break;
-            }
-        }
-        return isAlreadyRegistered;
-    }
-
+    ///function gives the registration ongoing status.
     function getRegistrationStatus(
         uint256 _timeStamp
     ) public view returns (bool) {
@@ -348,6 +347,8 @@ contract Election {
         return isRegistrationOnGoing;
     }
 
+    //check if the election is running or not.
+    //[Only vote is done within the election time]
     function getElectionStatus(uint256 _timeStamp) public view returns (bool) {
         bool isVotingOnGoing;
         if (_timeStamp >= votingStartTime && _timeStamp <= votingEndTime) {
@@ -358,6 +359,21 @@ contract Election {
         return isVotingOnGoing;
     }
 
+    //get already registered candidate or not status.
+    function getAlreadyRegisteredCandidateStatus(
+        address _currentAddress
+    ) public view returns (bool) {
+        bool isAlreadyRegistered = false;
+        for (uint i = 0; i < candidates.length; i++) {
+            if (_currentAddress == candidates[i]) {
+                isAlreadyRegistered = true;
+                break;
+            }
+        }
+        return isAlreadyRegistered;
+    }
+
+    //checks if the candidate is voter or not [Checks the egibility to be a voter]
     function getVoterStatusForCandidate(
         address _currentAddress
     ) public view returns (bool) {
@@ -371,25 +387,7 @@ contract Election {
         return isCandidateAlreayAVoter;
     }
 
-    //get voting registration start and end times
-    function getRegistrationStartTime() public view returns (uint256) {
-        return registrationStartTime;
-    }
-
-    function getRegistrationEndTime() public view returns (uint256) {
-        return registrationEndTime;
-    }
-
-    // get voting start and end times
-    function getVotingStartTime() public view returns (uint256) {
-        return votingStartTime;
-    }
-
-    function getVotingEndTime() public view returns (uint256) {
-        return votingEndTime;
-    }
-
-    //get registration set and get status
+    //get registration started status
     function getRegistrationStartedStatus(
         uint256 _timeStamp
     ) public view returns (bool) {
@@ -403,6 +401,7 @@ contract Election {
         return isRegistrationStarted;
     }
 
+    //get registration ended status
     function getRegistrationEndedStatus(
         uint256 _timeStamp
     ) public view returns (bool) {
@@ -413,7 +412,23 @@ contract Election {
         return isRegistrationEnded;
     }
 
-    //get candidate associated with the elections
+    ///get total number of candidates count for the associated election
+    function getCandidateCountForAsscociatedElection(
+        uint8 _electionTitleIndex
+    ) public view returns (uint8) {
+        uint8 candidateListCount = 0;
+        for (uint i = 0; i < approvedCandidates.length; i++) {
+            if (
+                candidateDetails[approvedCandidates[i]].electionTitleIndex ==
+                _electionTitleIndex
+            ) {
+                candidateListCount++;
+            }
+        }
+        return candidateListCount;
+    }
+
+    //get total candidates for the associated election
     function getCandidatesForAssociatedElections(
         uint8 _electionTitleIndex
     ) public view returns (Candidate[] memory) {
@@ -445,46 +460,25 @@ contract Election {
         return candidateListNumber;
     }
 
-    function getCandidateCountForAsscociatedElection(
-        uint8 _electionTitleIndex
-    ) public view returns (uint8) {
-        uint8 candidateListCount = 0;
+    ///function to get the winner candidate
+    /// for particular election title.
+    function getWinnerCandidate(
+        uint _electionTitleIndex
+    ) public view returns (address) {
+        uint256 winnerVoteCount = 0;
+        address winnerAddress;
         for (uint i = 0; i < approvedCandidates.length; i++) {
             if (
                 candidateDetails[approvedCandidates[i]].electionTitleIndex ==
                 _electionTitleIndex
             ) {
-                candidateListCount++;
+                uint256 miniVote = candidateDetails[approvedCandidates[i]].voteCount;
+                if (miniVote > winnerVoteCount) {
+                  winnerVoteCount = miniVote;
+                  winnerAddress = approvedCandidates[i];
+                }
             }
         }
-        return candidateListCount;
-    }
-
-    //modifier to check if the election length is 1
-    modifier onlyOneElection() {
-        require(
-            electionDetails.elections.length == 1,
-            "There must be only one election"
-        );
-        _;
-    }
-
-    function checkForSingleElectionAndCandidate(
-        uint256 _electionTitleIndex
-    ) public view onlyOneElection returns (bool) {
-        bool isSingleElectionAndCandidate = false;
-        uint8 candidateListCount = 0;
-
-        for (uint i = 0; i < approvedCandidates.length; i++) {
-            if (
-                candidateDetails[approvedCandidates[i]].electionTitleIndex ==
-                _electionTitleIndex
-            ) {
-                candidateListCount++;
-            }
-        }
-        require(candidateListCount == 1, "Canidate count must be one");
-        isSingleElectionAndCandidate = true;
-        return isSingleElectionAndCandidate;
+        return winnerAddress;
     }
 }

@@ -181,27 +181,6 @@ export default class Voting extends Component {
         console.log("Is registration ended", registrationEndedStatus);
 
 
-
-      //check for single election title and the candidate
-      const isSingleElectionAndCandidate =
-        await this.state.ElectionInstance.methods
-          .checkForSingleElectionAndCandidate(0)
-          .call();
-      this.setState({
-        isSingleElectionAndCandidate: isSingleElectionAndCandidate,
-      });
-
-
-
-     //check for singleElectionCandidate and registration ended status
-      if (
-        this.state.isSingleElectionAndCandidate &&
-        this.state.registrationEndedStatus
-      ) {
-        this.setState({ isElectionEnded: true });
-      }
-
-
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
