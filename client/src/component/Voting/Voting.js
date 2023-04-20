@@ -35,6 +35,8 @@ export default class Voting extends Component {
       registrationStartedSatus: false,
       registrationEndedStatus: false,
       isElectionEnded: false,
+      voteCastedTitles: [],
+
       currentVoter: {
         address: undefined,
         name: null,
@@ -42,7 +44,6 @@ export default class Voting extends Component {
         hasVoted: false,
         isVerified: false,
         isRegistered: false,
-        voteCastedTitles: [],
       },
     };
   }
@@ -116,6 +117,8 @@ export default class Voting extends Component {
       const voter = await this.state.ElectionInstance.methods
         .voterDetails(this.state.account)
         .call();
+
+      this.setState({ voteCastedTitles: voter.voteCastedTitles });
       this.setState({
         currentVoter: {
           address: voter.voterAddress,
@@ -124,7 +127,6 @@ export default class Voting extends Component {
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,
-          voteCastedTitles: voter.voteCastedTitles,
         },
       });
 
@@ -230,6 +232,19 @@ export default class Voting extends Component {
       window.location.reload();
     };
 
+    //vote util functions
+    const voteUtil = (alertVoteTitle) => {
+      // If the title is not already voted,
+      // add it to the list of voted titles
+      alert(alertVoteTitle);
+      confirmVote(
+        candidate.candidateAddress,
+        candidate.header,
+        electionTitleIndex
+      );
+      return alert("Election voted successfully");
+    };
+
     const confirmVote = (candidateAddress, header, titleIndex) => {
       var r = window.confirm(
         "Vote for " +
@@ -254,27 +269,21 @@ export default class Voting extends Component {
         <div className="vote-btn-container">
           <button
             onClick={() => {
+              const voteAlertTitle = `Cast vote [${electionTitleIndex}] to ${candidate.header}.`;
+              const voteCastedTitlesList = this.state.voteCastedTitles;
 
-              const voteTitle = `Cast vote [${electionTitleIndex}] to ${candidate.header}.`;
+              console.log(voteCastedTitlesList);
 
-              const isAlreadyVoted =
-                this.state.currentVoter.voteCastedTitles.includes(electionTitleIndex);
-                console.log(isAlreadyVoted);
-
-              if (isAlreadyVoted) {
-                return alert("The election title is already voted");
+              if (voteCastedTitlesList.length >= 1) {
+                const isAlreadyVoted =
+                  voteCastedTitlesList.includes(electionTitleIndex);
+                if (isAlreadyVoted) {
+                  return alert("The election title is already voted");
+                } else {
+                  voteUtil(voteAlertTitle);
+                }
               } else {
-                // If the title is not already voted,
-                // add it to the list of voted titles
-                alert(voteTitle);
-                confirmVote(
-                  candidate.candidateAddress,
-                  candidate.header,
-
-                  electionTitleIndex
-                );
-                //  this.state.listOfVotedTitles.push({ votedTitleIndex: electionTitleIndex });
-                return alert("Election voted successfully");
+                voteUtil(voteAlertTitle);
               }
             }}
             className="vote-bth"

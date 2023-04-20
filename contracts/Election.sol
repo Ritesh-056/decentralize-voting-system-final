@@ -25,7 +25,7 @@ contract Election {
 
     constructor() {
         admin = msg.sender;
-        candidateCount =0;
+        candidateCount = 0;
         isElectionInit = false;
         registrationStartTime = 0;
         registrationEndTime = 0;
@@ -195,7 +195,6 @@ contract Election {
         return voters.length;
     }
 
-
     // Get verified candidates count
     function getVerifiedCandidates() public view returns (uint256) {
         return approvedCandidates.length;
@@ -206,7 +205,6 @@ contract Election {
         return approvedVoters.length;
     }
 
-
     //Request to be added as candidate
     function registerAsCandidate(
         string memory _header,
@@ -215,7 +213,7 @@ contract Election {
     ) public registrationOnGoing {
         Candidate memory newCandidate = Candidate({
             candidateAddress: msg.sender,
-            candidateId:candidateCount,
+            candidateId: candidateCount,
             header: _header,
             slogan: _slogan,
             electionTitleIndex: _electionTitleIndex,
@@ -225,8 +223,7 @@ contract Election {
         });
         candidateDetails[msg.sender] = newCandidate;
         candidates.push(msg.sender);
-        candidateCount +=1;
-
+        candidateCount += 1;
     }
 
     //verify candidate
@@ -266,32 +263,31 @@ contract Election {
         approvedVoters.push(voterAddress);
     }
 
+    //function that check if the
+    //item is present in the list.
+    function iselectionTitleIndexInList(
+        uint8[] memory electionTitleList,
+        uint8 item
+    ) public pure returns (bool) {
+        for (uint i = 0; i < electionTitleList.length; i++) {
+            if (electionTitleList[i] == item) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // function to handle vote [checks if the voter
     // has already voted to the particular elections]
     function vote(
         address _candidateAddress,
         uint8 _electionTitleIndex
     ) public votingTimeOnGoing {
-        // require(voterDetails[msg.sender].hasVoted == false);
-
-        bool isAlreadyVoteToElectionTitle = false;
-        for (
-            uint256 i = 0;
-            i < voterDetails[msg.sender].voteCastedTitles.length;
-            i++
-        ) {
-            if (
-                voterDetails[msg.sender].voteCastedTitles[i] ==
-                _electionTitleIndex
-            ) {
-                isAlreadyVoteToElectionTitle = true;
-                break;
-            }
-        }
-        require(
-            isAlreadyVoteToElectionTitle == false,
-            "You have already voted to election title"
+        bool isItemExisted = iselectionTitleIndexInList(
+            voterDetails[msg.sender].voteCastedTitles,
+            _electionTitleIndex
         );
+        require(!isItemExisted, "Already casted vote to the selected title.");
         require(voterDetails[msg.sender].isVerified == true);
         candidateDetails[_candidateAddress].voteCount += 1;
         voterDetails[msg.sender].hasVoted = true;
@@ -478,10 +474,11 @@ contract Election {
                 candidateDetails[approvedCandidates[i]].electionTitleIndex ==
                 _electionTitleIndex
             ) {
-                uint256 miniVote = candidateDetails[approvedCandidates[i]].voteCount;
+                uint256 miniVote = candidateDetails[approvedCandidates[i]]
+                    .voteCount;
                 if (miniVote > winnerVoteCount) {
-                  winnerVoteCount = miniVote;
-                  winnerAddress = approvedCandidates[i];
+                    winnerVoteCount = miniVote;
+                    winnerAddress = approvedCandidates[i];
                 }
             }
         }
