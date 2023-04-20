@@ -254,11 +254,12 @@ export default class Voting extends Component {
         <div className="vote-btn-container">
           <button
             onClick={() => {
+
               const voteTitle = `Cast vote [${electionTitleIndex}] to ${candidate.header}.`;
+
               const isAlreadyVoted =
-                this.state.currentVoter.voteCastedTitles.includes(
-                  electionTitleIndex
-                );
+                this.state.currentVoter.voteCastedTitles.includes(electionTitleIndex);
+                console.log(isAlreadyVoted);
 
               if (isAlreadyVoted) {
                 return alert("The election title is already voted");
@@ -269,6 +270,7 @@ export default class Voting extends Component {
                 confirmVote(
                   candidate.candidateAddress,
                   candidate.header,
+
                   electionTitleIndex
                 );
                 //  this.state.listOfVotedTitles.push({ votedTitleIndex: electionTitleIndex });
