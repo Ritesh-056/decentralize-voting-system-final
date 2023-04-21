@@ -23,6 +23,8 @@ import ElectionStatusAdminHome from "./ElectionStatusAdminHome";
 import ElectionNotStarted from "./ElectionNotStarted";
 import NotInit from "./NotInit";
 import modifyUserInputStr from "../../src/Utils";
+import AboutElection from "./Home/AboutElection";
+import AboutAdmin from "./Home/AboutAdmin";
 
 // const buttonRef = React.createRef();
 class Home extends Component {
@@ -194,11 +196,10 @@ class Home extends Component {
 
   // register and start election
   registerElection = async (data) => {
-    
-    console.log("Btn clicked"); 
+    console.log("Btn clicked");
     await this.state.ElectionInstance.methods
       .setElectionDetails(
-        data.adminFName+" "+data.adminLName,
+        data.adminFName + " " + data.adminLName,
         data.adminEmail.toLowerCase(),
         data.adminTitle,
         data.organizationTitle,
@@ -256,7 +257,6 @@ class Home extends Component {
   }
 
   renderAdminHome = () => {
-
     const EMsg = (props) => {
       return (
         <span style={{ color: "red", fontSize: 12, paddingLeft: 32 }}>
@@ -318,172 +318,12 @@ class Home extends Component {
                 </>
               ) : (
                 <div className="container-main">
-                  {/* about-admin */}
-                  <div className="about-admin">
-                    <h2>About Admin</h2>
-                    <div className="container-item center-items">
-                      <div className="container-item-inside">
-                        <label className="label-home">
-                          <p className="label-home-title">
-                            Full Name
-                            {errors.adminFName && <EMsg msg="*required" />}
-                          </p>
-                          <input
-                            className="input-home"
-                            type="text"
-                            placeholder="John"
-                            {...register("adminFName", {
-                              required: true,
-                            })}
-                          />
-                          <input
-                            className="input-home"
-                            type="text"
-                            placeholder="Doe"
-                            {...register("adminLName")}
-                          />
-                        </label>
-
-                        <label className="label-home">
-                          <p className="label-home-title">
-                            Email
-                            {errors.adminEmail && (
-                              <EMsg msg={errors.adminEmail.message} />
-                            )}
-                          </p>
-
-                          <input
-                            className="input-home"
-                            placeholder="email@gmail.com"
-                            name="adminEmail"
-                            {...register("adminEmail", {
-                              required: "*required",
-                              pattern: {
-                                value:
-                                  /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/, // email validation using RegExp
-                                message: "*Invalid",
-                              },
-                            })}
-                          />
-                        </label>
-
-                        <label className="label-home">
-                          <p className="label-home-title">
-                            Job Title or Position
-                            {errors.adminTitle && <EMsg msg="*required" />}
-                          </p>
-
-                          <input
-                            className="input-home"
-                            type="text"
-                            placeholder=" HR HEAD "
-                            {...register("adminTitle", {
-                              required: true,
-                            })}
-                          />
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  {/* about-election */}
-                  <div className="about-election">
-                    <center>
-                      <h2>About Election</h2>
-                    </center>
-                    <div className="container-item center-items">
-                      <div className="container-item-inside">
-                      <HomeTitleForm />
-                        <label className="label-home">
-                          <p className="label-home-title">
-                            Organization Name
-                            {errors.organizationTitle && (
-                              <EMsg msg="*required" />
-                            )}
-                          </p>
-                          <input
-                            className="input-home"
-                            type="text"
-                            placeholder="Kathford Int'l College"
-                            {...register("organizationTitle", {
-                              required: true,
-                            })}
-                          />
-                        </label>
-
-                        <label className="label-home">
-                          <p className="label-home-title">
-                            Registration Start From
-                            {errors.registrationStartDateTime && (
-                              <EMsg msg="*required" />
-                            )}
-                          </p>
-
-                          <input
-                            className="input-home"
-                            type="datetime-local"
-                            placeholder="registration start date"
-                            {...register("registrationStartDateTime", {
-                              required: true,
-                            })}
-                          />
-                        </label>
-
-                        <label className="label-home">
-                          <p className="label-home-title">
-                            Registration End At
-                            {errors.registrationEndDateTime && (
-                              <EMsg msg="* required" />
-                            )}
-                          </p>
-
-                          <input
-                            className="input-home"
-                            type="datetime-local"
-                            placeholder="registration end date"
-                            {...register("registrationEndDateTime", {
-                              required: true,
-                            })}
-                          />
-                        </label>
-
-                        <label className="label-home">
-                          <p className="label-home-title">
-                            Election Start From
-                            {errors.votingStartDateTime && (
-                              <EMsg msg="*required" />
-                            )}
-                          </p>
-
-                          <input
-                            className="input-home"
-                            type="datetime-local"
-                            placeholder="election start date"
-                            {...register("votingStartDateTime", {
-                              required: true,
-                            })}
-                          />
-                        </label>
-
-                        <label className="label-home">
-                          <p className="label-home-title">
-                            Elections End At
-                            {errors.votingEndDateTime && (
-                              <EMsg msg="*required" />
-                            )}
-                          </p>
-
-                          <input
-                            className="input-home"
-                            type="datetime-local"
-                            placeholder="election end date"
-                            {...register("votingEndDateTime", {
-                              required: true,
-                            })}
-                          />
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+                  <AboutElection
+                    register={register}
+                    errors={errors}
+                    EMsg={EMsg}
+                  />
+                  <AboutAdmin register={register} errors={errors} EMsg={EMsg} />
                 </div>
               )
             ) : (
@@ -511,7 +351,7 @@ class Home extends Component {
 
             {this.state.electionInitStatus ? null : (
               <>
-                <StartEnd/>
+                <StartEnd />
               </>
             )}
           </form>
