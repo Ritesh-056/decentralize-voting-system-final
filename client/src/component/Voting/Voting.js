@@ -36,7 +36,6 @@ export default class Voting extends Component {
       registrationEndedStatus: false,
       isElectionEnded: false,
       voteCastedTitles: [],
-
       currentVoter: {
         address: undefined,
         name: null,
@@ -119,6 +118,9 @@ export default class Voting extends Component {
         .call();
 
       this.setState({ voteCastedTitles: voter.voteCastedTitles });
+      console.log("Voted casted title is ", this.state.voteCastedTitles);
+
+
       this.setState({
         currentVoter: {
           address: voter.voterAddress,
@@ -246,6 +248,9 @@ export default class Voting extends Component {
     };
 
     const confirmVote = (candidateAddress, header, titleIndex) => {
+
+      console.log("Confirm vote title index", titleIndex);
+
       var r = window.confirm(
         "Vote for " +
           header +
@@ -269,9 +274,8 @@ export default class Voting extends Component {
         <div className="vote-btn-container">
           <button
             onClick={() => {
-              const voteAlertTitle = `Cast vote [${electionTitleIndex}] to ${candidate.header}.`;
-              const voteCastedTitlesList = this.state.voteCastedTitles;
-
+              const voteAlertTitle = `Cast vote [${candidate.candidateId}] to ${candidate.header}.`;
+              const voteCastedTitlesList = this.state.voteCastedTitles || [];
               console.log(voteCastedTitlesList);
 
               if (voteCastedTitlesList.length >= 1) {
