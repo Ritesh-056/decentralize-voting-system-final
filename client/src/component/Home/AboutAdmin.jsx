@@ -20,12 +20,16 @@ const AboutAdmin = ({ register, errors, EMsg }) => {
                 {...register("adminFName", {
                   required: true,
                 })}
+                // value={elDetails.adminFirstName}
+                onChange={(e) => { }}
               />
               <input
                 className="input-home"
                 type="text"
                 placeholder="Doe"
                 {...register("adminLName")}
+                // value={elDetails.adminLastName}
+                onChange={(e) => { }}
               />
             </label>
 

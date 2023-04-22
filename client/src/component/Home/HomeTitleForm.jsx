@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewTitle } from "../redux/action/index";
+import { addNewTitle } from "../../redux/action/index";
+import { useEffect } from "react";
 
 const HomeTitleForm = () => {
   const [electionTitle, setElectionTitle] = useState("");
-  // const [elections, setElections] = useState([]);
   const elections = useSelector((state) => state.electionTitlesReducer);
+
   const dispatch = useDispatch();
   return (
     <>

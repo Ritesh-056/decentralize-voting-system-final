@@ -1,7 +1,11 @@
 import React from "react";
-import HomeTitleForm from "../HomeTitleForm";
+import HomeTitleForm from "./HomeTitleForm";
+import { useDispatch, useSelector } from "react-redux";
+import { addAboutElection } from "../../redux/action/index";
 
 const AboutElection = ({ register, errors, EMsg }) => {
+  const dispatch = useDispatch();
+  const aboutElection = useSelector((state) => state.aboutElectionReducer);
   return (
     <>
       {/* about-election */}
@@ -15,15 +19,24 @@ const AboutElection = ({ register, errors, EMsg }) => {
             <label className="label-home">
               <p className="label-home-title">
                 Organization Name
-                {errors.organizationTitle && <EMsg msg="*required" />}
+                {/* {errors.organizationTitle && <EMsg msg="*required" />} */}
               </p>
               <input
                 className="input-home"
                 type="text"
                 placeholder="Kathford Int'l College"
-                {...register("organizationTitle", {
-                  required: true,
-                })}
+                // {...register("organizationTitle", {
+                // required: true,
+                // })}
+                value={aboutElection.organizationTitle}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutElection({
+                      ...aboutElection,
+                      organizationTitle: e.target.value,
+                    })
+                  );
+                }}
               />
             </label>
 
@@ -37,9 +50,18 @@ const AboutElection = ({ register, errors, EMsg }) => {
                 className="input-home"
                 type="datetime-local"
                 placeholder="registration start date"
-                {...register("registrationStartDateTime", {
-                  required: true,
-                })}
+                // {...register("registrationStartDateTime", {
+                //  required: true,
+                // })}
+                value={aboutElection.registrationStartTime}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutElection({
+                      ...aboutElection,
+                      registrationStartTime: e.target.value,
+                    })
+                  );
+                }}
               />
             </label>
 
@@ -56,6 +78,15 @@ const AboutElection = ({ register, errors, EMsg }) => {
                 {...register("registrationEndDateTime", {
                   required: true,
                 })}
+                value={aboutElection.registrationEndTime}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutElection({
+                      ...aboutElection,
+                      registrationEndTime: e.target.value,
+                    })
+                  );
+                }}
               />
             </label>
 
@@ -72,6 +103,15 @@ const AboutElection = ({ register, errors, EMsg }) => {
                 {...register("votingStartDateTime", {
                   required: true,
                 })}
+                value={aboutElection.votingStartTime}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutElection({
+                      ...aboutElection,
+                      votingStartTime: e.target.value,
+                    })
+                  );
+                }}
               />
             </label>
 
@@ -88,6 +128,15 @@ const AboutElection = ({ register, errors, EMsg }) => {
                 {...register("votingEndDateTime", {
                   required: true,
                 })}
+                value={aboutElection.votingEndTime}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutElection({
+                      ...aboutElection,
+                      votingEndTime: e.target.value,
+                    })
+                  );
+                }}
               />
             </label>
           </div>

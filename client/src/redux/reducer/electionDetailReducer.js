@@ -8,6 +8,14 @@ const electionDetailInit = {
   organizationTitle: "",
 };
 
+const aboutElectionInit = {
+  organizationTitle: "",
+  registrationStartTime: "",
+  registrationEndTime: "",
+  votingStartTime: "",
+  votingEndTime: "",
+};
+
 const electionDetailReducer = (state = electionDetailInit, action) => {
   if (action.type === "ADD_ELECTION_DETAIL") {
     return action.detail;
@@ -22,4 +30,11 @@ const electionTitlesReducer = (state = electionTitlesInit, action) => {
   return state;
 };
 
-export { electionDetailReducer, electionTitlesReducer };
+const aboutElectionReducer = (state = aboutElectionInit, action) => {
+  if (action.type === "ADD_ABOUT_ELECTION") {
+    return action.value;
+  }
+  return state;
+};
+
+export { electionDetailReducer, electionTitlesReducer, aboutElectionReducer };

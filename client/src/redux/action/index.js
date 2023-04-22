@@ -12,4 +12,11 @@ const addNewTitle = (title) => {
   };
 };
 
-export { addElectionDetail, addNewTitle };
+const addAboutElection = (value) => {
+  return {
+    type: "ADD_ABOUT_ELECTION",
+    value,
+  };
+};
+
+export { addElectionDetail, addNewTitle, addAboutElection };

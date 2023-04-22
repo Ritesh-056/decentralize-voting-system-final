@@ -18,7 +18,6 @@ import Election from "../artifacts/contracts/Election.sol/Election.json";
 
 // CSS
 import "./Home.css";
-import HomeTitleForm from "./HomeTitleForm";
 import ElectionStatusAdminHome from "./ElectionStatusAdminHome";
 import ElectionNotStarted from "./ElectionNotStarted";
 import NotInit from "./NotInit";
@@ -163,6 +162,8 @@ class Home extends Component {
 
       this.setState({
         elDetails: {
+          adminFirstName: this.state.elDetails.adminFirstName,
+          adminLastName: this.state.elDetails.adminLastName,
           adminName: adminName,
           adminEmail: adminEmail,
           adminTitle: adminTitle,
@@ -214,7 +215,7 @@ class Home extends Component {
     alert("Election saved successful");
     window.location.reload();
   };
-  addTitle = () => {};
+  addTitle = () => { };
   currentTitle = (e) => {
     console.log(e.target.value);
   };
