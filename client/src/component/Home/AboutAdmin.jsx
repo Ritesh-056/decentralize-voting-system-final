@@ -9,7 +9,7 @@ const AboutAdmin = ({ register, errors, EMsg }) => {
     <>
       {/* about-admin */}
       <div className="about-admin">
-        <h2>About Admin</h2>
+        <h2>Election Admin</h2>
         <div className="container-item center-items">
           <div className="container-item-inside">
             <label className="label-home">

@@ -12,6 +12,14 @@ const addNewTitle = (title) => {
   };
 };
 
+const addNewVoterElectionTitle =(voterElectionTitle) => {
+  return {
+    type:"ADD_VOTER_ELECTION_TITLES",
+    voterElectionTitle,
+  }
+}
+
+
 const addAboutElection = (value) => {
   return {
     type: "ADD_ABOUT_ELECTION",
@@ -26,4 +34,4 @@ const addAboutAdmin = (value) => {
   };
 };
 
-export { addElectionDetail, addNewTitle, addAboutElection, addAboutAdmin };
+export { addElectionDetail, addNewTitle, addAboutElection, addAboutAdmin,addNewVoterElectionTitle };

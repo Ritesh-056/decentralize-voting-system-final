@@ -1,4 +1,5 @@
 const electionTitlesInit = [];
+const voterElectionTitlesInit =[];
 
 const electionDetailInit = {
   adminName: "",
@@ -51,9 +52,20 @@ const aboutAdminReducer = (state = aboutAdminInit, action) => {
   return state;
 };
 
+
+
+//self made reducer
+const voterElectionTitleReducer = (state = voterElectionTitlesInit, action) => {
+  if (action.type === "ADD_VOTER_ELECTION_TITLES") {
+    return [...state, action];
+  }
+  return state;
+};
+
 export {
   electionDetailReducer,
   electionTitlesReducer,
   aboutElectionReducer,
   aboutAdminReducer,
+  voterElectionTitleReducer,
 };

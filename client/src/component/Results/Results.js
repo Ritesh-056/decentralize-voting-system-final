@@ -32,7 +32,7 @@ export default class Result extends Component {
       electionStarted: false,
       electionInitStatus: false,
       winnerCandidates: [],
-      isSingleElectionAndCandidate:false,
+      isSingleElectionAndCandidate: false,
     };
   }
   componentDidMount = async () => {
@@ -64,7 +64,7 @@ export default class Result extends Component {
       const currentTimeStamp = Math.floor(Date.now() / 1000);
       console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
-     // Get total number of verified candidates
+      // Get total number of verified candidates
       const candidateCount = await this.state.ElectionInstance.methods
         .getVerifiedCandidates()
         .call();
@@ -91,7 +91,6 @@ export default class Result extends Component {
       }
 
       this.setState({ candidates: this.state.candidates });
-
 
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
@@ -124,25 +123,21 @@ export default class Result extends Component {
       this.setState({ electionTitles: electionTitles });
       console.log(this.state.electionTitles);
 
-     //get voting registration start and end times
-     const registrationStartedSatus = await this.state.ElectionInstance.methods
-     .getRegistrationStartedStatus(currentTimeStamp)
-     .call();
-   const registrationEndedStatus = await this.state.ElectionInstance.methods
-     .getRegistrationEndedStatus(currentTimeStamp)
-     .call();
+      //get voting registration start and end times
+      const registrationStartedSatus = await this.state.ElectionInstance.methods
+        .getRegistrationStartedStatus(currentTimeStamp)
+        .call();
+      const registrationEndedStatus = await this.state.ElectionInstance.methods
+        .getRegistrationEndedStatus(currentTimeStamp)
+        .call();
 
+      this.setState({
+        registrationStartedSatus: registrationStartedSatus,
+        registrationEndedStatus: registrationEndedStatus,
+      });
 
-     this.setState({
-       registrationStartedSatus :registrationStartedSatus,
-       registrationEndedStatus: registrationEndedStatus
-     })
-
-     console.log("Is registration started", registrationStartedSatus);
-     console.log("Is registration ended", registrationEndedStatus);
-
-
-
+      console.log("Is registration started", registrationStartedSatus);
+      console.log("Is registration ended", registrationEndedStatus);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -252,7 +247,11 @@ export default class Result extends Component {
                 )}
               </div>
             </>
-          ) : <><ElectionNotStarted/></>}
+          ) : (
+            <>
+              <ElectionNotStarted />
+            </>
+          )}
         </div>
       </>
     );
@@ -263,7 +262,7 @@ function displayWinner(candidates) {
     // Returns an object having maxium vote count
     let maxVoteRecived = 0;
     let winnerCandidate = [];
-    if(candidates.length!=1){
+    if (candidates.length != 1) {
       for (let i = 0; i < candidates.length; i++) {
         if (candidates[i].voteCount > maxVoteRecived) {
           maxVoteRecived = candidates[i].voteCount;
@@ -272,11 +271,15 @@ function displayWinner(candidates) {
           winnerCandidate.push(candidates[i]);
         }
       }
-    }else{
+    } else {
       winnerCandidate.push(candidates[0]);
     }
+  
     return winnerCandidate;
   };
+
+
+
   const renderWinner = (winner) => {
     return (
       <div className="container-winner-test">
@@ -297,7 +300,6 @@ function displayWinner(candidates) {
       </div>
     );
   };
-
 
   const winnerCandidate = getWinner(candidates);
   return <>{winnerCandidate.map(renderWinner)}</>;

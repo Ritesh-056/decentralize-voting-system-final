@@ -294,6 +294,12 @@ contract Election {
         voterDetails[msg.sender].voteCastedTitles.push(_electionTitleIndex);
     }
 
+    ///get voter election titles.
+    function getVoterElectionTitles() public view returns(uint8[] memory){
+        uint8[] memory votedCastedTitles = voterDetails[msg.sender].voteCastedTitles;
+        return votedCastedTitles;
+    }
+
     //get voting initization status
     function getElectionInitStatus() public view returns (bool) {
         return isElectionInit;

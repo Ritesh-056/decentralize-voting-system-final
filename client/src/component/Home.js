@@ -318,7 +318,7 @@ class Home extends Component {
                 </>
               ) : (
                 <div className="container-main">
-                  <AboutAdmin register={register} errors={errors} EMsg={EMsg} />
+                  <AboutAdmin register={register} errors={errors} EMsg={EMsg}/>
                   <AboutElection
                     register={register}
                     errors={errors}
