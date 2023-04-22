@@ -19,15 +19,15 @@ const AboutElection = ({ register, errors, EMsg }) => {
             <label className="label-home">
               <p className="label-home-title">
                 Organization Name
-                {/* {errors.organizationTitle && <EMsg msg="*required" />} */}
+                {errors.organizationTitle && <EMsg msg="*required" />}
               </p>
               <input
                 className="input-home"
                 type="text"
                 placeholder="Kathford Int'l College"
-                // {...register("organizationTitle", {
-                // required: true,
-                // })}
+                {...register("organizationTitle", {
+                  required: true,
+                })}
                 value={aboutElection.organizationTitle}
                 onChange={(e) => {
                   dispatch(
@@ -50,9 +50,9 @@ const AboutElection = ({ register, errors, EMsg }) => {
                 className="input-home"
                 type="datetime-local"
                 placeholder="registration start date"
-                // {...register("registrationStartDateTime", {
-                //  required: true,
-                // })}
+                {...register("registrationStartDateTime", {
+                  required: true,
+                })}
                 value={aboutElection.registrationStartTime}
                 onChange={(e) => {
                   dispatch(

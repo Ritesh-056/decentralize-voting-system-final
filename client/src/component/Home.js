@@ -215,10 +215,6 @@ class Home extends Component {
     alert("Election saved successful");
     window.location.reload();
   };
-  addTitle = () => { };
-  currentTitle = (e) => {
-    console.log(e.target.value);
-  };
 
   render() {
     if (!this.state.web3) {
@@ -275,6 +271,9 @@ class Home extends Component {
       } = useForm();
 
       const onSubmit = (data) => {
+        if (this.props.electionTitles.length === 0) {
+          return alert("Election title is required, please fill the title");
+        }
         const votingstartTime = this.convertDateTimeToUnix(
           data.votingStartDateTime
         );
@@ -319,12 +318,12 @@ class Home extends Component {
                 </>
               ) : (
                 <div className="container-main">
+                  <AboutAdmin register={register} errors={errors} EMsg={EMsg} />
                   <AboutElection
                     register={register}
                     errors={errors}
                     EMsg={EMsg}
                   />
-                  <AboutAdmin register={register} errors={errors} EMsg={EMsg} />
                 </div>
               )
             ) : (

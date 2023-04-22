@@ -16,6 +16,13 @@ const aboutElectionInit = {
   votingEndTime: "",
 };
 
+const aboutAdminInit = {
+  adminFName: "",
+  adminLName: "",
+  adminEmail: "",
+  adminTitle: "",
+};
+
 const electionDetailReducer = (state = electionDetailInit, action) => {
   if (action.type === "ADD_ELECTION_DETAIL") {
     return action.detail;
@@ -37,4 +44,16 @@ const aboutElectionReducer = (state = aboutElectionInit, action) => {
   return state;
 };
 
-export { electionDetailReducer, electionTitlesReducer, aboutElectionReducer };
+const aboutAdminReducer = (state = aboutAdminInit, action) => {
+  if (action.type === "ADD_ABOUT_ADMIN") {
+    return action.value;
+  }
+  return state;
+};
+
+export {
+  electionDetailReducer,
+  electionTitlesReducer,
+  aboutElectionReducer,
+  aboutAdminReducer,
+};

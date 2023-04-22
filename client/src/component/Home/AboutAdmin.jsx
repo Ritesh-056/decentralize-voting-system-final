@@ -1,6 +1,10 @@
-import React, { memo } from "react";
+import React, { memo, useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addAboutAdmin } from "../../redux/action/index";
 
 const AboutAdmin = ({ register, errors, EMsg }) => {
+  const dispatch = useDispatch();
+  const aboutAdmin = useSelector((state) => state.aboutAdminReducer);
   return (
     <>
       {/* about-admin */}
@@ -20,16 +24,30 @@ const AboutAdmin = ({ register, errors, EMsg }) => {
                 {...register("adminFName", {
                   required: true,
                 })}
-                // value={elDetails.adminFirstName}
-                onChange={(e) => { }}
+                value={aboutAdmin.adminFName}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutAdmin({
+                      ...aboutAdmin,
+                      adminFName: e.target.value,
+                    })
+                  );
+                }}
               />
               <input
                 className="input-home"
                 type="text"
                 placeholder="Doe"
                 {...register("adminLName")}
-                // value={elDetails.adminLastName}
-                onChange={(e) => { }}
+                value={aboutAdmin.adminLName}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutAdmin({
+                      ...aboutAdmin,
+                      adminLName: e.target.value,
+                    })
+                  );
+                }}
               />
             </label>
 
@@ -50,6 +68,15 @@ const AboutAdmin = ({ register, errors, EMsg }) => {
                     message: "*Invalid",
                   },
                 })}
+                value={aboutAdmin.adminEmail}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutAdmin({
+                      ...aboutAdmin,
+                      adminEmail: e.target.value,
+                    })
+                  );
+                }}
               />
             </label>
 
@@ -66,6 +93,15 @@ const AboutAdmin = ({ register, errors, EMsg }) => {
                 {...register("adminTitle", {
                   required: true,
                 })}
+                value={aboutAdmin.adminTitle}
+                onChange={(e) => {
+                  dispatch(
+                    addAboutAdmin({
+                      ...aboutAdmin,
+                      adminTitle: e.target.value,
+                    })
+                  );
+                }}
               />
             </label>
           </div>
