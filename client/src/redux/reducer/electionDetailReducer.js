@@ -1,5 +1,6 @@
 const electionTitlesInit = [];
 const voterElectionTitlesInit =[];
+const electionCandidateSloganInit =[];
 
 const electionDetailInit = {
   adminName: "",
@@ -38,6 +39,14 @@ const electionTitlesReducer = (state = electionTitlesInit, action) => {
   return state;
 };
 
+//election canidate slogan reducer
+const candidateElectionSloganReducer  = (state = electionCandidateSloganInit,action)=>{
+  if(action.type === "ADD_ELECTION_SLOGAN"){
+    return[...state,action.slogan];
+  }
+  return state;
+}
+
 const aboutElectionReducer = (state = aboutElectionInit, action) => {
   if (action.type === "ADD_ABOUT_ELECTION") {
     return action.value;
@@ -54,7 +63,7 @@ const aboutAdminReducer = (state = aboutAdminInit, action) => {
 
 
 
-//self made reducer
+//voter election title reducer
 const voterElectionTitleReducer = (state = voterElectionTitlesInit, action) => {
   if (action.type === "ADD_VOTER_ELECTION_TITLES") {
     return [...state, action];
@@ -68,4 +77,5 @@ export {
   aboutElectionReducer,
   aboutAdminReducer,
   voterElectionTitleReducer,
+  candidateElectionSloganReducer
 };

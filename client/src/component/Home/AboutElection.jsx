@@ -2,6 +2,7 @@ import React from "react";
 import HomeTitleForm from "./HomeTitleForm";
 import { useDispatch, useSelector } from "react-redux";
 import { addAboutElection } from "../../redux/action/index";
+import HomeCandidateSloganForm from "./CandidateSlogan";
 
 const AboutElection = ({ register, errors, EMsg }) => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const AboutElection = ({ register, errors, EMsg }) => {
         <div className="container-item center-items">
           <div className="container-item-inside">
             <HomeTitleForm />
+            <HomeCandidateSloganForm />
             <label className="label-home">
               <p className="label-home-title">
                 Organization Name

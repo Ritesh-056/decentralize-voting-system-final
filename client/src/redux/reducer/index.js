@@ -5,6 +5,7 @@ import {
   aboutElectionReducer,
   aboutAdminReducer,
   voterElectionTitleReducer,
+  candidateElectionSloganReducer
 } from "./electionDetailReducer";
 
 const rootReducer = combineReducers({
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   electionTitlesReducer,
   aboutElectionReducer,
   aboutAdminReducer,
-  voterElectionTitleReducer
+  voterElectionTitleReducer,
+  candidateElectionSloganReducer
 });
 
 export default rootReducer;

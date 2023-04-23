@@ -12,13 +12,20 @@ const addNewTitle = (title) => {
   };
 };
 
+const addNewSlogan = (slogan) =>{
+  return {
+    type : "ADD_ELECTION_SLOGAN",
+    slogan,
+  }
+}
+
+//voter election title index
 const addNewVoterElectionTitle =(voterElectionTitle) => {
   return {
     type:"ADD_VOTER_ELECTION_TITLES",
     voterElectionTitle,
   }
 }
-
 
 const addAboutElection = (value) => {
   return {
@@ -34,4 +41,4 @@ const addAboutAdmin = (value) => {
   };
 };
 
-export { addElectionDetail, addNewTitle, addAboutElection, addAboutAdmin,addNewVoterElectionTitle };
+export { addElectionDetail, addNewTitle, addAboutElection, addAboutAdmin,addNewVoterElectionTitle, addNewSlogan };
