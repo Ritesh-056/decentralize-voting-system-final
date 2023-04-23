@@ -27,10 +27,6 @@ import AboutAdmin from "./Home/AboutAdmin";
 
 // const buttonRef = React.createRef();
 class Home extends Component {
-  // electionDetail:
-  // this.props.electionDetail
-  // electionTitle:
-  // this.props.electionTitles
 
   constructor(props) {
     super(props);
@@ -50,6 +46,7 @@ class Home extends Component {
         adminTitle: null,
         organizationTitle: null,
         electionTitles: [],
+        electionSlogans: [],
         registrationStartTime: null,
         registrationEndTime: null,
         votingStartTime: null,
@@ -114,6 +111,9 @@ class Home extends Component {
       const electionTitles = await this.state.ElectionInstance.methods
         .getElectionTitles()
         .call();
+      const electionSlogans = await this.state.ElectionInstance.methods
+        .getElectionSlogans()
+        .call();
       const organizationTitle = await this.state.ElectionInstance.methods
         .getOrganizationTitle()
         .call();
@@ -169,6 +169,7 @@ class Home extends Component {
           adminTitle: adminTitle,
           organizationTitle: organizationTitle,
           electionTitles: electionTitles,
+          electionSlogans: electionSlogans,
           registrationStartTime: getLocalDateTime(
             registrationStartTimeUnixStamp
           ),
@@ -208,7 +209,8 @@ class Home extends Component {
         this.convertDateTimeToUnix(data.votingEndDateTime),
         this.convertDateTimeToUnix(data.registrationStartDateTime),
         this.convertDateTimeToUnix(data.registrationEndDateTime),
-        this.props.electionTitles
+        this.props.electionTitles,
+        this.props.electionSlogans
       )
       .send({ from: this.state.account, gas: 1000000 });
 
@@ -274,6 +276,9 @@ class Home extends Component {
         if (this.props.electionTitles.length === 0) {
           return alert("Election title is required, please fill the title");
         }
+        if(this.props.electionSlogans.length === 0){
+          return alert("Election slogan is required, please fill the slogan");
+        }
         const votingstartTime = this.convertDateTimeToUnix(
           data.votingStartDateTime
         );
@@ -318,7 +323,7 @@ class Home extends Component {
                 </>
               ) : (
                 <div className="container-main">
-                  <AboutAdmin register={register} errors={errors} EMsg={EMsg}/>
+                  <AboutAdmin register={register} errors={errors} EMsg={EMsg} />
                   <AboutElection
                     register={register}
                     errors={errors}
@@ -366,6 +371,7 @@ const mapStateToProps = (state) => {
   return {
     electionDetail: state.electionDetailReducer,
     electionTitles: state.electionTitlesReducer,
+    electionSlogans:state.candidateElectionSloganReducer
   };
 };
 

@@ -31,12 +31,16 @@ export default class CandidateRegistration extends Component {
       selectedElectionIndex: 0,
       selectedElection: "",
       electionTitles: [],
+      electionSlogans: [],
+      selectedSloganIndex: 0,
+      selectedSlogan: "",
       registrationOnGoing: false,
       candidates: [],
       isRegistrationEnded: false,
       voterStatusForCandidate: false,
       alreadyRegisteredCandidate: false,
       candidateCount: undefined,
+
       currentCandidate: {
         candidateAddress: undefined,
         candidateId: null,
@@ -48,7 +52,11 @@ export default class CandidateRegistration extends Component {
       },
     };
 
-    this.handleSelectChange = this.handleSelectChange.bind(this);
+    this.handleSelectSloganChange =
+      this.handleSelectSloganChange.bind(this);
+
+    this.handleSelectElectionTitleChange =
+      this.handleSelectElectionTitleChange.bind(this);
   }
 
   componentDidMount = async () => {
@@ -85,10 +93,9 @@ export default class CandidateRegistration extends Component {
         this.setState({ isAdmin: true });
       }
 
-
-         // Get start and end values
-         const currentTimeStamp = Math.floor(Date.now() / 1000);
-         console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+      // Get start and end values
+      const currentTimeStamp = Math.floor(Date.now() / 1000);
+      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
       const accountAddress = this.state.account;
       const voterStatusForCandidate = await this.state.ElectionInstance.methods
@@ -149,6 +156,18 @@ export default class CandidateRegistration extends Component {
       this.setState({ selectedElection: electionTitles[0] });
       this.setState({ selectedElectionIndex: 0 });
 
+
+      //get election Slogans
+      const electionSlogans = await this.state.ElectionInstance.methods
+      .getElectionSlogans()
+      .call();
+
+    this.setState({ electionSlogans: electionSlogans });
+    this.setState({ selectedSlogan: electionSlogans[0] });
+    this.setState({ selectedSloganIndex: 0 });
+
+    console.log("Election slogans", electionSlogans);
+
       //get registration start and end time
       const registrationStartTimeUnixStamp =
         await this.state.ElectionInstance.methods
@@ -181,7 +200,6 @@ export default class CandidateRegistration extends Component {
         this.state.registrationOnGoing
       );
 
-
       ///registration start and end times
       const registrationStartDateTimeLocal = getLocalDateTime(
         registrationStartTimeUnixStamp
@@ -199,7 +217,6 @@ export default class CandidateRegistration extends Component {
         registrationEndDateTimeLocal
       );
 
-
       ///is already a candidate
       const alreadyRegisteredCandidate =
         await this.state.ElectionInstance.methods
@@ -211,27 +228,26 @@ export default class CandidateRegistration extends Component {
         this.state.alreadyRegisteredCandidate
       );
 
-
-
       const electionInitStatus = await this.state.ElectionInstance.methods
-      .getElectionInitStatus()
-      .call();
-    this.setState({ electionInitStatus: electionInitStatus });
+        .getElectionInitStatus()
+        .call();
+      this.setState({ electionInitStatus: electionInitStatus });
 
-    console.log("Registration started status",this.state.electionInitStatus);
+      console.log("Registration started status", this.state.electionInitStatus);
 
-    // Get start and end values
-    const isElectionEnded = await this.state.ElectionInstance.methods
-    .getElectionEndedStatus(currentTimeStamp)
-    .call();
-    this.setState({ isElectionEnded: isElectionEnded });
+      // Get start and end values
+      const isElectionEnded = await this.state.ElectionInstance.methods
+        .getElectionEndedStatus(currentTimeStamp)
+        .call();
+      this.setState({ isElectionEnded: isElectionEnded });
+
+      const electionStarted = await this.state.ElectionInstance.methods
+        .getElectionStatus(currentTimeStamp)
+        .call();
+      this.setState({ electionStarted: electionStarted });
+      console.log("Election started", this.state.electionStarted);
 
 
-    const electionStarted = await this.state.ElectionInstance.methods
-    .getElectionStatus(currentTimeStamp)
-    .call();
-    this.setState({ electionStarted: electionStarted });
-    console.log("Election started", this.state.electionStarted);
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -241,27 +257,30 @@ export default class CandidateRegistration extends Component {
     }
   };
 
-  handleSelectChange(event) {
+  handleSelectElectionTitleChange(event) {
     this.setState({ selectedElection: event.target.value });
     this.setState({ selectedElectionIndex: event.target.selectedIndex });
-    console.log(this.state.selectedElectionIndex);
+  }
+
+  handleSelectSloganChange(event) {
+    this.setState({ selectedSlogan: event.target.value });
+    this.setState({ selectedSloganIndex: event.target.selectedIndex });
   }
 
   updateHeader = (event) => {
     this.setState({ header: event.target.value });
   };
-  updateSlogan = (event) => {
-    this.setState({ slogan: event.target.value });
-  };
+
 
   registerAsCandidate = async () => {
     await this.state.ElectionInstance.methods
       .registerAsCandidate(
         this.state.header,
-        this.state.slogan,
+        this.state.selectedSlogan,
         this.state.selectedElectionIndex
       )
       .send({ from: this.state.account, gas: 1000000 });
+    console.log("Selected slogan is",this.state.selectedSlogan);
     alert("Candidate registration successful");
     window.location.reload();
   };
@@ -310,7 +329,7 @@ export default class CandidateRegistration extends Component {
                       </center>
                     </div>
                   </div>
-                  <h2>Add candidate</h2>
+                  <h2>Register candidate</h2>
                   <small>Total candidates: {this.state.candidateCount}</small>
                   <div className="container-item">
                     <form className="form">
@@ -325,14 +344,18 @@ export default class CandidateRegistration extends Component {
                         />
                       </label>
                       <label className={"label-ac"}>
-                        Candidate Symbol
-                        <input
-                          className={"input-ac"}
-                          type="text"
-                          placeholder="Candidate Symbol"
-                          value={this.state.slogan}
-                          onChange={this.updateSlogan}
-                        />
+                        Select an election slogan
+                        <select
+                          className={"select-election-ac"}
+                          value={this.state.selectedSlogan}
+                          onChange={this.handleSelectSloganChange}
+                        >
+                          {this.state.electionSlogans.map((title, index) => (
+                            <option key={index} value={title}>
+                              {title}
+                            </option>
+                          ))}
+                        </select>
                       </label>
 
                       <label className={"label-ac"}>
@@ -341,7 +364,7 @@ export default class CandidateRegistration extends Component {
                           className={"select-election-ac"}
                           // value={this.state.selectedElection}
                           value={this.state.selectedElection}
-                          onChange={this.handleSelectChange}
+                          onChange={this.handleSelectElectionTitleChange}
                         >
                           {this.state.electionTitles.map((title, index) => (
                             <option key={index} value={title}>
@@ -363,23 +386,18 @@ export default class CandidateRegistration extends Component {
                                 e.preventDefault();
                                 if (
                                   this.state.header == "" ||
-                                  this.state.slogan == "" ||
-                                  this.state.selectedElectionIndex < 0
+                                  this.state.selectedElectionIndex < 0 ||
+                                  this.state.selectedSloganIndex < 0
                                 ) {
                                   alert(
                                     "Please check your candidates details."
                                   );
                                 } else {
-                                  console.log(
-                                    this.state.header,
-                                    this.state.slogan,
-                                    this.state.selectedElectionIndex
-                                  );
                                   this.registerAsCandidate();
                                 }
                               }}
                             >
-                              Add
+                              Register
                             </button>
                           </center>
                         </>
@@ -421,7 +439,7 @@ export default class CandidateRegistration extends Component {
     );
   }
 }
- function loadAllCandidates(candidates) {
+function loadAllCandidates(candidates) {
   const renderAllCandidates = (candidate) => {
     return (
       <>
@@ -462,7 +480,7 @@ export default class CandidateRegistration extends Component {
   );
 }
 
- function loadAdded(candidates) {
+function loadAdded(candidates) {
   const renderAdded = (candidate) => {
     return (
       <>

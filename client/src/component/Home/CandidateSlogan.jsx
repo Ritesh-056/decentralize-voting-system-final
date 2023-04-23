@@ -16,7 +16,7 @@ const HomeCandidateSloganForm = () => {
           <input
             className="input-home"
             type="text"
-            placeholder="Choosing president"
+            placeholder="bell"
             // {...register("electionTitles", {
             //   required: true,
             // })}
@@ -31,7 +31,7 @@ const HomeCandidateSloganForm = () => {
           onClick={(e) => {
             e.preventDefault();
             if (sloganTitle == "") {
-              alert("Oops! Election title is empty.");
+              alert("Oops! Slogan title title is empty.");
             } else {
               dispatch(addNewSlogan(sloganTitle));
               setCandidateSlogan("");

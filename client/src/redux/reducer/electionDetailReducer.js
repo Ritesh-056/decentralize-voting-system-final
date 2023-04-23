@@ -7,6 +7,7 @@ const electionDetailInit = {
   adminEmail: "",
   adminTitle: "",
   electionTitle: [],
+  electionSlogans:[],
   organizationTitle: "",
 };
 

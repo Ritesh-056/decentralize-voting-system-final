@@ -56,6 +56,7 @@ contract Election {
         uint256 registrationStartDate;
         uint256 registrationEndDate;
         string[] elections;
+        string[] slogans;
     }
 
     ElectionDetails electionDetails;
@@ -112,17 +113,27 @@ contract Election {
         uint256 _votingEndTime,
         uint256 _registrationStartTime,
         uint256 _registrationEndTime,
-        string[] memory _elections
+        string[] memory _elections,
+        string[] memory _slogans
     )
         public
         // Only admin can add
         onlyAdmin
     {
+
+        //set election Tiles
         string[] memory electionTitles = new string[](_elections.length);
         for (uint256 i = 0; i < _elections.length; i++) {
             electionTitles[i] = _elections[i];
         }
 
+        //set election slogans
+        string[] memory electionSlogans = new string[](_slogans.length);
+        for (uint256 i = 0; i < _slogans.length; i++) {
+            electionSlogans[i] = _slogans[i];
+        }
+
+        //add election details to ElectionDetails
         ElectionDetails memory new_election = ElectionDetails(
             _adminName,
             _adminEmail,
@@ -132,7 +143,8 @@ contract Election {
             _votingEndTime,
             _registrationStartTime,
             _registrationEndTime,
-            electionTitles
+            electionTitles,
+            electionSlogans
         );
 
         electionDetails = new_election;
@@ -183,6 +195,14 @@ contract Election {
             titles[i] = electionDetails.elections[i];
         }
         return titles;
+    }
+
+    function getElectionSlogans() public view returns (string[] memory){
+        string[] memory slogans  = new string[](electionDetails.slogans.length);
+         for (uint8 i = 0; i < electionDetails.slogans.length; i++) {
+            slogans[i] = electionDetails.slogans[i];
+        }
+        return slogans;
     }
 
     // Get total unverified candidates count
@@ -295,8 +315,9 @@ contract Election {
     }
 
     ///get voter election titles.
-    function getVoterElectionTitles() public view returns(uint8[] memory){
-        uint8[] memory votedCastedTitles = voterDetails[msg.sender].voteCastedTitles;
+    function getVoterElectionTitles() public view returns (uint8[] memory) {
+        uint8[] memory votedCastedTitles = voterDetails[msg.sender]
+            .voteCastedTitles;
         return votedCastedTitles;
     }
 

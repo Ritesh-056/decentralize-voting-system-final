@@ -18,11 +18,12 @@ nav {
   top: 0;
   align-items: center;
   border-bottom: 1px solid #e7e7e7;
-  background: radial-gradient(
+  background-color: #004aad;
+  /* background: radial-gradient(
       50% 2900.76% at 50% 53.89%,
       rgba(58, 52, 86, 0.95) 0%,
       #211e2e 100%
-    )
+    ) */
     /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
   box-shadow: 0px 4px 4px rgba(192, 183, 232, 0.01);
 }
@@ -36,7 +37,7 @@ nav .header:hover {
   font-size: 30px;
 }
 nav .navbar-links {
-  display: flex; 
+  display: flex;
   justify-content:right;
   width: 70%;
   cursor: pointer;

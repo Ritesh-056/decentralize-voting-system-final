@@ -2,7 +2,7 @@
 import React from "react";
 function UserHome(props) {
   const electionDetails = props.el;
- 
+
   return (
     <div className="container-main">
       <h2>Election Details</h2>
@@ -10,6 +10,17 @@ function UserHome(props) {
       <small>
         <ol type="number" style={{ paddingTop: 16, paddingLeft: 120 }}>
           {electionDetails.electionTitles.map((title, index) => (
+            <li style={{ paddingBottom: 8 }} key={index}>
+              {index + 1}. {title}
+            </li>
+          ))}
+        </ol>
+      </small>
+
+      <small>Election Slogans : {electionDetails.electionSlogans.length}</small>
+      <small>
+        <ol type="number" style={{ paddingTop: 16, paddingLeft: 120 }}>
+          {electionDetails.electionSlogans.map((title, index) => (
             <li style={{ paddingBottom: 8 }} key={index}>
               {index + 1}. {title}
             </li>

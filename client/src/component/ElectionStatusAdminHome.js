@@ -14,7 +14,16 @@ function ElectionStatusAdminHome(props) {
             ))}
           </ol>
         </small>
-        
+
+        <small>Election Slogans : {electionDetails.electionSlogans.length}</small>
+        <small>
+          <ol type="number" style={{paddingTop:16,paddingLeft:120}}>
+            {electionDetails.electionSlogans.map((title, index) => (
+              <li style={{paddingBottom:8}} key={index}>{index+1}.{' '}{title}</li>
+            ))}
+          </ol>
+        </small>
+
       <div className="container-item ">
         <table>
           <tr>
