@@ -15,7 +15,8 @@ import Election from "../../artifacts/contracts/Election.sol/Election.json";
 
 // CSS
 import "./Results.css";
-import NotCandidateCounted from "../NoCandidateCounted";
+import {NotAnyCandidateOnElectionCounted,NotCandidateCounted} from "../NoCandidateCounted";
+
 
 export default class Result extends Component {
   constructor(props) {
@@ -251,7 +252,9 @@ export default class Result extends Component {
             <>
               <ElectionNotStarted />
             </>
-          )}
+          )
+
+          }
         </div>
       </>
     );
@@ -274,7 +277,7 @@ function displayWinner(candidates) {
     } else {
       winnerCandidate.push(candidates[0]);
     }
-  
+
     return winnerCandidate;
   };
 

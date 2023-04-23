@@ -14,7 +14,7 @@ import ElectionNotStarted from "../ElectionNotStarted";
 
 // CSS
 import "./Voting.css";
-import NotCandidateCounted from "../NoCandidateCounted";
+import {NotAnyCandidateOnElectionCounted,NotCandidateCounted} from "../NoCandidateCounted";
 import { getLocalDateTime } from "../../DateTimeLocal";
 import SingleCandidateStatus from "./SingleCandidateStatus";
 
@@ -90,6 +90,8 @@ export default class Voting extends Component {
         .getVerifiedCandidates()
         .call();
       this.setState({ candidateCount: candidateCount });
+
+      console.log("Get verified candidate", candidateCount);
 
       // Loading Candidates details
       for (let i = 0; i < this.state.candidateCount; i++) {
@@ -222,23 +224,24 @@ export default class Voting extends Component {
     );
   };
 
-
-
   renderCandidates = (candidate, electionTitleIndex) => {
-
     const castVote = async (candidateAddress, titleIndex) => {
       await this.state.ElectionInstance.methods
         .vote(candidateAddress, titleIndex)
         .send({ from: this.state.account, gas: 1000000 });
-        this.setState((prevState) => ({
-          data: [...prevState.data, electionTitleIndex],
-        }));
-        alert('Voted Successful')
+      this.setState((prevState) => ({
+        data: [...prevState.data, electionTitleIndex],
+      }));
+      alert("Voted Successful");
     };
 
     const voteUtil = (alertVoteTitle) => {
       alert(alertVoteTitle);
-      confirmVote(candidate.candidateAddress, candidate.header, electionTitleIndex);
+      confirmVote(
+        candidate.candidateAddress,
+        candidate.header,
+        electionTitleIndex
+      );
     };
 
     const confirmVote = (candidateAddress, header, titleIndex) => {
@@ -269,9 +272,9 @@ export default class Voting extends Component {
           <button
             onClick={() => {
               const voteAlertTitle = `Cast vote [${candidate.candidateId}] to ${candidate.header}.`;
-              if(hasVoted){
-                return alert('Already Voted to the election title');
-              }else{
+              if (hasVoted) {
+                return alert("Already Voted to the election title");
+              } else {
                 voteUtil(voteAlertTitle);
               }
             }}
@@ -282,7 +285,7 @@ export default class Voting extends Component {
               hasVoted
             }
           >
-          {hasVoted ? "Voted" : "Vote"}
+            {hasVoted ? "Voted" : "Vote"}
           </button>
         </div>
       </div>
@@ -370,8 +373,13 @@ export default class Voting extends Component {
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <div>
+
           {this.state.electionInitStatus ? (
-            this.state.electionStarted ? (
+            this.state.candidateCount == 0 ? (
+              <>
+                <NotCandidateCounted />
+              </>
+            ) : this.state.electionStarted ? (
               <>
                 {this.state.currentVoter.isRegistered ? (
                   this.state.currentVoter.isVerified ? (
