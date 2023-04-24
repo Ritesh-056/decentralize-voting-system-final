@@ -5,7 +5,7 @@
 }
 
 .footer {
-  border-top: 1px solid #e7e7e7;
+  /* border-top: 1px solid #e7e7e7; */
   text-align: center;
   position: fixed;
   left: 0;
@@ -14,7 +14,7 @@
   /* dark blue: /* background-color: #004aad; */
   /* light blue: background-color: #38b6ff; */
   /* footer color: #545454; */
-  background-color:#292525 ;
+  background-color:#151515 ;
 
 
   /* background: radial-gradient(

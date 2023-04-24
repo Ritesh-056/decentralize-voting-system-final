@@ -28,7 +28,7 @@ const HomeTitleForm = () => {
           />
         </div>
         <button
-          className=""
+          className="imp"
           onClick={(e) => {
             e.preventDefault();
             if (electionTitle == "") {

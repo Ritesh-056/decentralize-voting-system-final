@@ -4,10 +4,10 @@
   padding: 0.5em;
   font-family: "Montserrat";
   font-style: normal;
-  font-weight: 300;
+  font-weight: 800;
   font-size: 16px;
-  line-height: 44px;
-  color: #ffffff;
+  /* line-height: 44px; */
+  color: #151515;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,13 +19,13 @@
   min-width: 300px;
   padding: 1em;
   background-color: transparent;
-  border: 1px solid #ffffff;
-  border-radius: 40px;
+  border: 1px solid #151515;
+  border-radius:8px;
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
-  color: #ffffff;
+  color: #151515;
 }
 .election-title-container {
   display: flex;
@@ -39,16 +39,20 @@
 
 .label-home button {
   padding: 4px;
-  border-radius: 5px;
+  /* border-radius: 5px; */
   align-self: flex-end;
   width: 100px;
   cursor: pointer;
-  font-size: 16px;
-  background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%);
+  font-size: 14px;
+  font-family: "Montserrat";
+  /* background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%); */
   border: 1px solid #000000;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 8px;
-  color: #343045;
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  /* color: #343045; */
+
+  /* background-color: #ffffff; */
 }
 
 .input-home,
@@ -60,4 +64,49 @@
 .titles {
   align-self: flex-start;
   list-style-type: disc;
+}
+
+
+.container-item-btn-election{
+  transition: ease all 0.5s;
+  border-radius: 8px;
+  width: 977px;
+  padding: 17px;
+  margin: 17px auto;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  overflow: auto;
+  /* background: radial-gradient(50% 50% at 50% 50%, #433d60 0%, #211e2e 0%); */
+  /* background-color: #151515;
+  border: 1px solid #151515;
+  color: #151515; */
+}
+
+
+.btn-save {
+  width: 50%;
+  padding: 1em;
+  float: inline-end;
+  margin: 1em;
+  /* color:#151515; */
+}
+
+.btn-election-save{
+  /* width: 50%; */
+  padding: 1em;
+  float: inline-start;
+  margin: 1em;
+  box-sizing: border-box;
+  position: inherit;
+  width: 250px;
+  align-items: center;
+  /* background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%); */
+  border: 1px solid #000000;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  /* border-radius: 40px; */
+  border-radius: 8px;
+  /* color: #343045; */
+  background-color: #151515;
+  color: #ffffff;
 }

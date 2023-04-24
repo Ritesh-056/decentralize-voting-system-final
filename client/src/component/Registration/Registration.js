@@ -27,7 +27,7 @@ export default class Registration extends Component {
       isElStarted: false,
       isElEnded: false,
       electionStarted: false,
-      electionInitStatus:false,
+      electionInitStatus: false,
       voterCount: undefined,
       voterName: "",
       voterPhone: "",
@@ -81,9 +81,9 @@ export default class Registration extends Component {
         this.setState({ isAdmin: true });
       }
 
-         // Get start and end values
-         const currentTimeStamp = Math.floor(Date.now() / 1000);
-         console.log("Current send time is", getLocalDateTime(currentTimeStamp));
+      // Get start and end values
+      const currentTimeStamp = Math.floor(Date.now() / 1000);
+      console.log("Current send time is", getLocalDateTime(currentTimeStamp));
 
       // Total number of voters
       const voterCount = await this.state.ElectionInstance.methods
@@ -130,22 +130,19 @@ export default class Registration extends Component {
         .call();
       this.setState({ electionInitStatus: electionInitStatus });
 
-      console.log("Registration started status",this.state.electionInitStatus);
+      console.log("Registration started status", this.state.electionInitStatus);
 
       // Get start and end values
       const isElectionEnded = await this.state.ElectionInstance.methods
-      .getElectionEndedStatus(currentTimeStamp)
-      .call();
+        .getElectionEndedStatus(currentTimeStamp)
+        .call();
       this.setState({ isElectionEnded: isElectionEnded });
 
-
-
       const electionStarted = await this.state.ElectionInstance.methods
-      .getElectionStatus(currentTimeStamp)
-      .call();
+        .getElectionStatus(currentTimeStamp)
+        .call();
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
-
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -188,13 +185,13 @@ export default class Registration extends Component {
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         {this.state.electionStarted ? (
-          <VoterRegistrationEnded/>
+          <VoterRegistrationEnded />
         ) : (
           <>
             <div className="container-main">
               <h2>Registration</h2>
               <small>Register to vote.</small>
-              <div className="container-item">
+              <div className="container-item-register">
                 <form>
                   <div className="div-li">
                     <label className={"label-r"}>
@@ -258,7 +255,7 @@ export default class Registration extends Component {
                 </form>
               </div>
             </div>
-            <div
+            {/* <div
               className="container-main"
               style={{
                 borderTop: this.state.currentVoter.isRegistered
@@ -275,16 +272,17 @@ export default class Registration extends Component {
                   )}
                 </>
               ) : null}
-            </div>
+            </div> */}
             {this.state.isAdmin ? (
               <div
                 className="container-main"
-                style={{ borderTop: "1px solid" }}
+                // style={{ borderTop: "1px solid" }}
               >
                 <h2>Total Voters: {this.state.voters.length}</h2>
                 {loadAllVoters(this.state.voters)}
               </div>
-            ) : null}
+            ) : null
+            }
           </>
         )}
       </>

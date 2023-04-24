@@ -224,7 +224,6 @@ export default class Result extends Component {
     return (
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
-        <br />
         <div>
           {this.state.candidateCount == 0 ? (
             <NotCandidateCounted />

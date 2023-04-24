@@ -3,17 +3,18 @@ import { Link } from "react-router-dom";
 
 const StartEnd = () => {
   return (
-    <div
-      className="container-main"
-    >
-      <>
-        <div className="container-item">
-          <button type="submit" className="btn-election">
-            Save Election 
+    <>
+        <div className="container-item-btn-election">
+          <button type="submit" className="btn-election-save">
+            Save Election
           </button>
         </div>
       </>
-    </div>
+    // <div
+    //   className="container-main"
+    // >
+
+    // </div>
   );
 };
 

@@ -325,13 +325,13 @@ export default class CandidateRegistration extends Component {
                     <div className="candidate-info-header">
                       <h2>Registration End Date</h2>
                       <center>
-                        <small>{this.state.registrationEndDateTimeLocal}</small>
+                        <small id="timer">{this.state.registrationEndDateTimeLocal}</small>
                       </center>
                     </div>
                   </div>
                   <h2>Register candidate</h2>
                   <small>Total candidates: {this.state.candidateCount}</small>
-                  <div className="container-item">
+                  <div className="container-item-register">
                     <form className="form">
                       <label className={"label-ac"}>
                         Candidate Header

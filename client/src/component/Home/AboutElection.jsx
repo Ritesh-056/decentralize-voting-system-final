@@ -14,7 +14,7 @@ const AboutElection = ({ register, errors, EMsg }) => {
         <center>
           <h2>About Election</h2>
         </center>
-        <div className="container-item center-items">
+        <div className="container-item-register">
           <div className="container-item-inside">
             <HomeTitleForm />
             <HomeCandidateSloganForm />

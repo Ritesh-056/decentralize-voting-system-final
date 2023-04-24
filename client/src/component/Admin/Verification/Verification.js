@@ -149,12 +149,20 @@ export default class Registration extends Component {
             <center>
               <button
                 // className="btn-verification approve"
-                className="btn-add"
+                className="btn-verification-approve"
                 disabled={voter.isVerified}
                 onClick={() => verifyVoter(true, voter.address)}
               >
                 Approve
               </button>
+              {/* <button
+                // className="btn-verification approve"
+                className="btn-verification-approve"
+                disabled={voter.isVerified}
+                onClick={() => verifyVoter(true, voter.address)}
+              >
+                Reject
+              </button> */}
             </center>
           </div>
         </div>

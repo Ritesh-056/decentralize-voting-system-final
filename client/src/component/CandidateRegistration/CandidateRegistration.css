@@ -13,13 +13,15 @@
   display: block;
   width: 330px;
   background-color: transparent;
-  border: 1px solid #ffffff;
-  border-radius: 40px;
+  /* border: 1px solid #ffffff; */
+  border:1px solid #151515;
+  border-radius: 8px;
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
-  color: #ffffff;
+  /* color: #ffffff; */
+  color:#151515;
 }
 
 .select-election-ac {
@@ -28,13 +30,15 @@
   display: block;
   width: 330px;
   background-color: transparent;
-  border: 1px solid #ffffff;
-  border-radius: 40px;
+  /* border: 1px solid #ffffff; */
+  border:1px solid #151515;
+  border-radius: 8px;
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
-  color: #ffffff;
+  /* color: #ffffff; */
+  color:#151515;
 }
 
 .select-election-ac:focus {
@@ -55,10 +59,10 @@
   padding: 0.5em;
   font-family: "Montserrat";
   font-style: normal;
-  font-weight: 300;
-  font-size: 22px;
+  font-weight: bold;
+  font-size: 18px;
   line-height: 44px;
-  color: #ffffff;
+  color: #151515;
 }
 
 .btn-add {
@@ -67,11 +71,14 @@
   position: inherit;
   width: 250px;
   align-items: center;
-  background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%);
+  /* background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%); */
   border: 1px solid #000000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 40px;
-  color: #343045;
+  /* border-radius: 40px; */
+  border-radius: 8px;
+  /* color: #343045; */
+  background-color: #151515;
+  color: #ffffff;
 }
 
 .btn-election {
@@ -79,11 +86,13 @@
   width: 250px;
   padding: 16px;
   align-items: center;
-  background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%);
+  /* background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%); */
   border: 1px solid #000000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 40px;
-  color: #343045;
+  border-radius: 8px;
+  /* color: #343045; */
+  background-color: #151515;
+  color: #ffffff;
 }
 
 .loader {
@@ -99,7 +108,7 @@
 
 .spinner {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #00Aaad;
+  border-top: 4px solid #151515;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -108,7 +117,7 @@
 
 .spin-text{
    padding-left: 1%;
-   color:#ffffff;
+   color:#151515;
 }
 
 @keyframes spin {

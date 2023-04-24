@@ -19,7 +19,7 @@ export default class CandidateVerification extends Component {
       web3: null,
       isAdmin: false,
       candidateCount: undefined,
-      electionTitles:[],
+      electionTitles: [],
       candidates: [],
     };
   }
@@ -49,7 +49,7 @@ export default class CandidateVerification extends Component {
       // example of interacting with the contract's methods.
       this.setState({ web3, ElectionInstance: instance, account: accounts[0] });
 
-       // Admin account and verification
+      // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
@@ -70,25 +70,22 @@ export default class CandidateVerification extends Component {
           .call();
         this.state.candidates.push({
           candidateAddress: candidate.candidateAddress,
-          candidateId:candidate.candidateId,
-          voteCount:candidate.voteCount,
+          candidateId: candidate.candidateId,
+          voteCount: candidate.voteCount,
           header: candidate.header,
           slogan: candidate.slogan,
-          electionTitleIndex:candidate.electionTitleIndex,
+          electionTitleIndex: candidate.electionTitleIndex,
           isVerified: candidate.isVerified,
           isRegistered: candidate.isRegistered,
         });
       }
       this.setState({ candidates: this.state.candidates });
 
-
       const electionTitles = await this.state.ElectionInstance.methods
-      .getElectionTitles()
-      .call();
+        .getElectionTitles()
+        .call();
 
-      this.setState({electionTitles:electionTitles})
-
-
+      this.setState({ electionTitles: electionTitles });
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -105,24 +102,27 @@ export default class CandidateVerification extends Component {
       window.location.reload();
     };
 
-    const electionTitleOfCandidate  = this.state.electionTitles.filter((title,key) => key == candidate.electionTitleIndex)
+    const electionTitleOfCandidate = this.state.electionTitles.filter(
+      (title, key) => key == candidate.electionTitleIndex
+    );
     return (
       <>
         {candidate.isVerified ? (
-          <div className="container-list success" style={{color:"white"}}>
-            <p style={{ margin: "7px 0px" }}>AC: {candidate.candidateAddress}</p>
+          <div className="container-list success" style={{ color: "white" }}>
+            <p style={{ margin: "7px 0px" }}>
+              AC: {candidate.candidateAddress}
+            </p>
             <table>
               <tr>
                 <th>Header</th>
                 <th>Slogan</th>
                 <th>Election Title</th>
               </tr>
-              <tr style={{backgroundColor:"transparent"}}>
+              <tr style={{ backgroundColor: "transparent" }}>
                 <td className="tbl">{candidate.header}</td>
                 <td className="tbl">{candidate.slogan}</td>
                 <td className="tbl">{electionTitleOfCandidate}</td>
               </tr>
-
             </table>
           </div>
         ) : null}
@@ -135,7 +135,7 @@ export default class CandidateVerification extends Component {
               <th>Account address</th>
               <td>{candidate.candidateAddress}</td>
             </tr>
-            <tr style={{backgroundColor:"transparent"}}>
+            <tr style={{ backgroundColor: "transparent" }}>
               <th>Header</th>
               <td>{candidate.header}</td>
             </tr>
@@ -143,7 +143,7 @@ export default class CandidateVerification extends Component {
               <th>Slogan</th>
               <td>{candidate.slogan}</td>
             </tr>
-            <tr style={{backgroundColor:"transparent"}}>
+            <tr style={{ backgroundColor: "transparent" }}>
               <th>Verified</th>
               <td>{candidate.isVerified ? "True" : "False"}</td>
             </tr>
@@ -152,18 +152,20 @@ export default class CandidateVerification extends Component {
               <td>{candidate.isRegistered ? "True" : "False"}</td>
             </tr>
 
-            <tr style={{backgroundColor:"transparent"}}>
+            <tr style={{ backgroundColor: "transparent" }}>
               <th>Election Title</th>
               <td>{electionTitleOfCandidate}</td>
             </tr>
           </table>
-          <div style={{marginTop:"2%"}}>
+          <div style={{ marginTop: "2%" }}>
             <center>
               <button
                 // className="btn-verification approve"
-                className="btn-election"
+                className="btn-verification-approve"
                 disabled={candidate.isVerified}
-                onClick={() => verifyCandidate(true, candidate.candidateAddress)}
+                onClick={() =>
+                  verifyCandidate(true, candidate.candidateAddress)
+                }
               >
                 Approve
               </button>
