@@ -1,12 +1,15 @@
 // Node module
 import React from "react";
 
-const ElectionNotStarted = () => {
+const ElectionNotStarted = (props) => {
+  const electionStartTime = props.data;
+
   return (
     <div className="container-item info">
       <center>
-      <h3>Election is not started yet.</h3>        
-      <p>Have patience until election is started.</p>      
+      <p style={{color:"black"}}>Have patience until election is started.</p>
+      <br></br>
+      <h4 style={{color:"black"}}>Election will be started in <bold>{electionStartTime}</bold>  </h4>
       </center>
     </div>
   );

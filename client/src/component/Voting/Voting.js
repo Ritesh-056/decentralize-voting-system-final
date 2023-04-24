@@ -14,7 +14,10 @@ import ElectionNotStarted from "../ElectionNotStarted";
 
 // CSS
 import "./Voting.css";
-import {NotAnyCandidateOnElectionCounted,NotCandidateCounted} from "../NoCandidateCounted";
+import {
+  NotAnyCandidateOnElectionCounted,
+  NotCandidateCounted,
+} from "../NoCandidateCounted";
 import { getLocalDateTime } from "../../DateTimeLocal";
 import SingleCandidateStatus from "./SingleCandidateStatus";
 
@@ -36,6 +39,7 @@ export default class Voting extends Component {
       registrationEndedStatus: false,
       isElectionEnded: false,
       data: [],
+      electionStartTime: undefined,
       currentVoter: {
         address: undefined,
         name: null,
@@ -142,16 +146,6 @@ export default class Voting extends Component {
 
       console.log("Election titles", electionTitles);
 
-      const votingstartedTime = await this.state.ElectionInstance.methods
-        .getVotingStartTime()
-        .call();
-      const votingEndedTime = await this.state.ElectionInstance.methods
-        .getVotingEndTime()
-        .call();
-
-      console.log("Voting started time:", getLocalDateTime(votingstartedTime));
-      console.log("Voting end time:", getLocalDateTime(votingEndedTime));
-
       // Get start and end values
       const isElectionEnded = await this.state.ElectionInstance.methods
         .getElectionEndedStatus(currentTimeStamp)
@@ -181,8 +175,18 @@ export default class Voting extends Component {
 
       console.log("Is registration started", registrationStartedSatus);
       console.log("Is registration ended", registrationEndedStatus);
-
       console.log("ELection voted titles index", this.state.items);
+
+      const votingstartedTime = await this.state.ElectionInstance.methods
+        .getVotingStartTime()
+        .call();
+      const votingEndedTime = await this.state.ElectionInstance.methods
+        .getVotingEndTime()
+        .call();
+      this.setState({ electionStartTime: getLocalDateTime(votingstartedTime) });
+
+      console.log("Voting started time:", getLocalDateTime(votingstartedTime));
+      console.log("Voting end time:", getLocalDateTime(votingEndedTime));
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -373,7 +377,6 @@ export default class Voting extends Component {
       <>
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <div>
-
           {this.state.electionInitStatus ? (
             this.state.candidateCount == 0 ? (
               <>
@@ -478,7 +481,7 @@ export default class Voting extends Component {
               </>
             ) : (
               <>
-                <ElectionNotStarted />
+                <ElectionNotStarted data={this.state.electionStartTime} />
               </>
             )
           ) : (

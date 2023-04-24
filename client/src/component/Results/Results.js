@@ -15,8 +15,10 @@ import Election from "../../artifacts/contracts/Election.sol/Election.json";
 
 // CSS
 import "./Results.css";
-import {NotAnyCandidateOnElectionCounted,NotCandidateCounted} from "../NoCandidateCounted";
-
+import {
+  NotAnyCandidateOnElectionCounted,
+  NotCandidateCounted,
+} from "../NoCandidateCounted";
 
 export default class Result extends Component {
   constructor(props) {
@@ -29,6 +31,7 @@ export default class Result extends Component {
       candidateCount: undefined,
       candidates: [],
       electionTitles: [],
+      electionStartTime: undefined,
       isElectionEnded: false,
       electionStarted: false,
       electionInitStatus: false,
@@ -139,6 +142,18 @@ export default class Result extends Component {
 
       console.log("Is registration started", registrationStartedSatus);
       console.log("Is registration ended", registrationEndedStatus);
+
+      const votingstartedTime = await this.state.ElectionInstance.methods
+        .getVotingStartTime()
+        .call();
+      const votingEndedTime = await this.state.ElectionInstance.methods
+        .getVotingEndTime()
+        .call();
+
+      this.setState({ electionStartTime: getLocalDateTime(votingstartedTime) });
+
+      console.log("Voting started time:", getLocalDateTime(votingstartedTime));
+      console.log("Voting end time:", getLocalDateTime(votingEndedTime));
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -211,7 +226,9 @@ export default class Result extends Component {
         {this.state.isAdmin ? <NavbarAdmin /> : <Navbar />}
         <br />
         <div>
-          {!this.state.electionInitStatus ? (
+          {this.state.candidateCount == 0 ? (
+            <NotCandidateCounted />
+          ) : !this.state.electionInitStatus ? (
             <NotInit />
           ) : this.state.electionStarted ? (
             <div className="container-item attention">
@@ -250,11 +267,9 @@ export default class Result extends Component {
             </>
           ) : (
             <>
-              <ElectionNotStarted />
+              <ElectionNotStarted data={this.state.electionStartTime} />
             </>
-          )
-
-          }
+          )}
         </div>
       </>
     );
@@ -280,8 +295,6 @@ function displayWinner(candidates) {
 
     return winnerCandidate;
   };
-
-
 
   const renderWinner = (winner) => {
     return (
