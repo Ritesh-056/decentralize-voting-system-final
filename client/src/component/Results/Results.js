@@ -240,7 +240,7 @@ export default class Result extends Component {
                   to="/Voting"
                   style={{ color: "black", textDecoration: "underline" }}
                 >
-                  <button className="btn-election">Vote Candidate</button>
+                  <button className="btn-verification-approve">Vote Candidate</button>
                 </Link>
               </center>
             </div>
@@ -299,16 +299,16 @@ function displayWinner(candidates) {
     return (
       <div className="container-winner-test">
         <div className="candidate-data">
-          <h2>Winner</h2>
-          <h2>
+          <h2 className="winner-one">Winner</h2>
+          <h2 className="winner-one">
             {`[${winner.candidateId}] `}
             {winner.header}
           </h2>{" "}
-          <small>{winner.slogan}</small>
+          <small className="winner-one">{winner.slogan}</small>
           <br />
           <br />
-          <small>Total Vote : </small> <br />
-          <p style={{ fontSize: 45, fontWeight: "bold", textAlign: "center" }}>
+          <small className="winner-one">Total Vote : </small> <br />
+          <p style={{ fontSize: 45, fontWeight: "bold", textAlign: "center" ,color:"#ffffff"}}>
             {winner.voteCount}
           </p>
         </div>

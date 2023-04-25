@@ -151,7 +151,6 @@ export default class Voting extends Component {
         .getElectionEndedStatus(currentTimeStamp)
         .call();
       this.setState({ isElectionEnded: isElectionEnded });
-
       console.log("Election ended status", this.state.isElectionEnded);
 
       const electionStarted = await this.state.ElectionInstance.methods
@@ -159,6 +158,8 @@ export default class Voting extends Component {
         .call();
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
+
+
 
       //get voting registration start and end times
       const registrationStartedSatus = await this.state.ElectionInstance.methods
@@ -264,7 +265,7 @@ export default class Voting extends Component {
     const hasVoted = this.state.data.includes(electionTitleIndex);
 
     return (
-      <div className="container-item">
+      <div className="container-item-voting">
         <div className="candidate-data">
           <h2>
             {`[${candidate.candidateId}] `}
@@ -431,7 +432,7 @@ export default class Voting extends Component {
                             textDecoration: "underline",
                           }}
                         >
-                          <button className="btn-election">
+                          <button className="btn-verification-approve">
                             Register here
                           </button>
                         </Link>
@@ -474,7 +475,7 @@ export default class Voting extends Component {
                       to="/Results"
                       style={{ color: "white", textDecoration: "underline" }}
                     >
-                      <button className="btn-election">View result</button>
+                      <button className="btn-verification-approve">View result</button>
                     </Link>
                   </center>
                 </div>

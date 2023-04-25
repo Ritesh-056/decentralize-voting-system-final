@@ -7,9 +7,8 @@ const ElectionNotStarted = (props) => {
   return (
     <div className="container-item info">
       <center>
-      <p style={{color:"black"}}>Have patience until election is started.</p>
-      <br></br>
-      <h4 style={{color:"black"}}>Election will be started in <bold>{electionStartTime}</bold>  </h4>
+      <p style={{color:"white"}}>Have patience until election is started.</p>
+      <h4 style={{color:"white"}}>Election will be started in <bold>{electionStartTime}</bold>  </h4>
       </center>
     </div>
   );

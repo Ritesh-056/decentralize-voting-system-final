@@ -5,23 +5,13 @@
 }
 
 .footer {
-  /* border-top: 1px solid #e7e7e7; */
   text-align: center;
   position: fixed;
   left: 0;
   bottom: 0;
 
-  /* dark blue: /* background-color: #004aad; */
-  /* light blue: background-color: #38b6ff; */
-  /* footer color: #545454; */
-  background-color:#151515 ;
+  background-color: #151515;
 
-
-  /* background: radial-gradient(
-      50% 2900.76% at 50% 53.89%,
-      rgba(58, 52, 86, 0.95) 0%,
-      #211e2e 100%
-    ); */
   box-shadow: 0px 4px 4px rgba(192, 183, 232, 0.01);
 }
 .footer-block {

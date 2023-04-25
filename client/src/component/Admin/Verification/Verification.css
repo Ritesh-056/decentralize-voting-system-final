@@ -1,17 +1,8 @@
-/* .btn-verification {
-  padding: 11px;
-  width: 100%;
-  margin-top: 11px;
-  margin-bottom: 11px;
-  float: inline-end;
-} */
-
 .tbl{
   width: 200px;
 }
 
 .btn-verification-approve{
-  /* width: 50%; */
   padding: 1em;
   float: inline-start;
   margin: 1em;
@@ -19,12 +10,9 @@
   position: inherit;
   width: 250px;
   align-items: center;
-  /* background: linear-gradient(90deg, #8176af 0%, #c0b7e8 100%); */
   border: 1px solid #000000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  /* border-radius: 40px; */
   border-radius: 8px;
-  /* color: #343045; */
   background-color: #ffffff;
   color: #151515;
 }

@@ -7,7 +7,7 @@
   display: block;
   width: 330px;
   background-color: transparent;
-  /* border: 1px solid #ffffff; */
+
   border: 1px solid #151515;
   border-radius: 8px;
   font-family: "Montserrat";
@@ -32,7 +32,6 @@
   padding: 1em;
   float: inline-end;
   margin: 1em;
-  /* color:#151515; */
 }
 .note {
   width: 90%;
@@ -47,36 +46,25 @@
   font-size: 16px;
   line-height: 20px;
   color: #151515;
-
 }
 
 th {
   font-family: "Montserrat";
   font-style: normal;
-  font-size: 17px;
+  font-size: 18px;
   line-height: 56px;
-  /* color: #151515; */
+
   color: #fff;
   font-weight: normal;
-
 }
 td {
   font-family: "Montserrat";
   font-style: normal;
-  font-size: 17px;
+  font-size: 18px;
   line-height: 56px;
   font-weight: normal;
   color: #fff;
-
-  /* background: linear-gradient(91.57deg, #c0b7e8 -1.02%, #8176af 36.25%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  -webkit-text-fill-color: transparent; */
-  /* background-color: #151515; */
 }
-
-
 
 .container-item-register {
   transition: ease all 0.5s;
@@ -87,8 +75,7 @@ td {
   justify-content: center;
   display: flex;
   overflow: auto;
-  /* background: radial-gradient(50% 50% at 50% 50%, #433d60 0%, #211e2e 0%); */
-  /* background-color: #151515; */
+
   border: 1px solid #151515;
   border-radius: 8px;
   color: #151515;

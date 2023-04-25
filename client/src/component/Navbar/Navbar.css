@@ -6,8 +6,8 @@ li {
 }
 a {
   text-decoration: none;
-  /* color: #f2f2f2; */
-  color:#151515,
+
+  color: #151515;
 }
 nav {
   padding: 0px 30px 0px 30px;
@@ -18,14 +18,13 @@ nav {
   position: sticky;
   top: 0;
   align-items: center;
-  /* border-bottom: 1px solid #e7e7e7; */
-  background-color: #CACACA;
+
+  background-color: #cacaca;
   /* background: radial-gradient(
       50% 2900.76% at 50% 53.89%,
       rgba(58, 52, 86, 0.95) 0%,
       #211e2e 100%
     ) */
-    /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
   box-shadow: 0px 4px 4px rgba(192, 183, 232, 0.01);
 }
 nav .header {
@@ -39,7 +38,7 @@ nav .header:hover {
 }
 nav .navbar-links {
   display: flex;
-  justify-content:right;
+  justify-content: right;
   width: 70%;
   cursor: pointer;
 }
@@ -49,7 +48,7 @@ nav .navbar-links a {
   cursor: pointer;
   font-family: "Montserrat";
   text-transform: capitalize;
-  /* border: 1px solid #ffffff; */
+
   padding: 8px 16px 8px 16px;
   width: 100%;
   margin-left: 32px;
@@ -61,29 +60,27 @@ nav .navbar-links a {
 
 nav .navbar-links a:hover {
   cursor: pointer;
-  /* background: linear-gradient(90deg, #8176AF 0%, #C0B7E8 100%); */
+
   border: 1px solid #000000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
-  /* color: #343045; */
 }
 nav .burger-menu {
   font-size: 24px;
-  /* color: white; */
-  color:#151515;
+
+  color: #151515;
   cursor: pointer;
   display: none;
 }
 .nav-active {
-  /* color: #f2f2f2; */
-  color:#151515;
+  color: #151515;
   text-transform: capitalize;
 }
 
 .menu {
   width: 25px;
   height: 3px;
-  /* background-color: #f2f2f2; */
+
   margin: 6px 0;
 }
 
@@ -92,7 +89,6 @@ nav .burger-menu {
     display: block;
   }
   nav .navbar-links {
-    /* background-color: #302c42; */
     display: block;
     width: 100%;
     position: absolute;
