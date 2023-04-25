@@ -6,24 +6,6 @@ function ElectionStatusAdminHome(props) {
   return (
     <div className="container-main">
       <h2>Election Details</h2>
-      <small>Election Titles : {electionDetails.electionTitles.length}</small>
-        <small>
-          <ol type="number" style={{paddingTop:16,paddingLeft:120}}>
-            {electionDetails.electionTitles.map((title, index) => (
-              <li style={{paddingBottom:8}} key={index}>{index+1}.{' '}{title}</li>
-            ))}
-          </ol>
-        </small>
-
-        <small>Election Slogans : {electionDetails.electionSlogans.length}</small>
-        <small>
-          <ol type="number" style={{paddingTop:16,paddingLeft:120}}>
-            {electionDetails.electionSlogans.map((title, index) => (
-              <li style={{paddingBottom:8}} key={index}>{index+1}.{' '}{title}</li>
-            ))}
-          </ol>
-        </small>
-
       <div className="container-item ">
         <table>
           <tr>
@@ -60,6 +42,30 @@ function ElectionStatusAdminHome(props) {
           <tr style={{ backgroundColor: "transparent" }}>
             <th>Voting End Time</th>
             <td>{electionDetails.votingEndTime}</td>
+          </tr>
+
+          <tr style={{ backgroundColor: "transparent" }}>
+            <th>Election Titles</th>
+            <td>
+              {electionDetails.electionTitles.map((title, index) => (
+                <small style={{ color: "white",paddingRight:8}}>
+                  {index + 1}.{" "}
+                  {title}
+                </small>
+              ))}
+            </td>
+          </tr>
+
+          <tr style={{ backgroundColor: "transparent" }}>
+            <th>Election Titles</th>
+            <td>
+              {electionDetails.electionSlogans.map((slogan, index) => (
+                <small style={{ color: "white",paddingRight:8}}>
+                  {index + 1}.{" "}
+                  {slogan}
+                </small>
+              ))}
+            </td>
           </tr>
         </table>
       </div>
