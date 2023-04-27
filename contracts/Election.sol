@@ -14,6 +14,9 @@ contract Election {
     address[] public approvedVoters; //array to store address of approved voters
     address[] public approvedCandidates; //array to store address of approved candidates
 
+    address[] public rejectedVoters;  //array to store address of rejected voters
+    address[] public rejectedCandidates; //array to store address of rejected candidates
+
     mapping(address => Voter) public voterDetails;
     mapping(address => Candidate) public candidateDetails;
 
@@ -69,6 +72,21 @@ contract Election {
         bool hasVoted;
         bool isRegistered;
         uint8[] voteCastedTitles;
+    }
+
+    struct RejectedVoter{
+        address voterAddress;
+        string name;
+        string phone;
+        string message;
+    }
+
+    struct RejectedCandidate{
+        address candidateAddress;
+        string header;
+        string slogan;
+        uint256 electionTitle;
+        string message;
     }
 
     modifier registrationOnGoing() {
@@ -225,6 +243,17 @@ contract Election {
         return approvedVoters.length;
     }
 
+
+    //get total rejected voters
+    function getRejectedVoters() public view returns (uint256){
+        return rejectedVoters.length;
+    }
+
+    //get total rejected candidates
+    function getRejectedCandidates() public view returns(uint256){
+        return rejectedCandidates.length;
+    }
+
     //Request to be added as candidate
     function registerAsCandidate(
         string memory _header,
@@ -282,6 +311,17 @@ contract Election {
         voterDetails[voterAddress].isVerified = _verifedStatus;
         approvedVoters.push(voterAddress);
     }
+
+
+    //reject voter
+    function rejectVoter(
+        address voterAddress
+    )public onlyAdmin{
+
+
+
+    }
+
 
     //function that check if the
     //item is present in the list.

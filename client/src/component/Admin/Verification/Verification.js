@@ -94,6 +94,15 @@ export default class Registration extends Component {
         alert("Voter verification successful");
       window.location.reload();
     };
+
+    const rejectVoter = async (rejectStatus, address) => {
+      await this.state.ElectionInstance.methods
+        .rejectVoter(rejectStatus, address)
+        .send({ from: this.state.account, gas: 1000000 });
+        alert("Voter rejection successful");
+      window.location.reload();
+    };
+
     return (
       <>
         {voter.isVerified ? (
@@ -155,14 +164,13 @@ export default class Registration extends Component {
               >
                 Approve
               </button>
-              {/* <button
-                // className="btn-verification approve"
+              <button
                 className="btn-verification-approve"
-                disabled={voter.isVerified}
-                onClick={() => verifyVoter(true, voter.address)}
+                // disabled={voter.isVerified}
+                onClick={() => rejectVoter(true, voter.address)}
               >
                 Reject
-              </button> */}
+              </button>
             </center>
           </div>
         </div>
