@@ -14,11 +14,15 @@ contract Election {
     address[] public approvedVoters; //array to store address of approved voters
     address[] public approvedCandidates; //array to store address of approved candidates
 
-    address[] public rejectedVoters;  //array to store address of rejected voters
+    address[] public rejectedVoters; //array to store address of rejected voters
     address[] public rejectedCandidates; //array to store address of rejected candidates
 
     mapping(address => Voter) public voterDetails;
     mapping(address => Candidate) public candidateDetails;
+
+    //rejection voter & candidate mapping
+    mapping(address => RejectedVoter) public rejectedVoterDetails;
+    mapping(address => RejectedCandidate) public rejectedCandidateDetails;
 
     //voting and registration start and end time
     uint256 registrationStartTime;
@@ -74,18 +78,18 @@ contract Election {
         uint8[] voteCastedTitles;
     }
 
-    struct RejectedVoter{
+    struct RejectedVoter {
         address voterAddress;
         string name;
         string phone;
         string message;
     }
 
-    struct RejectedCandidate{
+    struct RejectedCandidate {
+        uint8 candidateId;
         address candidateAddress;
         string header;
         string slogan;
-        uint256 electionTitle;
         string message;
     }
 
@@ -138,7 +142,6 @@ contract Election {
         // Only admin can add
         onlyAdmin
     {
-
         //set election Tiles
         string[] memory electionTitles = new string[](_elections.length);
         for (uint256 i = 0; i < _elections.length; i++) {
@@ -215,9 +218,9 @@ contract Election {
         return titles;
     }
 
-    function getElectionSlogans() public view returns (string[] memory){
-        string[] memory slogans  = new string[](electionDetails.slogans.length);
-         for (uint8 i = 0; i < electionDetails.slogans.length; i++) {
+    function getElectionSlogans() public view returns (string[] memory) {
+        string[] memory slogans = new string[](electionDetails.slogans.length);
+        for (uint8 i = 0; i < electionDetails.slogans.length; i++) {
             slogans[i] = electionDetails.slogans[i];
         }
         return slogans;
@@ -243,14 +246,13 @@ contract Election {
         return approvedVoters.length;
     }
 
-
     //get total rejected voters
-    function getRejectedVoters() public view returns (uint256){
+    function getRejectedVoters() public view returns (uint256) {
         return rejectedVoters.length;
     }
 
     //get total rejected candidates
-    function getRejectedCandidates() public view returns(uint256){
+    function getRejectedCandidates() public view returns (uint256) {
         return rejectedCandidates.length;
     }
 
@@ -284,6 +286,38 @@ contract Election {
         approvedCandidates.push(candidateAddress);
     }
 
+    //reject candiates
+    function rejectCandidate(
+        address candidateAddress,
+        string memory message
+    ) public onlyAdmin {
+        bool candidatesAddressFound = false;
+        for (uint256 i = 0; i < candidates.length; i++) {
+            if (candidates[i] == candidateAddress) {
+                candidatesAddressFound = true;
+                break;
+            }
+        }
+        require(candidatesAddressFound == true, "Candidate address not found");
+
+        //rejected candidate details
+        rejectedCandidateDetails[candidateAddress]
+            .candidateId = candidateDetails[candidateAddress].candidateId;
+        rejectedCandidateDetails[candidateAddress]
+            .candidateAddress = candidateDetails[candidateAddress]
+            .candidateAddress;
+        rejectedCandidateDetails[candidateAddress].header = candidateDetails[
+            candidateAddress
+        ].header;
+        rejectedCandidateDetails[candidateAddress].slogan = candidateDetails[
+            candidateAddress
+        ].slogan;
+        rejectedCandidateDetails[candidateAddress].message = message;
+
+        //add the rejected candidates address to the list.
+        rejectedCandidates.push(candidateAddress);
+    }
+
     // Request to be added as voter
     function registerAsVoter(string memory _name, string memory _phone) public {
         Voter memory newVoter = Voter({
@@ -312,16 +346,32 @@ contract Election {
         approvedVoters.push(voterAddress);
     }
 
-
-    //reject voter
     function rejectVoter(
-        address voterAddress
-    )public onlyAdmin{
+        address voterAddress,
+        string memory message
+    ) public onlyAdmin {
+        bool votersAddressFound = false;
+        for (uint256 i = 0; i < voters.length; i++) {
+            if (voters[i] == voterAddress) {
+                votersAddressFound = true;
+                break;
+            }
+        }
+        require(votersAddressFound == true, "Voters address not found");
 
+        //rejected voter details
+        rejectedVoterDetails[voterAddress].message = message;
+        rejectedVoterDetails[voterAddress].name = voterDetails[voterAddress]
+            .name;
+        rejectedVoterDetails[voterAddress].phone = voterDetails[voterAddress]
+            .phone;
+        rejectedVoterDetails[voterAddress].voterAddress = voterDetails[
+            voterAddress
+        ].voterAddress;
 
-
+        //add the rejected voter address to the list.
+        rejectedVoters.push(voterAddress);
     }
-
 
     //function that check if the
     //item is present in the list.
