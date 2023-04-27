@@ -27,7 +27,6 @@ import AboutAdmin from "./Home/AboutAdmin";
 
 // const buttonRef = React.createRef();
 class Home extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -276,7 +275,7 @@ class Home extends Component {
         if (this.props.electionTitles.length === 0) {
           return alert("Election title is required, please fill the title");
         }
-        if(this.props.electionSlogans.length === 0){
+        if (this.props.electionSlogans.length === 0) {
           return alert("Election slogan is required, please fill the slogan");
         }
         const votingstartTime = this.convertDateTimeToUnix(
@@ -371,7 +370,7 @@ const mapStateToProps = (state) => {
   return {
     electionDetail: state.electionDetailReducer,
     electionTitles: state.electionTitlesReducer,
-    electionSlogans:state.candidateElectionSloganReducer
+    electionSlogans: state.candidateElectionSloganReducer,
   };
 };
 

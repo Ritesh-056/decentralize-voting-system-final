@@ -3,7 +3,7 @@ async function signVoterWithAddressAndMessage(web3, accountAddress) {
 
   if (window.ethereum) {
     try {
-      let message = prompt("Dear voter, Please insert a message to continue as a voter ", "enter message");
+      let message = prompt("Dear voter,Please insert a message to continue. ", " ");
       if (message == null || message == "") {
         throw new Error("No message to sign");
       }
