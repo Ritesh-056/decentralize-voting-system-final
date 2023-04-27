@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import Logo from "../../images/Logo.png";
 import "./Navbar.css";
+import LogoFirst from "../../images/LogoFirst.png";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   return (
     <nav>
       <NavLink to="/" className="header">
-        <img src={Logo} alt="Logo" style={{ height: 100, width: 100 }} />
+        <img src={LogoFirst} alt="LogoFirst" style={{ height: 100, width: 100 }} />
       </NavLink>
 
       <ul

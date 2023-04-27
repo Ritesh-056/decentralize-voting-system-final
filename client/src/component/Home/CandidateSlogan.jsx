@@ -43,7 +43,7 @@ const HomeCandidateSloganForm = () => {
         <ul className="titles">
           {slogans.map((value, index) => {
             return (
-              <li key={index}>
+              <li style={{fontSize:14,fontWeight:"normal"}} key={index}>
                 {index + 1}. {value}
               </li>
             );

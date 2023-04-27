@@ -15,6 +15,7 @@ import { VoterRegistrationEnded } from "../RegistrationStatus";
 //get getlocaldataTime func
 import { getLocalDateTime } from "../../DateTimeLocal";
 import ElectionStatus from "../ElectionStatus";
+import { signVoterWithAddressAndMessage } from "../../ecrecover/RegisterSigner";
 
 export default class Registration extends Component {
   constructor(props) {
@@ -158,11 +159,16 @@ export default class Registration extends Component {
     this.setState({ voterPhone: event.target.value });
   };
   registerAsVoter = async () => {
-    await this.state.ElectionInstance.methods
+    const isSignatureSigned = signVoterWithAddressAndMessage(this.state.web3, this.state.account);
+    if(isSignatureSigned == true){
+      await this.state.ElectionInstance.methods
       .registerAsVoter(this.state.voterName, this.state.voterPhone)
       .send({ from: this.state.account, gas: 1000000 });
     alert("Voter registered successful");
     window.location.reload();
+    }else{
+      return alert('Oops message signed error');
+    }
   };
   render() {
     if (!this.state.web3) {
@@ -274,15 +280,11 @@ export default class Registration extends Component {
               ) : null}
             </div> */}
             {this.state.isAdmin ? (
-              <div
-                className="container-main"
-                // style={{ borderTop: "1px solid" }}
-              >
+              <div className="container-main">
                 <h2>Total Voters: {this.state.voters.length}</h2>
                 {loadAllVoters(this.state.voters)}
               </div>
-            ) : null
-            }
+            ) : null}
           </>
         )}
       </>

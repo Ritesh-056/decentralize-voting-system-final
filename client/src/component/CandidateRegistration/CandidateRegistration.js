@@ -9,6 +9,8 @@ import "./CandidateRegistration.css";
 import NotVoter from "../NotVoter";
 import { getLocalDateTime } from "../../DateTimeLocal";
 import NotInit from "../NotInit";
+import { recoverSignerAccount } from "../../ecrecover/RecoverOrValidateSigner";
+
 import {
   RegistrationInit,
   RegistrationEnded,
@@ -52,8 +54,7 @@ export default class CandidateRegistration extends Component {
       },
     };
 
-    this.handleSelectSloganChange =
-      this.handleSelectSloganChange.bind(this);
+    this.handleSelectSloganChange = this.handleSelectSloganChange.bind(this);
 
     this.handleSelectElectionTitleChange =
       this.handleSelectElectionTitleChange.bind(this);
@@ -156,17 +157,16 @@ export default class CandidateRegistration extends Component {
       this.setState({ selectedElection: electionTitles[0] });
       this.setState({ selectedElectionIndex: 0 });
 
-
       //get election Slogans
       const electionSlogans = await this.state.ElectionInstance.methods
-      .getElectionSlogans()
-      .call();
+        .getElectionSlogans()
+        .call();
 
-    this.setState({ electionSlogans: electionSlogans });
-    this.setState({ selectedSlogan: electionSlogans[0] });
-    this.setState({ selectedSloganIndex: 0 });
+      this.setState({ electionSlogans: electionSlogans });
+      this.setState({ selectedSlogan: electionSlogans[0] });
+      this.setState({ selectedSloganIndex: 0 });
 
-    console.log("Election slogans", electionSlogans);
+      console.log("Election slogans", electionSlogans);
 
       //get registration start and end time
       const registrationStartTimeUnixStamp =
@@ -246,8 +246,6 @@ export default class CandidateRegistration extends Component {
         .call();
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
-
-
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -271,18 +269,27 @@ export default class CandidateRegistration extends Component {
     this.setState({ header: event.target.value });
   };
 
-
   registerAsCandidate = async () => {
-    await this.state.ElectionInstance.methods
-      .registerAsCandidate(
-        this.state.header,
-        this.state.selectedSlogan,
-        this.state.selectedElectionIndex
-      )
-      .send({ from: this.state.account, gas: 1000000 });
-    console.log("Selected slogan is",this.state.selectedSlogan);
-    alert("Candidate registration successful");
-    window.location.reload();
+
+    const isSignatureRecovered = await recoverSignerAccount(
+      this.state.web3,
+      this.state.account,
+    );
+
+    if(isSignatureRecovered == true ){
+
+      await this.state.ElectionInstance.methods
+        .registerAsCandidate(
+          this.state.header,
+          this.state.selectedSlogan,
+          this.state.selectedElectionIndex
+        )
+        .send({ from: this.state.account, gas: 1000000 });
+      alert("Candidate registration successful");
+      window.location.reload();
+    }else{
+      return alert ('Invalid message recovering');
+    }
   };
 
   convertDateTimeToUnix = (dateTime) => {
@@ -325,7 +332,9 @@ export default class CandidateRegistration extends Component {
                     <div className="candidate-info-header">
                       <h2>Registration End Date</h2>
                       <center>
-                        <small id="timer">{this.state.registrationEndDateTimeLocal}</small>
+                        <small id="timer">
+                          {this.state.registrationEndDateTimeLocal}
+                        </small>
                       </center>
                     </div>
                   </div>
