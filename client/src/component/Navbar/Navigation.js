@@ -38,6 +38,13 @@ export default function Navbar() {
             Voting
           </NavLink>
         </li>
+
+        <li>
+          <NavLink to="/Notification" activeClassName="nav-active">
+            Notifications
+          </NavLink>
+        </li>
+
       </ul>
       <i onClick={() => setOpen(!open)} className="fas fa-bars burger-menu"></i>
     </nav>

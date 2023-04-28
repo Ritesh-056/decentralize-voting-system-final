@@ -10,7 +10,7 @@ import Registration from "./component/Registration/Registration";
 import Verification from "./component/Admin/Verification/Verification";
 import CandidateVerification from "./component/Admin/CandidateVerification/CandidateVerification";
 import CandidateRegistration from "./component/CandidateRegistration/CandidateRegistration";
-
+import Notification from "./component/Notification";
 import test from "./component/test";
 // import StartEnd from "./component/Admin/StartEnd/StartEnd";
 
@@ -31,6 +31,7 @@ export default class App extends Component {
             <Route exact path="/Registration" component={Registration} />
             <Route exact path="/Verification" component={Verification} />
             <Route exact path="/CandidateVerification" component={CandidateVerification} />
+            <Route exact path="/Notification"  component={Notification} />
             <Route exact path="/test" component={test} />
             <Route exact path="*" component={NotFound} />
           </Switch>
