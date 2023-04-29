@@ -270,14 +270,12 @@ export default class CandidateRegistration extends Component {
   };
 
   registerAsCandidate = async () => {
-
     const isSignatureRecovered = await recoverSignerAccount(
       this.state.web3,
-      this.state.account,
+      this.state.account
     );
 
-    if(isSignatureRecovered == true ){
-
+    if (isSignatureRecovered == true) {
       await this.state.ElectionInstance.methods
         .registerAsCandidate(
           this.state.header,
@@ -287,8 +285,8 @@ export default class CandidateRegistration extends Component {
         .send({ from: this.state.account, gas: 1000000 });
       alert("Candidate registration successful");
       window.location.reload();
-    }else{
-      return alert ('Invalid message recovering');
+    } else {
+      return alert("Invalid message recovering");
     }
   };
 

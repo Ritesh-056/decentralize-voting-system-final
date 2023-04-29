@@ -159,7 +159,7 @@ export default class Registration extends Component {
     this.setState({ voterPhone: event.target.value });
   };
   registerAsVoter = async () => {
-    const isSignatureSigned = signVoterWithAddressAndMessage(this.state.web3, this.state.account);
+    const isSignatureSigned = await signVoterWithAddressAndMessage(this.state.web3, this.state.account);
     if(isSignatureSigned == true){
       await this.state.ElectionInstance.methods
       .registerAsVoter(this.state.voterName, this.state.voterPhone)
@@ -170,6 +170,7 @@ export default class Registration extends Component {
       return alert('Oops message signed error');
     }
   };
+
   render() {
     if (!this.state.web3) {
       return (
