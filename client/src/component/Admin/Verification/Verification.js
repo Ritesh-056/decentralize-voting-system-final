@@ -20,6 +20,7 @@ export default class Registration extends Component {
       isAdmin: false,
       Count: undefined,
       voters: [],
+      rejectedVoterList: [],
     };
   }
 
@@ -78,6 +79,19 @@ export default class Registration extends Component {
         });
       }
       this.setState({ voters: this.state.voters });
+
+      const rejectedVoterCount = await this.state.ElectionInstance.methods
+        .getRejectedVoters()
+        .call();
+      for (let i = 0; i < rejectedVoterCount; i++) {
+        const rejectedVoterAddress = await this.state.ElectionInstance.methods
+          .rejectedVoters(i)
+          .call();
+        this.state.rejectedVoterList.push(rejectedVoterAddress);
+      }
+
+      console.log("Rejected voter count", rejectedVoterCount);
+      console.log("Rejected voter list", this.state.rejectedVoterList);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -86,6 +100,13 @@ export default class Registration extends Component {
       console.error(error);
     }
   };
+
+  voterRejectionChecker = (voterAddress) => {
+    const checkVoteExist = this.state.rejectedVoterList.includes(voterAddress);
+    console.log("Check voter rejection:", checkVoteExist);
+    return checkVoteExist;
+  };
+
   renderUnverifiedVoters = (voter) => {
     const verifyVoter = async (verifiedStatus, address) => {
       await this.state.ElectionInstance.methods
@@ -97,13 +118,10 @@ export default class Registration extends Component {
 
     const rejectVoter = async (address) => {
       // Prompt the user to enter a message to sign
-      const message = prompt(
-        "Write a reason for rejection.",
-        "reason"
-      );
+      const message = prompt("Write a reason for rejection.", "reason");
 
       // Validate the message
-      if (!message || message=="") {
+      if (!message || message == "") {
         return alert("No reason submitted for rejection.");
       }
 
@@ -133,9 +151,13 @@ export default class Registration extends Component {
             </table>
           </div>
         ) : null}
+
         <div
           className="container-list attention"
-          style={{ display: voter.isVerified ? "none" : null, color: "white" }}
+          style={{
+            display: voter.isVerified ? "none" : null,
+            color: "white",
+          }}
         >
           <table>
             <tr>
@@ -164,28 +186,42 @@ export default class Registration extends Component {
               <td>{voter.isRegistered ? "True" : "False"}</td>
             </tr>
           </table>
-          <div style={{}}>
-            <center>
-              <button
-                // className="btn-verification approve"
-                className="btn-verification-approve"
-                disabled={voter.isVerified}
-                onClick={() => verifyVoter(true, voter.address)}
-              >
-                Approve
-              </button>
-              <button
-                className="btn-verification-approve"
-                // disabled={voter.isVerified}
-                onClick={() =>
-                  rejectVoter(
-                    voter.address)
-                }
-              >
-                Reject
-              </button>
-            </center>
-          </div>
+          {this.voterRejectionChecker(voter.address) ? (
+            <>
+              <div style={{}}>
+                <center>
+                  <button
+                    // className="btn-verification approve"
+                    className="btn-verification-approve"
+                    disabled={voter.isVerified}
+                    onClick={() => verifyVoter(true, voter.address)}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="btn-verification-approve"
+                    // disabled={voter.isVerified}
+                    onClick={() => rejectVoter(voter.address)}
+                  >
+                    Reject
+                  </button>
+                </center>
+              </div>
+            </>
+          ) : (
+            <div
+              className="container-list attention"
+              style={{
+                display: voter.isVerified ? "none" : null,
+                color: "white",
+              }}
+            >
+              <center>
+                {" "}
+                <button className="btn-verification-approve">Rejected</button>
+              </center>
+            </div>
+          )}
         </div>
       </>
     );

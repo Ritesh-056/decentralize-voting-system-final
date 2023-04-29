@@ -137,15 +137,6 @@ export default class Notification extends Component {
         </>
       );
     }
-    // if (!this.state.isAdmin) {
-    //   return (
-    //     <>
-    //       <Navbar />
-    //       <AdminOnly page="Verification Page." />
-    //     </>
-    //   );
-    // }
-
     const { address, name, phone, message } = this.state.rejectedVoter;
 
     return (

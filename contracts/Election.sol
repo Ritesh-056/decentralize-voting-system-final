@@ -351,13 +351,24 @@ contract Election {
         string memory message
     ) public onlyAdmin {
         bool votersAddressFound = false;
+        bool isAlreadyRejected = false;
+
+        ///iterate voters length
         for (uint256 i = 0; i < voters.length; i++) {
             if (voters[i] == voterAddress) {
                 votersAddressFound = true;
                 break;
             }
         }
+
+        ///iterate rejected voters length
+        for (uint256 j = 0; j < rejectedVoters.length; j++) {
+            if (rejectedVoters[j] == voterAddress) {
+                isAlreadyRejected = true;
+            }
+        }
         require(votersAddressFound == true, "Voters address not found");
+        require(isAlreadyRejected == false, "Voter already rejected.");
 
         //rejected voter details
         rejectedVoterDetails[voterAddress].message = message;
