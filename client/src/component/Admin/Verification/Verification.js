@@ -48,7 +48,7 @@ export default class Registration extends Component {
       // example of interacting with the contract's methods.
       this.setState({ web3, ElectionInstance: instance, account: accounts[0] });
 
-       // Admin account and verification
+      // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
@@ -91,48 +91,58 @@ export default class Registration extends Component {
       await this.state.ElectionInstance.methods
         .verifyVoter(verifiedStatus, address)
         .send({ from: this.state.account, gas: 1000000 });
-        alert("Voter verification successful");
+      alert("Voter verification successful");
       window.location.reload();
     };
 
-    const rejectVoter = async (address,message) => {
+    const rejectVoter = async (address) => {
+      // Prompt the user to enter a message to sign
+      const message = prompt(
+        "Write a reason for rejection.",
+        "reason"
+      );
+
+      // Validate the message
+      if (!message || message=="") {
+        return alert("No reason submitted for rejection.");
+      }
+
       await this.state.ElectionInstance.methods
-        .rejectVoter(address,message)
+        .rejectVoter(address, message)
         .send({ from: this.state.account, gas: 1000000 });
-        alert("Voter rejection successful");
+      alert("Voter rejection successful");
       window.location.reload();
     };
 
     return (
       <>
         {voter.isVerified ? (
-          <div className="container-list success" style={{color:"white"}}>
+          <div className="container-list success" style={{ color: "white" }}>
             <p style={{ margin: "7px 0px" }}>AC: {voter.address}</p>
             <table>
               <tr>
-                <th >Name</th>
-                <th >Phone</th>
-                <th >Voted</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Voted</th>
               </tr>
-              <tr style={{backgroundColor:"transparent"}}>
+              <tr style={{ backgroundColor: "transparent" }}>
                 <td className="tbl">{voter.name}</td>
                 <td className="tbl">{voter.phone}</td>
                 <td className="tbl">{voter.hasVoted ? "True" : "False"}</td>
               </tr>
-
             </table>
           </div>
         ) : null}
         <div
           className="container-list attention"
-          style={{ display: voter.isVerified ? "none" : null,color:"white"}}
+          style={{ display: voter.isVerified ? "none" : null, color: "white" }}
         >
           <table>
             <tr>
               <th>Account address</th>
               <td>{voter.address}</td>
             </tr>
-            <tr style={{background:"transparent"}}>
+            <tr style={{ background: "transparent" }}>
               <th>Name</th>
               <td>{voter.name}</td>
             </tr>
@@ -141,7 +151,7 @@ export default class Registration extends Component {
               <td>{voter.phone}</td>
             </tr>
 
-            <tr style={{background:"transparent"}}>
+            <tr style={{ background: "transparent" }}>
               <th>Voted</th>
               <td>{voter.hasVoted ? "True" : "False"}</td>
             </tr>
@@ -149,7 +159,7 @@ export default class Registration extends Component {
               <th>Verified</th>
               <td>{voter.isVerified ? "True" : "False"}</td>
             </tr>
-            <tr style={{background:"transparent"}}>
+            <tr style={{ background: "transparent" }}>
               <th>Registered</th>
               <td>{voter.isRegistered ? "True" : "False"}</td>
             </tr>
@@ -167,7 +177,10 @@ export default class Registration extends Component {
               <button
                 className="btn-verification-approve"
                 // disabled={voter.isVerified}
-                onClick={() => rejectVoter(voter.address,"You are not eligible to vote the election.")}
+                onClick={() =>
+                  rejectVoter(
+                    voter.address)
+                }
               >
                 Reject
               </button>

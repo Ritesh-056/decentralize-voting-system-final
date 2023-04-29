@@ -59,27 +59,19 @@ export default class Notification extends Component {
         this.setState({ isAdmin: true });
       }
 
-      // Total number of unverified rejectedVoters
-
-      // const rejectedrejectedVoterCount   = await this.state.ElectionInstance.methods.getRejectedrejectedVoters().call();
-      const rejectedVoterDetails =
-        await this.state.ElectionInstance.methods
-          .rejectedVoterDetails(this.state.account)
-          .call();
+      const rejectedVoterDetails = await this.state.ElectionInstance.methods
+        .rejectedVoterDetails(this.state.account)
+        .call();
 
       this.setState({
-        rejectedrejectedVoterDetails: {
-          rejectedVoterAddress:
-          rejectedVoterDetails.address,
+        rejectedVoter: {
+          address: rejectedVoterDetails.voterAddress,
           name: rejectedVoterDetails.name,
           phone: rejectedVoterDetails.phone,
           message: rejectedVoterDetails.message,
         },
       });
-      console.log(
-        "Rejected rejectedVoter details:",
-        rejectedVoterDetails
-      );
+      console.log("Rejected rejectedVoter details:", this.state.rejectedVoter);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -153,6 +145,9 @@ export default class Notification extends Component {
     //     </>
     //   );
     // }
+
+    const { address, name, phone, message } = this.state.rejectedVoter;
+
     return (
       <>
         <NavbarAdmin />
@@ -160,9 +155,31 @@ export default class Notification extends Component {
           <h2>Notifications</h2>
           <>
             <div className="container-item info">
-              <center>Voter registration rejection</center>
+              <div
+                className="container-list attention"
+                style={{ color: "white" }}
+              >
+                <table>
+                  <tr>
+                    <th> Rejection Message </th>
+                    <td>{message}</td>
+                  </tr>
+
+                  <tr style={{ background: "transparent" }}>
+                    <th>Account address</th>
+                    <td>{address}</td>
+                  </tr>
+                  <tr>
+                    <th>Name</th>
+                    <td>{name}</td>
+                  </tr>
+                  <tr style={{ background: "transparent" }}>
+                    <th>Phone</th>
+                    <td>{phone}</td>
+                  </tr>
+                </table>
+              </div>
             </div>
-            <p>{this.state.rejectedVoter.message}</p>
           </>
         </div>
       </>
