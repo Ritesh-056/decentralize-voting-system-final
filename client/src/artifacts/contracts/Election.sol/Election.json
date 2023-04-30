@@ -2,6 +2,14 @@
   "_format": "hh-sol-artifact-1",
   "contractName": "Election",
   "sourceName": "contracts/Election.sol",
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x5A61236370c37dF52ee0FEBd8523A7a54Bb94569",
+      "transactionHash": "0x396a5e50bcace1798b7930a735045546e5931f81de2430fc308938872a923cd0"
+    }
+  },
   "abi": [
     {
       "inputs": [],

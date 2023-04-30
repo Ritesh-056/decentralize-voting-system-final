@@ -414,18 +414,6 @@ export default class CandidateRegistration extends Component {
                 </div>
 
                 {!this.state.voterStatusForCandidate ? <NotVoter /> : null}
-
-                {this.state.isAdmin ? (
-                  <div
-                    className="container-main"
-                    style={{ borderTop: "1px solid" }}
-                  >
-                    <small>
-                      Total Candidates: {this.state.candidates.length}
-                    </small>
-                    {loadAdded(this.state.candidates)}
-                  </div>
-                ) : null}
               </>
             )
           ) : this.state.isRegistrationEnded ? (

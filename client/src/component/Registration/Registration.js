@@ -262,7 +262,7 @@ export default class Registration extends Component {
                 </form>
               </div>
             </div>
-            {/* <div
+            <div
               className="container-main"
               style={{
                 borderTop: this.state.currentVoter.isRegistered
@@ -279,7 +279,7 @@ export default class Registration extends Component {
                   )}
                 </>
               ) : null}
-            </div> */}
+            </div>
             {this.state.isAdmin ? (
               <div className="container-main">
                 <h2>Total Voters: {this.state.voters.length}</h2>

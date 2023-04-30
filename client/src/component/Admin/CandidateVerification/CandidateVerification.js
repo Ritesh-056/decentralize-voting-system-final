@@ -21,6 +21,7 @@ export default class CandidateVerification extends Component {
       candidateCount: undefined,
       electionTitles: [],
       candidates: [],
+      rejectedCandidateList: [],
     };
   }
 
@@ -54,6 +55,21 @@ export default class CandidateVerification extends Component {
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
       }
+
+      //rejection candidate length and add candidate to the rejctedCandidateList address.
+      const rejectedCandidateCount = await this.state.ElectionInstance.methods
+        .getRejectedCandidates()
+        .call();
+      for (let i = 0; i < rejectedCandidateCount; i++) {
+        const rejectedCandidateAddress =
+          await this.state.ElectionInstance.methods
+            .rejectedCandidates(i)
+            .call();
+        this.state.rejectedCandidateList.push(rejectedCandidateAddress);
+      }
+
+      console.log("Rejected  candidate count", rejectedCandidateCount);
+      console.log("Rejected candidate list", this.state.rejectedCandidateList);
 
       // Total number of univerified candidates
       const candidateCount = await this.state.ElectionInstance.methods
@@ -94,11 +110,35 @@ export default class CandidateVerification extends Component {
       console.error(error);
     }
   };
+
+  candidateRejectionChecker = (candidateAddress) => {
+    const checkCandidateExist =
+      this.state.rejectedCandidateList.includes(candidateAddress);
+    console.log("Check canidate rejection:", checkCandidateExist);
+    return checkCandidateExist;
+  };
+
   renderUnverifiedCandidates = (candidate) => {
     const verifyCandidate = async (verifiedStatus, address) => {
       await this.state.ElectionInstance.methods
         .verifyCandidate(verifiedStatus, address)
         .send({ from: this.state.account, gas: 1000000 });
+      window.location.reload();
+    };
+
+    const rejectCandidate = async (address) => {
+      //prompt the admin to write rejection message
+      const message = prompt("Write a reason for rejection.", "reason");
+
+      // Validate the message
+      if (!message || message == "") {
+        return alert("No reason submitted for rejection.");
+      }
+
+      await this.state.ElectionInstance.methods
+        .rejectCandidate(address, message)
+        .send({ from: this.state.account, gas: 1000000 });
+      alert("Candidate rejection successful");
       window.location.reload();
     };
 
@@ -157,7 +197,7 @@ export default class CandidateVerification extends Component {
               <td>{electionTitleOfCandidate}</td>
             </tr>
           </table>
-          <div style={{ marginTop: "2%" }}>
+          {/* <div style={{ marginTop: "2%" }}>
             <center>
               <button
                 // className="btn-verification approve"
@@ -170,7 +210,45 @@ export default class CandidateVerification extends Component {
                 Approve
               </button>
             </center>
-          </div>
+          </div> */}
+
+          {!this.candidateRejectionChecker(candidate.candidateAddress) ? (
+            <>
+              <div style={{}}>
+                <center>
+                  <button
+                    className="btn-verification-approve"
+                    disabled={candidate.isVerified}
+                    onClick={() =>
+                      verifyCandidate(true, candidate.candidateAddress)
+                    }
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    className="btn-verification-approve"
+                    onClick={() => rejectCandidate(candidate.candidateAddress)}
+                  >
+                    Reject
+                  </button>
+                </center>
+              </div>
+            </>
+          ) : (
+            <div
+              className="container-list attention"
+              style={{
+                display: candidate.isVerified ? "none" : null,
+                color: "white",
+              }}
+            >
+              <center>
+                {" "}
+                <button className="btn-verification-approve">Rejected</button>
+              </center>
+            </div>
+          )}
         </div>
       </>
     );

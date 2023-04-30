@@ -111,6 +111,10 @@ h5 {
   text-transform: capitalize;
 }
 
+.notification-category{
+  font-size: 20px;
+}
+
 .container-list {
   width: 100%;
   padding: 11px;

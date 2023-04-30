@@ -25,6 +25,13 @@ export default class Notification extends Component {
         phone: null,
         message: undefined,
       },
+      rejectedCandidate: {
+        candidateId: null,
+        candidateAddress: undefined,
+        header: undefined,
+        slogan: undefined,
+        rejectionMessage: undefined,
+      },
     };
   }
 
@@ -71,7 +78,31 @@ export default class Notification extends Component {
           message: rejectedVoterDetails.message,
         },
       });
+
+      // this.setState({
+      //   rejectedVoter: {
+      //     address: "089hxbsacdbxhjksnskujsi093423d",
+      //     name: "Ritesh Baral",
+      //     phone: "9806045065",
+      //     message: "You are rejected successfuly",
+      //   },
+      // });
       console.log("Rejected rejectedVoter details:", this.state.rejectedVoter);
+
+      const rejectedCandidateDetails = await this.state.ElectionInstance.methods
+        .rejectedCandidateDetails(this.state.account)
+        .call();
+
+      this.setState({
+        rejectedCandidate: {
+          candidateId: rejectedCandidateDetails.candidateId,
+          candidateAddress: rejectedCandidateDetails.candidateAddress,
+          header: rejectedCandidateDetails.header,
+          slogan: rejectedCandidateDetails.slogan,
+          rejectionMessage: rejectedCandidateDetails.message,
+        },
+      });
+      console.log("Rejected Candidate details:", this.state.rejectedCandidate);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -81,44 +112,6 @@ export default class Notification extends Component {
     }
   };
 
-  renderRejectedInfoWithMessage = (rejectedVoter) => {
-    return (
-      <>
-        <div
-          className="container-list attention"
-          style={{ display: "none", color: "white" }}
-        >
-          <table>
-            <tr>
-              <th>Account address</th>
-              <td>{rejectedVoter.address}</td>
-            </tr>
-            <tr style={{ background: "transparent" }}>
-              <th>Name</th>
-              <td>{rejectedVoter.name}</td>
-            </tr>
-            <tr>
-              <th>Phone</th>
-              <td>{rejectedVoter.phone}</td>
-            </tr>
-
-            <tr style={{ background: "transparent" }}>
-              <th>Voted</th>
-              <td>{rejectedVoter.hasVoted ? "True" : "False"}</td>
-            </tr>
-            <tr>
-              <th>Verified</th>
-              <td>{rejectedVoter.isVerified ? "True" : "False"}</td>
-            </tr>
-            <tr style={{ background: "transparent" }}>
-              <th>Registered</th>
-              <td>{rejectedVoter.isRegistered ? "True" : "False"}</td>
-            </tr>
-          </table>
-        </div>
-      </>
-    );
-  };
 
   render() {
     if (!this.state.web3) {
@@ -138,38 +131,90 @@ export default class Notification extends Component {
       );
     }
     const { address, name, phone, message } = this.state.rejectedVoter;
+    const { candidateId, candidateAddress, header, slogan, rejectionMessage } =
+      this.state.rejectedCandidate;
 
     return (
       <>
         <NavbarAdmin />
         <div className="container-main">
           <h2>Notifications</h2>
-          <>
-            <div className="container-item info">
-              <div
-                className="container-list attention"
-                style={{ color: "white" }}
-              >
-                <table>
-                  <tr>
-                    <th> Rejection Message </th>
-                    <td>{message}</td>
-                  </tr>
 
-                  <tr style={{ background: "transparent" }}>
-                    <th>Account address</th>
-                    <td>{address}</td>
-                  </tr>
-                  <tr>
-                    <th>Name</th>
-                    <td>{name}</td>
-                  </tr>
-                  <tr style={{ background: "transparent" }}>
-                    <th>Phone</th>
-                    <td>{phone}</td>
-                  </tr>
-                </table>
-              </div>
+          <>
+            <h2 className="notification-category">For Voter</h2>
+
+            <div className="container-item info">
+              {name || phone || message ? (
+                <div
+                  className="container-list attention"
+                  style={{ color: "white" }}
+                >
+                  <table>
+                    <tr>
+                      <th>Rejection message</th>
+                      <td>{message}</td>
+                    </tr>
+
+                    <tr style={{ background: "transparent" }}>
+                      <th>Account address</th>
+                      <td>{address}</td>
+                    </tr>
+                    <tr>
+                      <th>Name</th>
+                      <td>{name}</td>
+                    </tr>
+                    <tr style={{ background: "transparent" }}>
+                      <th>Phone</th>
+                      <td>{phone}</td>
+                    </tr>
+                  </table>
+                </div>
+              ) : (
+                <>
+                  <p color="white">No any message yet.</p>
+                </>
+              )}
+            </div>
+
+            <h2 className="notification-category">For Candidate</h2>
+            <div className="container-item info">
+              { header || slogan || rejectionMessage ? (
+                <div
+                  className="container-list attention"
+                  style={{  color: "white" }}
+                >
+                  <table>
+                    <tr>
+                      <th>Rejection message</th>
+                      <td>{rejectionMessage}</td>
+                    </tr>
+
+                    <tr style={{ background: "transparent" }}>
+                      <th>Candidate Id</th>
+                      <td>{candidateId}</td>
+                    </tr>
+
+                    <tr>
+                      <th>Account address</th>
+                      <td>{candidateAddress}</td>
+                    </tr>
+
+                    <tr style={{ background: "transparent" }}>
+                      <th>Name</th>
+                      <td>{header}</td>
+                    </tr>
+
+                    <tr >
+                      <th>Slogan</th>
+                      <td>{slogan}</td>
+                    </tr>
+                  </table>
+                </div>
+              ) : (
+                <>
+                  <p color="white">No any message yet.</p>
+                </>
+              )}
             </div>
           </>
         </div>

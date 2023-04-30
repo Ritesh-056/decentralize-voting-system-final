@@ -55,6 +55,19 @@ export default class Registration extends Component {
         this.setState({ isAdmin: true });
       }
 
+      const rejectedVoterCount = await this.state.ElectionInstance.methods
+        .getRejectedVoters()
+        .call();
+      for (let i = 0; i < rejectedVoterCount; i++) {
+        const rejectedVoterAddress = await this.state.ElectionInstance.methods
+          .rejectedVoters(i)
+          .call();
+        this.state.rejectedVoterList.push(rejectedVoterAddress);
+      }
+
+      console.log("Rejected voter count", rejectedVoterCount);
+      console.log("Rejected voter list", this.state.rejectedVoterList);
+
       // Total number of unverified voters
       const voterCount = await this.state.ElectionInstance.methods
         .getUnVerifiedVoters()
@@ -79,19 +92,6 @@ export default class Registration extends Component {
         });
       }
       this.setState({ voters: this.state.voters });
-
-      const rejectedVoterCount = await this.state.ElectionInstance.methods
-        .getRejectedVoters()
-        .call();
-      for (let i = 0; i < rejectedVoterCount; i++) {
-        const rejectedVoterAddress = await this.state.ElectionInstance.methods
-          .rejectedVoters(i)
-          .call();
-        this.state.rejectedVoterList.push(rejectedVoterAddress);
-      }
-
-      console.log("Rejected voter count", rejectedVoterCount);
-      console.log("Rejected voter list", this.state.rejectedVoterList);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -102,9 +102,13 @@ export default class Registration extends Component {
   };
 
   voterRejectionChecker = (voterAddress) => {
-    const checkVoteExist = this.state.rejectedVoterList.includes(voterAddress);
-    console.log("Check voter rejection:", checkVoteExist);
-    return checkVoteExist;
+    if (!voterAddress) {
+      console.log("Invalid voterAddress:", voterAddress);
+      return false;
+    }
+    const checkVoterExist = this.state.rejectedVoterList.includes(voterAddress);
+    console.log(`Is voter already rejected : ${voterAddress}`, checkVoterExist);
+    return checkVoterExist;
   };
 
   renderUnverifiedVoters = (voter) => {
@@ -117,7 +121,7 @@ export default class Registration extends Component {
     };
 
     const rejectVoter = async (address) => {
-      // Prompt the user to enter a message to sign
+      //prompt the admin to write rejection message
       const message = prompt("Write a reason for rejection.", "reason");
 
       // Validate the message
@@ -186,7 +190,7 @@ export default class Registration extends Component {
               <td>{voter.isRegistered ? "True" : "False"}</td>
             </tr>
           </table>
-          {this.voterRejectionChecker(voter.address) ? (
+          {!this.voterRejectionChecker(voter.address) ? (
             <>
               <div style={{}}>
                 <center>
@@ -212,7 +216,6 @@ export default class Registration extends Component {
             <div
               className="container-list attention"
               style={{
-                display: voter.isVerified ? "none" : null,
                 color: "white",
               }}
             >

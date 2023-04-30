@@ -1,4 +1,3 @@
-
 async function signVoterWithAddressAndMessage(web3, accountAddress) {
   // Check if MetaMask is available
   if (!window.ethereum) {
@@ -8,7 +7,10 @@ async function signVoterWithAddressAndMessage(web3, accountAddress) {
 
   try {
     // Prompt the user to enter a message to sign
-    const message = prompt("Dear voter, please insert a message to continue.", "");
+    const message = prompt(
+      "Dear voter, please insert a message to continue.",
+      ""
+    );
 
     // Validate the message
     if (!message) {
@@ -19,8 +21,8 @@ async function signVoterWithAddressAndMessage(web3, accountAddress) {
     const signature = await web3.eth.personal.sign(message, accountAddress);
 
     // Store the signature in local storage for later verification
-    localStorage.setItem("voterSignature", signature);
-
+    const username = accountAddress;
+    localStorage.setItem(`voterSignature_${username}`, signature);
 
     console.log("Message signed:", message);
     console.log("Address signed:", accountAddress);
