@@ -159,19 +159,42 @@ export default class Registration extends Component {
     this.setState({ voterPhone: event.target.value });
   };
   registerAsVoter = async () => {
-    const isSignatureSigned = await signVoterWithAddressAndMessage(this.state.web3, this.state.account);
-    if(isSignatureSigned == true){
+    const voterPhone = this.state.voterPhone;
+    const voterName = this.state.voterName;
+
+    if (!voterPhone && !voterName) {
+      return alert("Oops! voter details is empty.");
+    }
+    if (!voterName) {
+      return alert("Oops! Insert name to continue.");
+    }
+
+    if (!voterPhone) {
+      return alert("Oops! Contact number is empty.");
+    } else {
+      if (voterPhone.length !== 10) {
+        return alert("Oops! Contact number is not valid");
+      }
+    }
+
+    const isSignatureSigned = await signVoterWithAddressAndMessage(
+      this.state.web3,
+      this.state.account
+    );
+    if (isSignatureSigned == true) {
       await this.state.ElectionInstance.methods
-      .registerAsVoter(this.state.voterName, this.state.voterPhone)
-      .send({ from: this.state.account, gas: 1000000 });
-    alert("Voter registered successful");
-    window.location.reload();
-    }else{
-      return alert('Oops message signed error');
+        .registerAsVoter(this.state.voterName, this.state.voterPhone)
+        .send({ from: this.state.account, gas: 1000000 });
+      alert("Voter registered successful");
+      window.location.reload();
+    } else {
+      return alert("Oops message signed error");
     }
   };
 
   render() {
+    const voterPhone = this.state.voterPhone;
+
     if (!this.state.web3) {
       return (
         <>
@@ -226,6 +249,7 @@ export default class Registration extends Component {
                   <div className="div-li">
                     <label className={"label-r"}>
                       Phone number <span style={{ color: "tomato" }}>*</span>
+                      <small> {voterPhone.length}</small>
                       <input
                         className={"input-r"}
                         type="number"
@@ -245,20 +269,20 @@ export default class Registration extends Component {
                     admin will not verify you as a voter.
                   </p>
 
-                  <center>
-                    <button
-                      className="btn-add"
-                      disabled={
-                        this.state.voterPhone.length !== 10 ||
-                        this.state.currentVoter.isVerified
-                      }
-                      onClick={this.registerAsVoter}
-                    >
-                      {this.state.currentVoter.isRegistered
-                        ? "Update"
-                        : "Register"}
-                    </button>
-                  </center>
+                  {this.state.currentVoter.isRegistered ? (
+                    <center>
+                      <button className="btn-add">Registered</button>
+                    </center>
+                  ) : (
+                    <center>
+                      <button
+                        className="btn-add"
+                        onClick={this.registerAsVoter}
+                      >
+                        Register
+                      </button>
+                    </center>
+                  )}
                 </form>
               </div>
             </div>
