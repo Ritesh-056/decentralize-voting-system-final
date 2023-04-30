@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import Logo from "../../images/Logo.png";
+import LogoFirst from "../../images/LogoFirst.png";
 
 import "./Navbar.css";
 
@@ -9,7 +9,7 @@ export default function NavbarAdmin() {
   return (
     <nav>
       <div className="header">
-        <img src={Logo} alt="Logo" style={{ height: 90, width: 90 }} />
+        <img src={LogoFirst} alt="Logo" style={{ height: 90, width: 90 }} />
       </div>
       <ul
         className="navbar-links"
@@ -17,7 +17,7 @@ export default function NavbarAdmin() {
       >
          <li>
           <NavLink to="/" activeClassName="nav-active">
-            Admin Home 
+            Admin Home
           </NavLink>
         </li>
 
@@ -26,7 +26,7 @@ export default function NavbarAdmin() {
             Voter Verification
           </NavLink>
         </li>
-    
+
         <li>
           <NavLink to="/CandidateVerification" activeClassName="nav-active">
             Candidate Verification
