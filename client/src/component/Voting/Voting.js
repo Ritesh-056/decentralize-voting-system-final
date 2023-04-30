@@ -20,6 +20,7 @@ import {
 } from "../NoCandidateCounted";
 import { getLocalDateTime } from "../../DateTimeLocal";
 import SingleCandidateStatus from "./SingleCandidateStatus";
+import { saveVotedElectionIndicesToLocal } from "../../component/VotedElectionHelper";
 
 export default class Voting extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export default class Voting extends Component {
       registrationStartedSatus: false,
       registrationEndedStatus: false,
       isElectionEnded: false,
-      data: [],
+      voteCastedTitles: [],
       electionStartTime: undefined,
       currentVoter: {
         address: undefined,
@@ -159,8 +160,6 @@ export default class Voting extends Component {
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
 
-
-
       //get voting registration start and end times
       const registrationStartedSatus = await this.state.ElectionInstance.methods
         .getRegistrationStartedStatus(currentTimeStamp)
@@ -230,14 +229,13 @@ export default class Voting extends Component {
   };
 
   renderCandidates = (candidate, electionTitleIndex) => {
-    const castVote = async (candidateAddress, titleIndex) => {
+    const castVote = async (candidateAddress, electionTitleIndex) => {
       await this.state.ElectionInstance.methods
-        .vote(candidateAddress, titleIndex)
+        .vote(candidateAddress, electionTitleIndex)
         .send({ from: this.state.account, gas: 1000000 });
-      this.setState((prevState) => ({
-        data: [...prevState.data, electionTitleIndex],
-      }));
+      saveVotedElectionIndicesToLocal(electionTitleIndex, this.state.account);
       alert("Voted Successful");
+      window.location.reload();
     };
 
     const voteUtil = (alertVoteTitle) => {
@@ -249,7 +247,7 @@ export default class Voting extends Component {
       );
     };
 
-    const confirmVote = (candidateAddress, header, titleIndex) => {
+    const confirmVote = (candidateAddress, header, electionTitleIndex) => {
       var r = window.confirm(
         "Vote for " +
           header +
@@ -258,11 +256,19 @@ export default class Voting extends Component {
           ".\nAre you sure?"
       );
       if (r === true) {
-        castVote(candidateAddress, titleIndex);
+        castVote(candidateAddress, electionTitleIndex);
       }
     };
 
-    const hasVoted = this.state.data.includes(electionTitleIndex);
+    // Get the stored value for the account
+    const storedValue = localStorage.getItem(
+      `votedElectionIndices_${this.state.account}`
+    );
+
+    //geting the stored election title indexes.
+    const indices = storedValue ? JSON.parse(storedValue) : [];
+    const isElectiontitleExist = indices.includes(electionTitleIndex);
+    console.log(`Has voted ${electionTitleIndex}`, isElectiontitleExist);
 
     return (
       <div className="container-item-voting">
@@ -274,87 +280,27 @@ export default class Voting extends Component {
           <small>{candidate.slogan}</small>
         </div>
         <div className="vote-btn-container">
-          <button
-            onClick={() => {
-              const voteAlertTitle = `Cast vote [${candidate.candidateId}] to ${candidate.header}.`;
-              if (hasVoted) {
-                return alert("Already Voted to the election title");
-              } else {
-                voteUtil(voteAlertTitle);
-              }
-            }}
-            className="vote-bth"
-            disabled={
-              !this.state.currentVoter.isRegistered ||
-              !this.state.currentVoter.isVerified ||
-              hasVoted
-            }
-          >
-            {hasVoted ? "Voted" : "Vote"}
-          </button>
+          {isElectiontitleExist ? (
+            <button className="vote-bth">Voted</button>
+          ) : (
+            <button
+              onClick={() => {
+                const voteAlertTitle = `Cast vote [${candidate.candidateId}] to ${candidate.header}.`;
+                if (isElectiontitleExist) {
+                  return alert("Already Voted to the election title");
+                } else {
+                  voteUtil(voteAlertTitle);
+                }
+              }}
+              className="vote-bth"
+            >
+              Vote
+            </button>
+          )}
         </div>
       </div>
     );
   };
-
-  // renderCandidates = (candidate, electionTitleIndex) => {
-  //   const castVote = async (candidateAddress, titleIndex) => {
-  //     await this.state.ElectionInstance.methods
-  //       .vote(candidateAddress, titleIndex)
-  //       .send({ from: this.state.account, gas: 1000000 });
-  //     alert("Vote casted successful");
-  //   };
-
-  //   //vote util functions
-  //   const voteUtil = (alertVoteTitle) => {
-  //     alert(alertVoteTitle);
-  //     confirmVote(
-  //       candidate.candidateAddress,
-  //       candidate.header,
-  //       electionTitleIndex
-  //     );
-  //   };
-
-  //   const confirmVote = (candidateAddress, header, titleIndex) => {
-  //     var r = window.confirm(
-  //       "Vote for " +
-  //         header +
-  //         " with id " +
-  //         candidate.candidateId +
-  //         ".\nAre you sure?"
-  //     );
-  //     if (r === true) {
-  //       castVote(candidateAddress, titleIndex);
-  //     }
-  //   };
-
-  //   return (
-  //     <div className="container-item">
-  //       <div className="candidate-data">
-  //         <h2>
-  //           {`[${candidate.candidateId}] `}
-  //           {candidate.header}
-  //         </h2>{" "}
-  //         <small>{candidate.slogan}</small>
-  //       </div>
-  //       <div className="vote-btn-container">
-  //         <button
-  //           onClick={() => {
-  //             const voteAlertTitle = `Cast vote [${candidate.candidateId}] to ${candidate.header}.`;
-  //             voteUtil(voteAlertTitle);
-  //           }}
-  //           className="vote-bth"
-  //           disabled={
-  //             !this.state.currentVoter.isRegistered ||
-  //             !this.state.currentVoter.isVerified
-  //           }
-  //         >
-  //           Vote
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   render() {
     if (!this.state.web3) {
@@ -401,7 +347,7 @@ export default class Voting extends Component {
                             >
                               <button
                                 style={{ marginTop: 16 }}
-                                className="btn-election"
+                                className="btn-verification-approve"
                               >
                                 View result
                               </button>
@@ -441,27 +387,31 @@ export default class Voting extends Component {
                   </>
                 )}
 
-                <div className="container-main">
-                  <h2>Elections Categories</h2>
-                  <small>
-                    Total Category: {this.state.electionTitles.length}
-                  </small>
-                  {this.state.electionTitles.length < 1 ? (
-                    <div className="container-item attention">
-                      <center>No any election to vote for.</center>
-                    </div>
-                  ) : (
-                    <>
-                      {this.state.electionTitles.map(
-                        (electionTitle, electionTitleIndex) =>
-                          this.renderElectionCategories(
-                            electionTitle,
-                            electionTitleIndex
-                          )
-                      )}
-                    </>
-                  )}
-                </div>
+                {this.state.currentVoter.isVerified ? (
+                  <div className="container-main">
+                    <h2>Elections Categories</h2>
+                    <small>
+                      Total Category: {this.state.electionTitles.length}
+                    </small>
+                    {this.state.electionTitles.length < 1 ? (
+                      <div className="container-item attention">
+                        <center>No any election to vote for.</center>
+                      </div>
+                    ) : (
+                      <>
+                        {this.state.electionTitles.map(
+                          (electionTitle, electionTitleIndex) =>
+                            this.renderElectionCategories(
+                              electionTitle,
+                              electionTitleIndex
+                            )
+                        )}
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <></>
+                )}
               </>
             ) : this.state.isElectionEnded ? (
               <>
@@ -475,7 +425,9 @@ export default class Voting extends Component {
                       to="/Results"
                       style={{ color: "white", textDecoration: "underline" }}
                     >
-                      <button className="btn-verification-approve">View result</button>
+                      <button className="btn-verification-approve">
+                        View result
+                      </button>
                     </Link>
                   </center>
                 </div>
