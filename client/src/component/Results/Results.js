@@ -36,6 +36,7 @@ export default class Result extends Component {
       electionStarted: false,
       electionInitStatus: false,
       winnerCandidates: [],
+      isLuckyDrawEnabled: false,
       isSingleElectionAndCandidate: false,
     };
   }
@@ -113,12 +114,15 @@ export default class Result extends Component {
         .getElectionEndedStatus(currentTimeStamp)
         .call();
       this.setState({ isElectionEnded: isElectionEnded });
+      // this.setState({ isElectionEnded: true });
       console.log("Is election ended:", this.state.isElectionEnded);
 
       const electionStarted = await this.state.ElectionInstance.methods
         .getElectionStatus(currentTimeStamp)
         .call();
       this.setState({ electionStarted: electionStarted });
+      // this.setState({ electionStarted: false });
+
       console.log("Election started", this.state.electionStarted);
 
       const electionTitles = await this.state.ElectionInstance.methods
@@ -167,6 +171,7 @@ export default class Result extends Component {
     const candidates = this.state.candidates
       .filter((candidate) => candidate.electionTitleIndex == index)
       .sort((a, b) => a.candidateId - b.candidateId);
+    const isLuckyDrawStarted =  this.state.isLuckyDrawEnabled;
 
     return (
       <>
@@ -175,7 +180,7 @@ export default class Result extends Component {
             <h2 style={{ padding: 32 }}>{electionTitles}</h2>
           </div>
           {candidates.length >= 1 ? (
-            displayResults(candidates)
+            displayResults(candidates,isLuckyDrawStarted)
           ) : (
             <>
               <NotCandidateCounted />
@@ -240,7 +245,9 @@ export default class Result extends Component {
                   to="/Voting"
                   style={{ color: "black", textDecoration: "underline" }}
                 >
-                  <button className="btn-verification-approve">Vote Candidate</button>
+                  <button className="btn-verification-approve">
+                    Vote Candidate
+                  </button>
                 </Link>
               </center>
             </div>
@@ -258,7 +265,7 @@ export default class Result extends Component {
                 ) : (
                   <>
                     {this.state.electionTitles.map((electionTitle, index) =>
-                      this.renderElectionCategories(electionTitle, index)
+                      this.renderElectionCategories(electionTitle, index, this.state.isLuckyDrawEnabled)
                     )}
                   </>
                 )}
@@ -274,23 +281,35 @@ export default class Result extends Component {
     );
   }
 }
-function displayWinner(candidates) {
+function displayWinner(candidates,isLuckyDrawStarted) {
   const getWinner = (candidates) => {
     // Returns an object having maxium vote count
     let maxVoteRecived = 0;
     let winnerCandidate = [];
     if (candidates.length != 1) {
       for (let i = 0; i < candidates.length; i++) {
+        const candidate = candidates[i];
+
         if (candidates[i].voteCount > maxVoteRecived) {
           maxVoteRecived = candidates[i].voteCount;
-          winnerCandidate = [candidates[i]];
+          winnerCandidate = [candidate];
         } else if (candidates[i].voteCount === maxVoteRecived) {
-          winnerCandidate.push(candidates[i]);
+          winnerCandidate.push(candidate);
+        }
+      }
+      if (isLuckyDrawStarted) {
+        if (winnerCandidate.length > 1) {
+          const randomIndex = Math.floor(
+            Math.random() * winnerCandidate.length
+          );
+          return [winnerCandidate[randomIndex]];
         }
       }
     } else {
       winnerCandidate.push(candidates[0]);
     }
+
+    console.log("Dynamic winner check", winnerCandidate);
 
     return winnerCandidate;
   };
@@ -308,7 +327,14 @@ function displayWinner(candidates) {
           <br />
           <br />
           <small className="winner-one">Total Vote : </small> <br />
-          <p style={{ fontSize: 45, fontWeight: "bold", textAlign: "center" ,color:"#ffffff"}}>
+          <p
+            style={{
+              fontSize: 45,
+              fontWeight: "bold",
+              textAlign: "center",
+              color: "#ffffff",
+            }}
+          >
             {winner.voteCount}
           </p>
         </div>
@@ -317,10 +343,16 @@ function displayWinner(candidates) {
   };
 
   const winnerCandidate = getWinner(candidates);
-  return <>{winnerCandidate.map(renderWinner)}</>;
+  return (
+    <div>
+      {winnerCandidate.map((winner) => (
+        <div key={winner.id}>{renderWinner(winner)}</div>
+      ))}
+    </div>
+  );
 }
 
-export function displayResults(candidates) {
+export function displayResults(candidates,isLuckyDrawStarted) {
   const renderResults = (candidate) => {
     return (
       <tr style={{ backgroundColor: "transparent" }}>
@@ -333,7 +365,7 @@ export function displayResults(candidates) {
   return (
     <>
       {candidates.length > 0 ? (
-        <div className="container-main">{displayWinner(candidates)}</div>
+        <div className="container-main">{displayWinner(candidates,isLuckyDrawStarted)}</div>
       ) : null}
       <div className="container-main" style={{ borderTop: "1px solid" }}>
         <h2>Results</h2>
