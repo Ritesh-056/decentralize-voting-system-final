@@ -17,6 +17,11 @@ import {
   RegistrationDenied,
 } from "../../component/RegistrationStatus";
 
+import {
+  saveElectionTitleAndSloganIndexToLocal,
+  getElecitonTitleAndSloganIndexFromLocal,
+} from "../LocalStoreAndRetrive";
+
 export default class CandidateRegistration extends Component {
   constructor(props) {
     super(props);
@@ -389,7 +394,6 @@ export default class CandidateRegistration extends Component {
                             <button
                               className="btn-add"
                               onClick={(e) => {
-                                console.log("Button clicked from here");
                                 e.preventDefault();
                                 if (
                                   this.state.header == "" ||
@@ -400,7 +404,29 @@ export default class CandidateRegistration extends Component {
                                     "Please check your candidates details."
                                   );
                                 } else {
-                                  this.registerAsCandidate();
+                                  const selectedTitleIndex =
+                                    this.state.selectedElectionIndex;
+                                  const selectedSloganIndex =
+                                    this.state.selectedSloganIndex;
+
+                                  const indices =
+                                    getElecitonTitleAndSloganIndexFromLocal(
+                                      selectedTitleIndex
+                                    );
+                                  const isSloganAlreadyTaken =
+                                    indices.includes(selectedSloganIndex);
+                                  if (isSloganAlreadyTaken) {
+                                    return alert(
+                                      "Oops, selected slogan is already taken!"
+                                    );
+                                  } else {
+                                    //save to local
+                                    saveElectionTitleAndSloganIndexToLocal(
+                                      selectedTitleIndex,
+                                      selectedSloganIndex
+                                    );
+                                    this.registerAsCandidate();
+                                  }
                                 }
                               }}
                             >

@@ -122,7 +122,7 @@ export default class Registration extends Component {
 
     const rejectVoter = async (address) => {
       //prompt the admin to write rejection message
-      const message = prompt("Write a reason for rejection.", "reason");
+      const message = prompt("Write a reason for rejection.", "");
 
       // Validate the message
       if (!message || message == "") {
