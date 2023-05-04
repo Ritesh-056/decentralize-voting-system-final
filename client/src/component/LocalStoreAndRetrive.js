@@ -1,5 +1,5 @@
 // get election title and slogan title index from local storage
-function getElecitonTitleAndSloganIndexFromLocal(electionTitleIndex) {
+function getElectionTitleAndSloganIndexFromLocal(electionTitleIndex) {
     const indicesString = localStorage.getItem(
       `electionTitleIndices_${electionTitleIndex}`
     );
@@ -36,5 +36,5 @@ function saveElectionTitleAndSloganIndexToLocal(electionTitleIndex, sloganTitleI
 
 export {
   saveElectionTitleAndSloganIndexToLocal,
-  getElecitonTitleAndSloganIndexFromLocal
+  getElectionTitleAndSloganIndexFromLocal
 };

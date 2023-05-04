@@ -36,7 +36,7 @@ export default class Result extends Component {
       electionStarted: false,
       electionInitStatus: false,
       winnerCandidates: [],
-      isLuckyDrawEnabled: false,
+      isLuckyDrawEnabled: true,
       isSingleElectionAndCandidate: false,
       isElectionResultPublished: false,
     };
@@ -116,7 +116,7 @@ export default class Result extends Component {
         .call();
       this.setState({ isElectionEnded: isElectionEnded });
       // this.setState({ isElectionEnded: true });
-      console.log("Is election ended:", this.state.isElectionEnded);
+      // console.log("Is election ended:", this.state.isElectionEnded);
 
       const electionStarted = await this.state.ElectionInstance.methods
         .getElectionStatus(currentTimeStamp)
@@ -183,7 +183,8 @@ export default class Result extends Component {
       .filter((candidate) => candidate.electionTitleIndex == index)
       .sort((a, b) => a.candidateId - b.candidateId);
     const isLuckyDrawStarted = this.state.isLuckyDrawEnabled;
-
+    const isElectionAdmin = this.state.isAdmin;
+    const isElectionResultPublished = this.state.isElectionResultPublished;
     return (
       <>
         <div className="container-item-election-category">
@@ -191,7 +192,12 @@ export default class Result extends Component {
             <h2 style={{ padding: 32 }}>{electionTitles}</h2>
           </div>
           {candidates.length >= 1 ? (
-            displayResults(candidates, isLuckyDrawStarted)
+            displayResults(
+              candidates,
+              isLuckyDrawStarted,
+              isElectionAdmin,
+              isElectionResultPublished
+            )
           ) : (
             <>
               <NotCandidateCounted />
@@ -220,7 +226,7 @@ export default class Result extends Component {
   };
 
   //function to publish election.
-  publishElectionToPublic = async () => {
+  publishElectionResultToPublic = async () => {
     await this.state.ElectionInstance.methods
       .setElectionResultShowFeatureToPublic()
       .send({ from: this.state.account, gas: 1000000 });
@@ -274,24 +280,30 @@ export default class Result extends Component {
           ) : this.state.isElectionEnded ? (
             <>
               <div className="container-main">
+                {this.state.isAdmin ? (
+                  this.state.isElectionResultPublished ? (
+                    <>
+                      <center>
+                        <h2> Publish election result </h2>
+                        <button className="btn-publish">Published</button>
+                      </center>
+                    </>
+                  ) : (
+                    <center>
+                      <h2> Publish election result. </h2>
+                      <button
+                        className="btn-publish"
+                        onClick={this.publishElectionResultToPublic}
+                      >
+                        Publish
+                      </button>
+                    </center>
+                  )
+                ) : null}
                 <h2>Elections Categories</h2>
                 <small>
                   Total Category: {this.state.electionTitles.length}
                 </small>
-                <small>Publish election result to public </small>
-                { this.state.isElectionResultPublished ? (
-                  <button className="vote-bth">Published</button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      this.publishElectionToPublic();
-                    }}
-                    className="vote-bth"
-                  >
-                    Vote
-                  </button>
-                )}
-
                 {this.state.electionTitles.length < 1 ? (
                   <div className="container-item attention">
                     <center>No any election to vote for.</center>
@@ -305,6 +317,7 @@ export default class Result extends Component {
                         this.state.isLuckyDrawEnabled
                       )
                     )}
+                    :
                   </>
                 )}
               </div>
@@ -390,7 +403,12 @@ function displayWinner(candidates, isLuckyDrawStarted) {
   );
 }
 
-export function displayResults(candidates, isLuckyDrawStarted) {
+export function displayResults(
+  candidates,
+  isLuckyDrawStarted,
+  isAdmin,
+  isElectionResultPublished
+) {
   const renderResults = (candidate) => {
     return (
       <tr style={{ backgroundColor: "transparent" }}>
@@ -403,11 +421,11 @@ export function displayResults(candidates, isLuckyDrawStarted) {
   return (
     <>
       {candidates.length > 0 ? (
-        this.state.isAdmin ? (
+        isAdmin ? (
           <div className="container-main">
             {displayWinner(candidates, isLuckyDrawStarted)}
           </div>
-        ) : this.state.isElectionResultPublished ? (
+        ) : isElectionResultPublished ? (
           <div className="container-main">
             {displayWinner(candidates, isLuckyDrawStarted)}
           </div>

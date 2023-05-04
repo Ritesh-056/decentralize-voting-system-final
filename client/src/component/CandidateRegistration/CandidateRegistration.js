@@ -19,7 +19,7 @@ import {
 
 import {
   saveElectionTitleAndSloganIndexToLocal,
-  getElecitonTitleAndSloganIndexFromLocal,
+  getElectionTitleAndSloganIndexFromLocal,
 } from "../LocalStoreAndRetrive";
 
 export default class CandidateRegistration extends Component {
@@ -251,6 +251,21 @@ export default class CandidateRegistration extends Component {
         .call();
       this.setState({ electionStarted: electionStarted });
       console.log("Election started", this.state.electionStarted);
+
+
+      const getElectionIndices =
+      getElectionTitleAndSloganIndexFromLocal(
+          this.selectedElectionIndex
+        );
+
+        if (electionStarted) {
+          for (let i = 0; i < getElectionIndices.length; i++) {
+            localStorage.removeItem(`electionTitleIndices_${i}`);
+          }
+          console.log("Indices got",getElectionIndices);
+          console.log("Election indices deleted successful");
+        }
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -410,7 +425,7 @@ export default class CandidateRegistration extends Component {
                                     this.state.selectedSloganIndex;
 
                                   const indices =
-                                    getElecitonTitleAndSloganIndexFromLocal(
+                                  getElectionTitleAndSloganIndexFromLocal(
                                       selectedTitleIndex
                                     );
                                   const isSloganAlreadyTaken =
