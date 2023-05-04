@@ -38,6 +38,7 @@ export default class Result extends Component {
       winnerCandidates: [],
       isLuckyDrawEnabled: false,
       isSingleElectionAndCandidate: false,
+      isElectionResultPublished: false,
     };
   }
   componentDidMount = async () => {
@@ -158,6 +159,16 @@ export default class Result extends Component {
 
       console.log("Voting started time:", getLocalDateTime(votingstartedTime));
       console.log("Voting end time:", getLocalDateTime(votingEndedTime));
+
+      const isElectionResultPublishedByAdmin =
+        await this.state.ElectionInstance.methods
+          .electionResultShowFeatureToPublicStatus()
+          .call();
+
+      //save the election show/published status
+      this.setState({
+        isElectionResultPublished: isElectionResultPublishedByAdmin,
+      });
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -171,7 +182,7 @@ export default class Result extends Component {
     const candidates = this.state.candidates
       .filter((candidate) => candidate.electionTitleIndex == index)
       .sort((a, b) => a.candidateId - b.candidateId);
-    const isLuckyDrawStarted =  this.state.isLuckyDrawEnabled;
+    const isLuckyDrawStarted = this.state.isLuckyDrawEnabled;
 
     return (
       <>
@@ -180,7 +191,7 @@ export default class Result extends Component {
             <h2 style={{ padding: 32 }}>{electionTitles}</h2>
           </div>
           {candidates.length >= 1 ? (
-            displayResults(candidates,isLuckyDrawStarted)
+            displayResults(candidates, isLuckyDrawStarted)
           ) : (
             <>
               <NotCandidateCounted />
@@ -206,6 +217,15 @@ export default class Result extends Component {
         </div>
       </div>
     );
+  };
+
+  //function to publish election.
+  publishElectionToPublic = async () => {
+    await this.state.ElectionInstance.methods
+      .setElectionResultShowFeatureToPublic()
+      .send({ from: this.state.account, gas: 1000000 });
+    alert("Woah! Election is Published to Public.");
+    window.location.reload();
   };
 
   render() {
@@ -258,6 +278,20 @@ export default class Result extends Component {
                 <small>
                   Total Category: {this.state.electionTitles.length}
                 </small>
+                <small>Publish election result to public </small>
+                { this.state.isElectionResultPublished ? (
+                  <button className="vote-bth">Published</button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      this.publishElectionToPublic();
+                    }}
+                    className="vote-bth"
+                  >
+                    Vote
+                  </button>
+                )}
+
                 {this.state.electionTitles.length < 1 ? (
                   <div className="container-item attention">
                     <center>No any election to vote for.</center>
@@ -265,7 +299,11 @@ export default class Result extends Component {
                 ) : (
                   <>
                     {this.state.electionTitles.map((electionTitle, index) =>
-                      this.renderElectionCategories(electionTitle, index, this.state.isLuckyDrawEnabled)
+                      this.renderElectionCategories(
+                        electionTitle,
+                        index,
+                        this.state.isLuckyDrawEnabled
+                      )
                     )}
                   </>
                 )}
@@ -281,7 +319,7 @@ export default class Result extends Component {
     );
   }
 }
-function displayWinner(candidates,isLuckyDrawStarted) {
+function displayWinner(candidates, isLuckyDrawStarted) {
   const getWinner = (candidates) => {
     // Returns an object having maxium vote count
     let maxVoteRecived = 0;
@@ -352,7 +390,7 @@ function displayWinner(candidates,isLuckyDrawStarted) {
   );
 }
 
-export function displayResults(candidates,isLuckyDrawStarted) {
+export function displayResults(candidates, isLuckyDrawStarted) {
   const renderResults = (candidate) => {
     return (
       <tr style={{ backgroundColor: "transparent" }}>
@@ -365,7 +403,15 @@ export function displayResults(candidates,isLuckyDrawStarted) {
   return (
     <>
       {candidates.length > 0 ? (
-        <div className="container-main">{displayWinner(candidates,isLuckyDrawStarted)}</div>
+        this.state.isAdmin ? (
+          <div className="container-main">
+            {displayWinner(candidates, isLuckyDrawStarted)}
+          </div>
+        ) : this.state.isElectionResultPublished ? (
+          <div className="container-main">
+            {displayWinner(candidates, isLuckyDrawStarted)}
+          </div>
+        ) : null
       ) : null}
       <div className="container-main" style={{ borderTop: "1px solid" }}>
         <h2>Results</h2>

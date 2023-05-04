@@ -5,6 +5,7 @@ import "hardhat/console.sol";
 
 contract Election {
     bool isElectionInit;
+    bool isElectionResultAvailableToPublic;
 
     address public admin;
     uint8 candidateCount;
@@ -34,6 +35,7 @@ contract Election {
         admin = msg.sender;
         candidateCount = 0;
         isElectionInit = false;
+        isElectionResultAvailableToPublic = false;
         registrationStartTime = 0;
         registrationEndTime = 0;
         votingStartTime = 0;
@@ -624,4 +626,16 @@ contract Election {
         }
         return winnerAddress;
     }
+
+    // show the result to public
+    function setElectionResultShowFeatureToPublic() public onlyAdmin {
+        isElectionResultAvailableToPublic = true;
+    }
+
+    //get the status of election show feature
+    function electionResultShowFeatureToPublicStatus() public view returns (bool) {
+        return isElectionResultAvailableToPublic;
+    }
 }
+
+
