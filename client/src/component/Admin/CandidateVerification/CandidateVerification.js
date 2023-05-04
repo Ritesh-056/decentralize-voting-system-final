@@ -128,7 +128,7 @@ export default class CandidateVerification extends Component {
 
     const rejectCandidate = async (address) => {
       //prompt the admin to write rejection message
-      const message = prompt("Write a reason for rejection.", "reason");
+      const message = prompt("Write a reason for rejection.", "");
 
       // Validate the message
       if (!message || message == "") {
@@ -197,20 +197,6 @@ export default class CandidateVerification extends Component {
               <td>{electionTitleOfCandidate}</td>
             </tr>
           </table>
-          {/* <div style={{ marginTop: "2%" }}>
-            <center>
-              <button
-                // className="btn-verification approve"
-                className="btn-verification-approve"
-                disabled={candidate.isVerified}
-                onClick={() =>
-                  verifyCandidate(true, candidate.candidateAddress)
-                }
-              >
-                Approve
-              </button>
-            </center>
-          </div> */}
 
           {!this.candidateRejectionChecker(candidate.candidateAddress) ? (
             <>
