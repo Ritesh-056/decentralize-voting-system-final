@@ -371,7 +371,7 @@ export default class CandidateRegistration extends Component {
                         />
                       </label>
                       <label className={"label-ac"}>
-                        Select an election slogan
+                        Select an election symbol
                         <select
                           className={"select-election-ac"}
                           value={this.state.selectedSlogan}
@@ -490,7 +490,7 @@ function loadAllCandidates(candidates) {
               <td>{candidate.header}</td>
             </tr>
             <tr>
-              <th>Candidate Slogan</th>
+              <th>Candidate Symbol</th>
               <td>{candidate.slogan}</td>
             </tr>
             <tr>

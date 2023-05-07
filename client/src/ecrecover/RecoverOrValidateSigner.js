@@ -13,7 +13,7 @@ async function recoverSignerAccount(web3, accountAddress) {
     // Prompt the user for a message to verify as a voter
     const message = prompt(
       "Dear voter, please insert a message to verify as a voter",
-      " "
+      ""
     );
     if (!message) {
       throw new Error("No message to sign");

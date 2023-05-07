@@ -57,7 +57,7 @@ function UserHome(props) {
           </tr>
 
           <tr style={{ backgroundColor: "transparent" }}>
-            <th>Election Titles</th>
+            <th>Candidate Symbols</th>
             <td>
               {electionDetails.electionSlogans.map((slogan, index) => (
                 <small style={{ color: "white",paddingRight:8}}>

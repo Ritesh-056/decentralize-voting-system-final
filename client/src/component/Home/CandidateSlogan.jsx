@@ -10,7 +10,7 @@ const HomeCandidateSloganForm = () => {
   return (
     <>
       <label className="label-home">
-        <p className="label-home-title"> Election Slogan </p>
+        <p className="label-home-title"> Candidate Symbols </p>
         {/* {errors.electionTitles && <EMsg msg="*required" />} */}
         <div className="election-title-container">
           <input
@@ -38,7 +38,7 @@ const HomeCandidateSloganForm = () => {
             }
           }}
         >
-          Add Slogan
+          Add Symbol
         </button>
         <ul className="titles">
           {slogans.map((value, index) => {
